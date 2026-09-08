@@ -1,0 +1,3 @@
+# Configuração do único pacote da raiz; não define um monorepo.
+allowBuilds:
+  unrs-resolver: true

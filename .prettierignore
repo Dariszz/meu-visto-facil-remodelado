@@ -1,0 +1,16 @@
+node_modules/
+.pnpm-store/
+.next/
+out/
+coverage/
+.vercel/
+next-env.d.ts
+*.tsbuildinfo
+pnpm-lock.yaml
+.env*
+AGENTS.md
+.agents/
+.codex/
+docs/**
+!docs/exec-plans/
+!docs/exec-plans/bootstrap.md

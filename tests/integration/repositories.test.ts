@@ -68,6 +68,10 @@ test("public repositories: publication, country isolation, ordering, source rela
               url: "https://enterprise.gov.ie/repository-fixture",
               hostname: "enterprise.gov.ie",
               editorialConsultedAt: new Date("2026-08-01T00:00:00Z"),
+              lastVerifiedAt: new Date("2026-09-20T18:45:12.123Z"),
+              lastSuccessfulVerificationAt: new Date(
+                "2026-09-18T06:15:30.456Z",
+              ),
             },
           });
           const requirementOnly = await tx.officialSource.create({
@@ -164,6 +168,26 @@ test("public repositories: publication, country isolation, ordering, source rela
             sources.map((item) => item.id),
             [requirementOnly.id, source.id],
           );
+          assert.deepEqual(
+            sources.find((item) => item.id === source.id),
+            {
+              id: source.id,
+              title: "Database source",
+              authority: "Database authority",
+              url: "https://enterprise.gov.ie/repository-fixture",
+              hostname: "enterprise.gov.ie",
+              status: "ACTIVE",
+              consultedAt: "2026-08-01",
+              lastVerifiedAt: "2026-09-20T18:45:12.123Z",
+              lastSuccessfulVerificationAt: "2026-09-18T06:15:30.456Z",
+            },
+          );
+          const unverified = sources.find(
+            (item) => item.id === requirementOnly.id,
+          );
+          assert.equal(unverified?.consultedAt, null);
+          assert.equal(unverified?.lastVerifiedAt, null);
+          assert.equal(unverified?.lastSuccessfulVerificationAt, null);
           // Real database projections travel through the same mapper used by the Server Component.
           const presentation = presentCriticalSkills(detail, sources);
           assert.equal(presentation.name, "Database visa");
@@ -182,11 +206,18 @@ test("public repositories: publication, country isolation, ordering, source rela
               where: { id: source.id },
               data: { status },
             });
+            const unavailable = (
+              await listPublicVisaSources(country.slug, "shared-slug", tx)
+            ).find((item) => item.id === source.id);
+            assert.equal(unavailable?.url, null);
+            assert.equal(unavailable?.status, status);
             assert.equal(
-              (
-                await listPublicVisaSources(country.slug, "shared-slug", tx)
-              ).find((item) => item.id === source.id)?.url,
-              null,
+              unavailable?.lastVerifiedAt,
+              "2026-09-20T18:45:12.123Z",
+            );
+            assert.equal(
+              unavailable?.lastSuccessfulVerificationAt,
+              "2026-09-18T06:15:30.456Z",
             );
           }
           await tx.officialSource.update({

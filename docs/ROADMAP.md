@@ -435,6 +435,8 @@ As páginas anteriores passam a carregar dados reais do banco.
 
 # 12. Fase 8 — Fontes oficiais
 
+**Implementada e validada em 29/09/2026, pronta para revisão do usuário.** Registro persistido `OfficialSource` preservado, política de hosts centralizada, metadados e status apresentados com consulta editorial separada da tentativa e do sucesso de verificação. Sem migration ou requisições HTTP. Lint, typecheck, 74 testes e build passaram; revisões independentes de código e segurança sem findings relevantes. Após retomada dos projetos Supabase pelo usuário, integração PostgreSQL e smoke visual do detalhe em 320/390/768/1440 px passaram; referências internas e teclado conferidos. [Plano e evidências](exec-plans/phase-8-official-sources.md). Fase 9 não iniciada.
+
 ## Objetivo
 
 Criar infraestrutura de rastreabilidade.

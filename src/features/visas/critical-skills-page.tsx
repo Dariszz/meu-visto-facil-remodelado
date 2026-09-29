@@ -1,15 +1,13 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, BookOpen, Info } from "lucide-react";
+import { ArrowLeft, BookOpen, Info } from "lucide-react";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Container } from "@/components/layout/container";
 import { PageSection } from "@/components/layout/page-section";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  formatConsultedDate,
-  type CriticalSkillsPresentation,
-} from "./catalog-presentation";
+import { OfficialSourceItem } from "@/features/sources/official-source-item";
+import type { CriticalSkillsPresentation } from "./catalog-presentation";
 
 function Reference({
   sourceIds,
@@ -215,41 +213,18 @@ export function CriticalSkillsPage({
             podem mudar após a consulta; confirme a orientação atual diretamente
             com a autoridade responsável.
           </p>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            A consulta editorial indica quando o conteúdo foi consultado. A
+            verificação técnica registra a disponibilidade do link naquele
+            momento; não confirma que as regras continuam atuais. Uma fonte
+            cadastrada pode ainda não ter uma verificação registrada.
+          </p>
           {Object.keys(sources).length === 0 && (
             <p className="mt-6">Fontes em atualização.</p>
           )}
           <ul className="mt-8 divide-y rounded-xl border bg-card px-6 sm:px-8">
-            {Object.entries(sources).map(([id, source]) => (
-              <li key={id} id={`source-${id}`} className="scroll-mt-6 py-6">
-                {source.url ? (
-                  <a
-                    href={source.url}
-                    className="inline-flex min-h-11 items-center gap-2 font-semibold text-primary underline underline-offset-4"
-                  >
-                    {source.title}
-                    <ArrowUpRight
-                      aria-hidden="true"
-                      className="size-4 shrink-0"
-                    />
-                  </a>
-                ) : (
-                  <p className="font-semibold">
-                    {source.title} — Link indisponível
-                  </p>
-                )}
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {source.authority}
-                  {source.consultedAt && (
-                    <>
-                      {" "}
-                      · Consulta editorial:{" "}
-                      <time dateTime={source.consultedAt}>
-                        {formatConsultedDate(source.consultedAt)}
-                      </time>
-                    </>
-                  )}
-                </p>
-              </li>
+            {Object.values(sources).map((source) => (
+              <OfficialSourceItem key={source.id} source={source} />
             ))}
           </ul>
           <aside

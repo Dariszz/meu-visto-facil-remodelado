@@ -1,6 +1,6 @@
 import "server-only";
 import type { CatalogSource } from "@/features/visas/catalog-types";
-import { safeSourceLink } from "@/features/visas/safe-source-link";
+import { safeSourceLink } from "@/features/sources/source-link-policy";
 import type { Prisma } from "../generated/client";
 import { getDatabaseClient } from "../client";
 import { catalogSlug, publicQuery } from "./public-query";
@@ -39,6 +39,8 @@ export async function listPublicVisaSources(
         hostname: true,
         status: true,
         editorialConsultedAt: true,
+        lastVerifiedAt: true,
+        lastSuccessfulVerificationAt: true,
       },
       orderBy: [{ title: "asc" }, { id: "asc" }],
       take: 101,
@@ -52,6 +54,7 @@ export async function listPublicVisaSources(
               id: source.id,
               title: source.title,
               authority: source.authority,
+              hostname: source.hostname,
               status: source.status,
               url:
                 source.status === "ACTIVE"
@@ -59,6 +62,9 @@ export async function listPublicVisaSources(
                   : null,
               consultedAt:
                 source.editorialConsultedAt?.toISOString().slice(0, 10) ?? null,
+              lastVerifiedAt: source.lastVerifiedAt?.toISOString() ?? null,
+              lastSuccessfulVerificationAt:
+                source.lastSuccessfulVerificationAt?.toISOString() ?? null,
             },
           ],
     );

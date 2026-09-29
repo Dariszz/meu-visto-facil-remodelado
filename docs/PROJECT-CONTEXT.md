@@ -6,6 +6,10 @@ Atualizado em 10/09/2026 a partir do contexto enviado pelo usuário e da inspeç
 
 Reconstruir o Meu Visto Fácil sem reutilizar código do projeto antigo, preservando a ideia do TCC: organizar caminhos de imigração, fontes oficiais e checklists personalizados com IA controlada. O objetivo é uma aplicação funcional de portfólio, com backend, autenticação, banco, testes, segurança, publicação na Vercel e apresentação profissional no GitHub.
 
+## Ponto de retomada — 29/09/2026
+
+Fases 5–7 registradas em quatro commits locais: `cf51f3e`, `d421c43`, `d60c71f` e `d75176a`. O usuário autorizou a Fase 8 com agentes. Implementação concluída, sem migration: política central de hosts e apresentação dos metadados/status das fontes. Lint, typecheck, 74 testes e build passaram; revisões independentes de código e segurança sem findings relevantes. Após o usuário retomar os projetos Supabase, integração PostgreSQL passou e smoke visual do detalhe foi aprovado em 320/390/768/1440 px, com âncoras e teclado. Fase 8 pronta para revisão; checkpoint Git autorizado pelo usuário. Ver [plano da Fase 8](exec-plans/phase-8-official-sources.md). Fase 9 não iniciada. Registros abaixo preservam o histórico anterior.
+
 O foco inicial é a Irlanda, com poucos caminhos bem implementados. A arquitetura, a stack e as restrições de produto continuam definidas nos documentos existentes, referenciados pelo `AGENTS.md`. Este registro não os substitui.
 
 ## Forma de trabalho acordada

@@ -32,5 +32,8 @@ export const catalogSourceFixtures: CatalogSource[] = Object.entries(
   ...source,
   id: `seed-source-ie-${key}`,
   status: "ACTIVE",
+  hostname: new URL(source.url).hostname,
   consultedAt: "2026-09-10",
+  lastVerifiedAt: null,
+  lastSuccessfulVerificationAt: null,
 }));

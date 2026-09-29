@@ -99,3 +99,13 @@ Em 10/09/2026, o comando executou DRAFT_TO_ACTIVE apenas no registro seed-visa-i
 Runtime usa exclusivamente DATABASE_URL. Auditoria de leitura em 10/09/2026 confirmou mvf_catalog_reader, SELECT permitido, INSERT/UPDATE/DELETE/TRUNCATE negados em Visa e TLS ativo; um visto publicado. O servidor local acessou as cinco rotas. DIRECT_URL continua exclusivo de operações administrativas CLI.
 
 Listagens públicas limitadas a 50 vistos; detalhes até 200 requisitos, 20 referências por requisito e 50 referências do visto; até 100 fontes distintas. Excesso no detalhe/fontes é detectado com um registro adicional e gera erro seguro, sem cortar requisitos silenciosamente. Catálogos maiores exigirão paginação revisada. Sem cache persistente: connection() coloca leituras após a chegada de uma requisição. Build não executa seed, migration ou consulta.
+
+## Verificação manual de fontes — Fase 9
+
+A migration aditiva `20260929000000_source_verification_metadata` precisa ser aplicada antes da operação. Após confirmar localmente DIRECT_URL de desenvolvimento e DB_SEED_CONFIRM=development:
+
+```bash
+pnpm sources:verify:development --confirm-development seed-source-ie-permit
+```
+
+O comando recebe um único ID cadastrado, nunca uma URL. Faz HEAD somente em domínios aprovados e persiste o resultado técnico. Não chama seed nem publica vistos. Não executa em NODE_ENV=production; a confirmação é operacional e não detecta automaticamente a finalidade do banco. Não rodar como parte de build, renderização ou CI. Conflitos concorrentes descartam o resultado; nenhuma transação fica aberta durante a espera HTTP. DIRECT_URL continua restrita à CLI; DATABASE_URL pública não ganha escrita. Consulte o plano da Fase 9 para resultados, limites de HEAD e proteção SSRF.

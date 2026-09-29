@@ -8,6 +8,8 @@ Reconstruir o Meu Visto Fácil sem reutilizar código do projeto antigo, preserv
 
 ## Ponto de retomada — 29/09/2026
 
+Atualização mais recente: Fase 8 commitada em `64a4ae8`. Fase 9 implementada com agentes: validação segura de URLs, persistência otimista e CLI manual por ID. Migration aditiva aplicada em desenvolvimento e teste; 206 testes, integração PostgreSQL, lint, typecheck e build passaram. Nenhuma consulta real a governo foi executada nesta fase; casos de rede usam fakes e transporte usa mocks. Ver [plano da Fase 9](exec-plans/phase-9-url-validation.md). Checkpoint Git da Fase 9 autorizado pelo usuário; Fase 10 não iniciada. O parágrafo abaixo registra o fechamento anterior.
+
 Fases 5–7 registradas em quatro commits locais: `cf51f3e`, `d421c43`, `d60c71f` e `d75176a`. O usuário autorizou a Fase 8 com agentes. Implementação concluída, sem migration: política central de hosts e apresentação dos metadados/status das fontes. Lint, typecheck, 74 testes e build passaram; revisões independentes de código e segurança sem findings relevantes. Após o usuário retomar os projetos Supabase, integração PostgreSQL passou e smoke visual do detalhe foi aprovado em 320/390/768/1440 px, com âncoras e teclado. Fase 8 pronta para revisão; checkpoint Git autorizado pelo usuário. Ver [plano da Fase 8](exec-plans/phase-8-official-sources.md). Fase 9 não iniciada. Registros abaixo preservam o histórico anterior.
 
 O foco inicial é a Irlanda, com poucos caminhos bem implementados. A arquitetura, a stack e as restrições de produto continuam definidas nos documentos existentes, referenciados pelo `AGENTS.md`. Este registro não os substitui.

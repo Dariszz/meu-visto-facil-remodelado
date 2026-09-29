@@ -555,6 +555,8 @@ Não transformar o banco em uma linguagem de programação genérica.
 
 Representa uma fonte confiável.
 
+Na Fase 9, a migration `20260929000000_source_verification_metadata` acrescenta `verificationResolvedUrl` e `verificationDurationMs`, ambos opcionais. A duração tem restrição não negativa. A URL resolvida é apenas metadado técnico: não substitui `url` nem `hostname` editoriais. Tentativas malsucedidas preservam `lastSuccessfulVerificationAt`; atualizações concorrentes invalidam o resultado da verificação.
+
 Modelo:
 
 ```text

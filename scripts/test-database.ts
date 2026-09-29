@@ -30,6 +30,7 @@ async function main() {
       "--test",
       "tests/integration/catalog.test.ts",
       "tests/integration/repositories.test.ts",
+      "tests/integration/source-verification.test.ts",
     ],
     { env: process.env, encoding: "utf8" },
   );

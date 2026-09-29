@@ -925,6 +925,10 @@ Não assumir que uma URL terminando em `.html` retorna HTML.
 
 # 56. URL Verification Metadata
 
+Implementação da Fase 9: `src/features/sources/server/validate-official-source-url.ts` usa a allowlist existente, resolução DNS com rejeição de IPs especiais/privados e conexão HTTPS fixada no IP aprovado, mantendo Host/SNI e certificado obrigatório. Cada redirect é revalidado; máximo de três, prazo total padrão de 10s (configurável até 30s), URL/Location até 4096 caracteres e headers até 16 KiB. Somente HEAD, sem processamento de corpo; 405/501 são inconclusivos (`TEMPORARILY_UNAVAILABLE`). As faixas conservadoras usam `node:net` (`isIP`/`BlockList`) e os registros [IPv4](https://www.iana.org/assignments/iana-ipv4-special-registry) e [IPv6](https://www.iana.org/assignments/iana-ipv6-special-registry) da IANA.
+
+Execução apenas por serviço interno/CLI manual de desenvolvimento com ID de fonte cadastrada. Não há endpoint público nem requests durante renderização. O serviço persiste status, código HTTP, instante, URL aprovada e duração com comparação otimista, sem reativar ARCHIVED ou modificar consulta editorial. Uma verificação indica disponibilidade técnica, não validade jurídica. Não se usa proxy da aplicação, cookies ou credenciais de sessão. DNS nativo já iniciado pode terminar após o deadline, mas não inicia conexão após aborto. Mais detalhes e limites em [plano da Fase 9](exec-plans/phase-9-url-validation.md).
+
 Armazenar:
 
 ```text

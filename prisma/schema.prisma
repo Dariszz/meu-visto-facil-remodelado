@@ -149,6 +149,8 @@ model OfficialSource {
   lastVerifiedAt               DateTime? @db.Timestamptz(3)
   lastSuccessfulVerificationAt DateTime? @db.Timestamptz(3)
   verificationStatusCode       Int?
+  verificationResolvedUrl      String?
+  verificationDurationMs       Int?
   createdAt                    DateTime @default(now()) @db.Timestamptz(3)
   updatedAt                    DateTime @updatedAt @db.Timestamptz(3)
   country                      Country @relation(fields: [countryId], references: [id], onDelete: Restrict, onUpdate: Cascade)

@@ -1,6 +1,6 @@
 # Meu Visto Fácil
 
-Aplicação de apoio à exploração de caminhos de imigração, com foco inicial na Irlanda. A Fase 7 conecta o catálogo público ao PostgreSQL no Supabase por repositórios server-only. A Fase 8 apresenta status e metadados das fontes oficiais e centraliza a política de hosts; implementada e validada, incluindo integração PostgreSQL e smoke visual responsivo. A Fase 9 não foi iniciada.
+Aplicação de apoio à exploração de caminhos de imigração, com foco inicial na Irlanda. O catálogo público usa PostgreSQL no Supabase por repositórios server-only. A Fase 8 apresenta metadados das fontes; a Fase 9 acrescenta validação segura de URLs e registro manual do resultado técnico, sem chamadas durante renderização. A Fase 10 não foi iniciada.
 
 O [registro de continuidade](docs/PROJECT-CONTEXT.md) reúne o contexto de desenvolvimento, a forma de trabalho e o ponto de retomada. Consulte o [roadmap](docs/ROADMAP.md) para o escopo das fases.
 

@@ -464,6 +464,8 @@ Last reviewed
 
 # 13. Fase 9 — URL validation
 
+**Implementada em 29/09/2026.** Validador server-only com HTTPS/allowlist, DNS e IP públicos fixados na conexão, redirects revalidados, deadline global e HEAD limitado. Serviço por ID persiste resultado com proteção contra concorrência; CLI manual somente desenvolvimento. Migration aditiva aplicada em desenvolvimento e teste. Gate: Prisma validate/generate, lint, typecheck, 206 testes, integração PostgreSQL e build passaram. Revisão independente de segurança sem findings. Sem endpoint público, verificação automática ou nova consulta editorial. [Plano e evidências](exec-plans/phase-9-url-validation.md). Fase 10 não iniciada.
+
 ## Objetivo
 
 Implementar validação segura de fontes oficiais.

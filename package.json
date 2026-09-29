@@ -17,6 +17,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:publish:development": "node --conditions=react-server --import tsx scripts/publish-development-catalog.ts",
+    "sources:verify:development": "node --conditions=react-server --import tsx scripts/verify-official-source.ts",
     "db:seed": "prisma db seed",
     "db:validate": "prisma validate",
     "test:integration": "node --conditions=react-server --import tsx scripts/test-database.ts",

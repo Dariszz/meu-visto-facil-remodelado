@@ -6,27 +6,32 @@ import { PageSection } from "@/components/layout/page-section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { irelandVisaSummaries } from "./data/ireland";
-import type { VisaCategory } from "./types";
 
-export function CategoryPage({ category }: { category: VisaCategory }) {
-  const summaries = irelandVisaSummaries.filter(
-    (visa) => visa.categorySlug === category.slug,
-  );
+import type { Country, VisaCategory, VisaSummary } from "./types";
+
+export function CategoryPage({
+  country,
+  category,
+  summaries,
+}: {
+  country: Country;
+  category: VisaCategory;
+  summaries: readonly VisaSummary[];
+}) {
   return (
     <main id="main-content" tabIndex={-1}>
       <Container>
         <Breadcrumbs
           items={[
             { label: "Início", href: "/" },
-            { label: "Irlanda", href: "/ireland" },
+            { label: country.name, href: "/ireland" },
             { label: category.name },
           ]}
         />
         <PageSection className="pt-4">
           <Badge variant="secondary">Explore a Irlanda</Badge>
           <h1 className="mt-5 text-display font-semibold">
-            {category.name} na Irlanda
+            {category.name} na {country.name}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
             {category.description}
@@ -44,8 +49,8 @@ export function CategoryPage({ category }: { category: VisaCategory }) {
           {summaries.length ? (
             <>
               <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
-                Apresentações iniciais para orientar sua navegação. Os
-                requisitos e as fontes oficiais de cada opção ainda estão em
+                Explore os caminhos publicados, com requisitos e fontes
+                oficiais. A apresentação de General Employment ainda está em
                 preparação.
               </p>
               <div className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -61,13 +66,24 @@ export function CategoryPage({ category }: { category: VisaCategory }) {
                       {visa.shortDescription}
                     </p>
                     <div className="mt-auto pt-6">
-                      <Button
-                        disabled
-                        variant="outline"
-                        aria-label={`Ver detalhes de ${visa.name} — em breve`}
-                      >
-                        Ver detalhes — em breve
-                      </Button>
+                      {visa.detailsHref ? (
+                        <Button asChild variant="outline">
+                          <Link
+                            href={visa.detailsHref}
+                            aria-label={`Ver detalhes de ${visa.name}`}
+                          >
+                            Ver detalhes
+                          </Link>
+                        </Button>
+                      ) : (
+                        <Button
+                          disabled
+                          variant="outline"
+                          aria-label={`Ver detalhes de ${visa.name} — em breve`}
+                        >
+                          Ver detalhes — em breve
+                        </Button>
+                      )}
                     </div>
                   </Card>
                 ))}

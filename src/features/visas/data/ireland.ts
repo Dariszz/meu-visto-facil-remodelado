@@ -1,12 +1,6 @@
-import type { Country, VisaCategory, VisaSummary } from "../types";
+import type { VisaCategory, VisaSummary } from "../types";
 
-// Conteúdo editorial local da Fase 4. Substituir pela leitura do catálogo nas
-// Fases 6/7; não reutilizar como seed de conteúdo oficial revisado.
-export const ireland: Country = {
-  code: "IE",
-  slug: "ireland",
-  name: "Irlanda",
-};
+// Introduções editoriais e caminhos ainda em preparação. Fatos publicados vêm do banco.
 
 export const irelandCategories = {
   work: {
@@ -29,16 +23,7 @@ export const irelandCategories = {
   },
 } satisfies Record<VisaCategory["slug"], VisaCategory>;
 
-export const irelandVisaSummaries: readonly VisaSummary[] = [
-  {
-    slug: "critical-skills-employment-permit",
-    countryCode: "IE",
-    categorySlug: "work",
-    name: "Critical Skills Employment Permit",
-    shortDescription:
-      "Conheça o nome de um dos caminhos de trabalho previstos no catálogo inicial. A apresentação do Critical Skills será ampliada em breve.",
-    type: "Permissão de trabalho",
-  },
+export const editorialVisaPreviews: readonly VisaSummary[] = [
   {
     slug: "general-employment-permit",
     countryCode: "IE",

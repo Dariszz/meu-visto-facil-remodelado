@@ -11,11 +11,15 @@ import { PageSection } from "@/components/layout/page-section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ireland, irelandCategories } from "./data/ireland";
+import { irelandCategories } from "./data/ireland";
 
 const icons = { work: BriefcaseBusiness, study: GraduationCap, family: Users };
 
-export function IrelandPage() {
+export function IrelandPage({
+  country: ireland,
+}: {
+  country: import("./types").Country;
+}) {
   return (
     <main id="main-content" tabIndex={-1}>
       <Container>
@@ -25,7 +29,7 @@ export function IrelandPage() {
         <PageSection className="pt-4">
           <Badge variant="secondary">Nosso primeiro destino</Badge>
           <h1 className="mt-5 text-display font-semibold">
-            Irlanda, por onde começar?
+            {ireland.name}, por onde começar?
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
             Uma mudança começa com uma intenção. Explore os objetivos abaixo
@@ -57,7 +61,7 @@ export function IrelandPage() {
                   </p>
                   <p className="mt-5 text-sm text-muted-foreground">
                     {category.slug === "work"
-                      ? "2 apresentações iniciais"
+                      ? "Explore os caminhos de trabalho"
                       : "Opções detalhadas em breve"}
                   </p>
                   <div className="mt-auto pt-6">

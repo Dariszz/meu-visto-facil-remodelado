@@ -1,4 +1,4 @@
-// Projeções editoriais temporárias; não representam os futuros modelos persistidos.
+// Contratos de apresentação, independentes dos modelos Prisma.
 export type Country = { code: string; slug: string; name: string };
 
 export type VisaCategory = {
@@ -14,4 +14,5 @@ export type VisaSummary = {
   name: string;
   shortDescription: string;
   type: string;
+  detailsHref?: string;
 };

@@ -9,3 +9,5 @@ next-env.d.ts
 .env*
 !.env.example
 *.log
+src/lib/db/generated/
+.certs/

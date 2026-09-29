@@ -8,5 +8,11 @@ export default defineConfig([
   ...nextTypescript,
   { rules: { "@typescript-eslint/no-explicit-any": "error" } },
   prettier,
-  globalIgnores([".next/**", "out/**", "coverage/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "coverage/**",
+    "next-env.d.ts",
+    "src/lib/db/generated/**",
+  ]),
 ]);

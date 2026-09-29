@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/lib/db/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["catalog"]
+}
+
+enum CountryStatus {
+  ACTIVE
+  COMING_SOON
+  DISABLED
+  @@schema("catalog")
+}
+enum VisaStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+  @@schema("catalog")
+}
+enum SourceStatus {
+  ACTIVE
+  TEMPORARILY_UNAVAILABLE
+  BROKEN
+  ARCHIVED
+  @@schema("catalog")
+}
+enum RequirementCategory {
+  IDENTITY
+  EMPLOYMENT
+  EDUCATION
+  FINANCIAL
+  FAMILY
+  HEALTH
+  APPLICATION
+  AFTER_ARRIVAL
+  OTHER
+  @@schema("catalog")
+}
+enum RequirementType {
+  DOCUMENT
+  CONDITION
+  ACTION
+  INFORMATION
+  FEE
+  DEADLINE
+  @@schema("catalog")
+}
+enum RequirementImportance {
+  CRITICAL
+  HIGH
+  NORMAL
+  LOW
+  @@schema("catalog")
+}
+enum RequirementSourceType {
+  PRIMARY
+  SUPPORTING
+  @@schema("catalog")
+}
+enum VisaSourceType {
+  OVERVIEW
+  APPLICATION
+  FEES
+  OFFICIAL_GUIDE
+  @@schema("catalog")
+}
+
+model Country {
+  id        String @id @default(cuid())
+  code      String @unique @db.VarChar(2)
+  slug      String @unique
+  name      String
+  status    CountryStatus @default(COMING_SOON)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  visas     Visa[]
+  sources   OfficialSource[]
+  @@schema("catalog")
+}
+
+model VisaCategory {
+  id          String @id @default(cuid())
+  slug        String @unique
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+  visas       Visa[]
+  @@schema("catalog")
+}
+
+model Visa {
+  id               String @id @default(cuid())
+  countryId        String
+  categoryId       String
+  slug             String
+  name             String
+  shortDescription String
+  description      String?
+  status           VisaStatus @default(DRAFT)
+  officialName     String?
+  authorityName    String?
+  lastReviewedAt   DateTime? @db.Timestamptz(3)
+  createdAt        DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime @updatedAt @db.Timestamptz(3)
+  country          Country @relation(fields: [countryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  category         VisaCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  requirements     VisaRequirement[]
+  sources          VisaSource[]
+  @@unique([countryId, slug])
+  @@index([countryId, status, categoryId])
+  @@index([categoryId])
+  @@schema("catalog")
+}
+
+model VisaRequirement {
+  id              String @id @default(cuid())
+  visaId          String
+  code            String
+  title           String
+  description     String
+  category        RequirementCategory
+  requirementType RequirementType
+  importance      RequirementImportance @default(NORMAL)
+  isMandatory     Boolean @default(false)
+  sourceControlled Boolean @default(true)
+  sortOrder       Int @default(0)
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(3)
+  visa            Visa @relation(fields: [visaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  sources         RequirementSource[]
+  @@unique([visaId, code])
+  @@index([visaId, sortOrder])
+  @@schema("catalog")
+}
+
+model OfficialSource {
+  id                           String @id @default(cuid())
+  countryId                    String
+  authority                    String
+  title                        String
+  url                          String
+  hostname                     String
+  status                       SourceStatus @default(ACTIVE)
+  editorialConsultedAt          DateTime? @db.Timestamptz(3)
+  lastVerifiedAt               DateTime? @db.Timestamptz(3)
+  lastSuccessfulVerificationAt DateTime? @db.Timestamptz(3)
+  verificationStatusCode       Int?
+  createdAt                    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt                    DateTime @updatedAt @db.Timestamptz(3)
+  country                      Country @relation(fields: [countryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  requirements                 RequirementSource[]
+  visas                        VisaSource[]
+  @@unique([countryId, url])
+  @@index([hostname])
+  @@schema("catalog")
+}
+
+model RequirementSource {
+  requirementId String
+  sourceId      String
+  relationType  RequirementSourceType
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(3)
+  requirement   VisaRequirement @relation(fields: [requirementId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  source        OfficialSource @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  @@id([requirementId, sourceId])
+  @@index([sourceId])
+  @@schema("catalog")
+}
+
+model VisaSource {
+  visaId       String
+  sourceId     String
+  relationType VisaSourceType
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+  visa         Visa @relation(fields: [visaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  source       OfficialSource @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  @@id([visaId, sourceId])
+  @@index([sourceId])
+  @@schema("catalog")
+}

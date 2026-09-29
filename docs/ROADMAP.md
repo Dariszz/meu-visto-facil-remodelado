@@ -334,6 +334,10 @@ Objetivo é validar:
 
 # 9. Fase 5 — Página de visto
 
+**Implementada em 10/09/2026; aprovação da Fase 5 informada pelo usuário no pedido da Fase 6.** Página estática de Critical Skills com conteúdo editorial local, fontes DETE/ISD consultadas na mesma data, requisitos resumidos, etapas, distinção trabalho/entrada/residência, metadata, breadcrumbs e disclaimer. Trabalho conecta à página; General Employment, Estudo e Família preservados. Sem banco, autenticação, IA ou deploy.
+
+Verificação: lint, typecheck, 23 testes e build aprovados. Smoke Home → Irlanda → Trabalho → Critical Skills, retorno, teclado e larguras 320/390/768/1440 px sem overflow horizontal. Revisões de código e segurança dos links sem findings relevantes. Sem infraestrutura E2E instalada; smoke via navegador integrado. Evidências e limitações em [phase-5-visa-details.md](exec-plans/phase-5-visa-details.md). Fase 6 autorizada posteriormente pelo usuário; os resultados acima pertencem à Fase 5.
+
 ## Objetivo
 
 Criar página completa de uma opção migratória.
@@ -371,6 +375,8 @@ Já teremos uma página forte para screenshot e portfólio.
 
 # 10. Fase 6 — Banco de dados
 
+**Fase 6 aprovada pelo usuário no pedido da Fase 7, sem nova certificação desta entrega. Infraestrutura validada em Supabase em 10/09/2026.** Migration aplicada em teste vazio e desenvolvimento; integração real, seed repetido e persistência após reconectar aprovados. Escopo desta entrega: schema, migration, cliente, ambiente e seed. Na conclusão da Fase 6, páginas continuavam locais; a integração posterior está registrada na Fase 7. Ver [plano](exec-plans/phase-6-database-foundation.md) e [setup](DATABASE-SETUP.md).
+
 ## Objetivo
 
 Substituir dados locais relevantes por PostgreSQL.
@@ -404,6 +410,8 @@ Inicialmente com poucos dados bem revisados.
 ---
 
 # 11. Fase 7 — Repository Layer
+
+**Implementada em 10/09/2026, pronta para revisão do usuário.** Três repositórios server-only conectam as cinco rotas da Irlanda ao PostgreSQL, com publicação ACTIVE, fontes associadas, ordenação/limites, erros seguros e renderização por requisição sem banco no build. Critical Skills preparado no desenvolvimento por procedimento limitado e repetível; sem migration ou aprovação de produção. General Employment, Estudo e Família preservados. Gate: db:validate, db:generate, lint, typecheck, 63 testes, integração real e build passaram. [Plano, divisão editorial e evidências](exec-plans/phase-7-repository-layer.md). Fase 8 não iniciada.
 
 ## Objetivo
 

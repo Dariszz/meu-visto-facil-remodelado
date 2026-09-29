@@ -22,6 +22,8 @@ O banco principal será PostgreSQL.
 
 O acesso será feito através do Prisma.
 
+Implementação da Fase 6: somente Country, VisaCategory, Visa, VisaRequirement, OfficialSource, RequirementSource e VisaSource em `prisma/schema.prisma`, schema PostgreSQL `catalog`. O restante deste documento permanece conceitual. Foi acrescentado `OfficialSource.editorialConsultedAt` para separar consulta editorial de verificação HTTP. Campos indisponíveis em rascunhos são opcionais; relações usam RESTRICT, requisitos têm código único por visto e slugs de visto são únicos por país. Mapeamento parcial e justificativas em [DATABASE-SETUP.md](DATABASE-SETUP.md) e no [plano](exec-plans/phase-6-database-foundation.md).
+
 ---
 
 # 2. Princípios do modelo

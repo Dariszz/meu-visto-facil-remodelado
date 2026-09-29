@@ -1,6 +1,8 @@
 # Meu Visto Fácil
 
-Bootstrap técnico da Fase 1: Next.js com App Router, React, TypeScript strict, Tailwind CSS, ESLint, Prettier e Vitest. A rota `/` apresenta apenas a identificação da base técnica.
+Aplicação de apoio à exploração de caminhos de imigração, com foco inicial na Irlanda. As fases 0 a 6 foram aprovadas pelo usuário. A Fase 7 conecta o catálogo público ao PostgreSQL no Supabase por repositórios server-only; pronta para revisão. A Fase 8 não foi iniciada.
+
+O [registro de continuidade](docs/PROJECT-CONTEXT.md) reúne o contexto de desenvolvimento, a forma de trabalho e o ponto de retomada. Consulte o [roadmap](docs/ROADMAP.md) para o escopo das fases.
 
 ## Ambiente local
 
@@ -12,24 +14,32 @@ Com Node instalado, disponibilize a versão exata do pnpm, por exemplo com `npm 
 node --version
 pnpm --version
 pnpm install --frozen-lockfile
+pnpm db:generate
 pnpm dev
 ```
 
-Abra [localhost:3000](http://localhost:3000). Não é necessário criar `.env.local`: nenhuma variável própria é consumida. `.env.example` contém somente orientações, sem credenciais.
+Abra [localhost:3000](http://localhost:3000). Home e design system dispensam banco. As rotas da Irlanda leem DATABASE_URL com papel somente leitura; o build não precisa de conexão. Configure arquivos locais conforme [setup do banco](docs/DATABASE-SETUP.md) e `.env.example`, sem credenciais versionadas.
 
 ## Comandos
 
-| Comando             | Finalidade                                                 |
-| ------------------- | ---------------------------------------------------------- |
-| `pnpm dev`          | Servidor local com atualização após edição                 |
-| `pnpm build`        | Build de produção                                          |
-| `pnpm start`        | Servidor de produção, após o build                         |
-| `pnpm lint`         | ESLint, sem warnings permitidos                            |
-| `pnpm typecheck`    | Gera tipos Next.js e verifica TypeScript sem emitir código |
-| `pnpm test`         | Executa os testes uma vez                                  |
-| `pnpm test:watch`   | Testes durante desenvolvimento                             |
-| `pnpm format`       | Formata os arquivos do bootstrap                           |
-| `pnpm format:check` | Confere a formatação                                       |
+| Comando                 | Finalidade                                                     |
+| ----------------------- | -------------------------------------------------------------- |
+| `pnpm dev`              | Servidor local com atualização após edição                     |
+| `pnpm build`            | Build de produção                                              |
+| `pnpm start`            | Servidor de produção, após o build                             |
+| `pnpm lint`             | ESLint, sem warnings permitidos                                |
+| `pnpm typecheck`        | Gera tipos Next.js e verifica TypeScript sem emitir código     |
+| `pnpm test`             | Executa os testes uma vez                                      |
+| `pnpm test:watch`       | Testes durante desenvolvimento                                 |
+| `pnpm format`           | Formata os arquivos do bootstrap                               |
+| `pnpm format:check`     | Confere a formatação                                           |
+| `pnpm db:validate`      | Valida o schema Prisma sem banco                               |
+| `pnpm db:generate`      | Gera cliente Prisma local, antes do typecheck                  |
+| `pnpm db:deploy`        | Aplica migrations versionadas no banco configurado             |
+| `pnpm db:seed`          | Seed de desenvolvimento, com confirmação explícita             |
+| `pnpm test:integration` | Migrations repetíveis, seed, constraints e repositórios reais |
+
+Setup, permissões, conexões e comandos de criação de migrations: [DATABASE-SETUP.md](docs/DATABASE-SETUP.md). Evidências e pendências da Fase 6: [plano de execução](docs/exec-plans/phase-6-database-foundation.md).
 
 Verificação do bootstrap: instalação com lockfile, `format:check`, `lint`, `typecheck`, `test` e `build`, nessa ordem. O typecheck funciona sem dev/build anterior: o Next.js gera `next-env.d.ts` e `.next/types/`. Esses artefatos não são versionados.
 
@@ -48,7 +58,7 @@ Após o build, executar `pnpm start` e conferir `/`, CSS e ausência de overflow
 | `src/shared`     | Contratos realmente compartilhados              |
 | `src/test`       | Suporte aos testes                              |
 
-Não há autenticação, banco, IA, catálogo de vistos, questionário, recomendações ou checklist. Design system, landing page, CI, E2E e deploy pertencem às fases posteriores. A documentação e as skills preexistentes ficam fora da formatação inicial; o plano do bootstrap e este README são incluídos.
+Há design system, landing page e navegação pública da Irlanda conectada ao PostgreSQL. Critical Skills usa nomes, descrições, requisitos e fontes do banco; público potencial, atributos, permissões, etapas e disclaimer continuam editoriais locais. General Employment, Estudo e Família preservam seus estados em preparação. Ainda não há autenticação, IA real, questionário, recomendações ou checklist. CI, E2E e deploy pertencem às fases posteriores. As instruções de verificação do bootstrap acima registram o escopo original da Fase 1; as verificações das fases seguintes estão nos respectivos planos em `docs/exec-plans/`.
 
 ## Futura importação na Vercel
 
@@ -58,8 +68,14 @@ Não há projeto remoto provisionado nem deploy realizado. A execução hospedad
 
 As versões diretas exatas estão em `package.json`; `pnpm-lock.yaml` é o único lockfile autoritativo. O escopo e as evidências de execução estão em [plano do bootstrap](docs/exec-plans/bootstrap.md).
 
-`pnpm-workspace.yaml` configura somente a permissão de build de `unrs-resolver`, dependência do lint cujo postinstall prepara seu binding nativo. Nenhum pacote adicional ou monorepo é definido. A instalação mantém bloqueados scripts não autorizados.
+`pnpm-workspace.yaml` autoriza builds de `unrs-resolver`, `@prisma/engines`, `prisma` e `esbuild`, necessários ao lint e às ferramentas de persistência. Nenhum pacote adicional ou monorepo é definido. A instalação mantém bloqueados scripts não autorizados.
 
 `agentRules: false` em `next.config.ts` impede que `next dev` acrescente instruções geradas ao `AGENTS.md` mantido pelo projeto.
 
 Limitação conhecida: ESLint 9.39.5 emite aviso de descontinuação. Foi mantido porque o plugin React do preset Next.js ainda não declara suporte ao ESLint 10. TypeScript 5.9.3 atende aos peers do lint; a versão 7 ainda não atende. Não há supressão de conflitos de peers.
+
+## Catálogo público — Fase 7
+
+Repositórios em src/lib/db/repositories; composição server-side em src/features/visas/catalog-pages.tsx. Apenas países e vistos ACTIVE aparecem. Fontes arquivadas não aparecem; links inválidos ou indisponíveis não são clicáveis. Não há fallback local em falhas.
+
+Para preparar somente Critical Skills em desenvolvimento, após seed: pnpm db:publish:development --confirm-development. O comando verifica o conteúdo esperado, altera apenas status e resumo aprovado, preserva demais edições e é repetível. Nunca faz parte do build. Não é aprovação para produção. Consulte o [plano da Fase 7](docs/exec-plans/phase-7-repository-layer.md) para consultas, divisão editorial, testes e limitações.

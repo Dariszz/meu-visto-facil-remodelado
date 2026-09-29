@@ -1,0 +1,2066 @@
+Quero usar este chat exclusivamente como acompanhamento estratégico e técnico do desenvolvimento do projeto Meu Visto Fácil no Codex.
+
+Contexto geral
+
+O Meu Visto Fácil será reconstruído do absoluto zero.
+
+Não vamos reaproveitar código do projeto antigo. Vamos reaproveitar apenas a ideia central do TCC original: uma plataforma para ajudar pessoas a entender caminhos de imigração, com foco em informações organizadas, fontes oficiais, checklists personalizados e uso controlado de IA.
+
+O principal objetivo atual é transformar o Meu Visto Fácil em um projeto forte de portfólio.
+
+Precisamos chegar a:
+
+- aplicação funcional;
+- publicada na Vercel;
+- código organizado no GitHub;
+- arquitetura profissional;
+- boa interface;
+- autenticação;
+- banco de dados;
+- backend real;
+- IA;
+- testes;
+- segurança;
+- documentação;
+- README profissional;
+- screenshots e case study.
+
+A intenção é que o projeto demonstre competências de Full Stack, principalmente:
+
+- React;
+- TypeScript;
+- Next.js;
+- Node.js;
+- APIs/backend;
+- PostgreSQL;
+- Prisma;
+- autenticação;
+- IA;
+- testes;
+- segurança;
+- CI/CD;
+- arquitetura;
+- Vercel.
+
+==================================================
+COMO ESTAMOS TRABALHANDO
+==================================================
+
+Eu estou desenvolvendo o projeto usando o Codex App.
+
+Este chat não deve programar o projeto diretamente.
+
+O papel deste chat é funcionar como uma espécie de Tech Lead / Arquiteto / guia de uso do Codex.
+
+Fluxo:
+
+Eu digo:
+"vamos para a próxima fase"
+
+Este chat:
+1. identifica onde estamos no roadmap;
+2. explica brevemente o objetivo da fase;
+3. prepara um prompt bem estruturado para eu colar em uma nova thread do Codex;
+4. recomenda o nível de reasoning adequado;
+5. espera eu executar;
+6. eu volto com resultado, dúvida ou problema;
+7. analisamos juntos;
+8. somente após minha aprovação avançamos para a próxima fase.
+
+NÃO avançar automaticamente de fase.
+
+Sempre fazemos uma fase de cada vez.
+
+Não quero receber várias fases de implementação ao mesmo tempo.
+
+==================================================
+ESTRUTURA INICIAL DO REPOSITÓRIO
+==================================================
+
+Antes de começarmos o desenvolvimento, criamos toda a documentação do projeto.
+
+Estrutura:
+
+meu-visto-facil/
+│
+├── AGENTS.md
+│
+├── docs/
+│   ├── PRODUCT.md
+│   ├── TECH-STACK.md
+│   ├── ARCHITECTURE.md
+│   ├── DATA-MODEL.md
+│   ├── AI-ARCHITECTURE.md
+│   ├── SECURITY.md
+│   ├── TESTING.md
+│   ├── ROADMAP.md
+│   │
+│   ├── decisions/
+│   └── exec-plans/
+│
+└── .agents/
+    └── skills/
+        ├── architecture-planning/
+        │   └── SKILL.md
+        │
+        ├── feature-development/
+        │   └── SKILL.md
+        │
+        ├── testing/
+        │   └── SKILL.md
+        │
+        ├── code-review/
+        │   └── SKILL.md
+        │
+        ├── security-review/
+        │   └── SKILL.md
+        │
+        └── feature-workflow/
+            └── SKILL.md
+
+==================================================
+DOCUMENTOS CRIADOS
+==================================================
+
+1. PRODUCT.md
+
+Define o produto.
+
+Principais decisões:
+
+- plataforma de apoio para pessoas interessadas em imigração;
+- foco inicial na Irlanda;
+- objetivos como trabalho, estudo e família;
+- questionário de perfil;
+- recomendação de caminhos;
+- página de detalhes;
+- checklist personalizado;
+- acompanhamento de progresso;
+- fontes oficiais;
+- autenticação;
+- dashboard;
+- IA como complemento e não fonte de verdade;
+- disclaimer claro;
+- projeto deve parecer produto real, não projeto acadêmico.
+
+A primeira versão terá foco principalmente na Irlanda.
+
+Não queremos começar com muitos países superficialmente.
+
+Preferimos poucos caminhos muito bem implementados.
+
+==================================================
+
+2. TECH-STACK.md
+
+Stack definida:
+
+Aplicação:
+- Next.js
+- React
+- TypeScript
+
+Frontend:
+- Tailwind CSS
+- shadcn/ui
+- Lucide
+
+Formulários:
+- React Hook Form
+- Zod
+
+Backend:
+- Next.js server-side
+- Node.js
+- Server Components
+- Server Actions quando apropriado
+- Route Handlers quando uma fronteira HTTP real fizer sentido
+
+Banco:
+- PostgreSQL
+
+ORM:
+- Prisma
+
+Auth:
+- Supabase Auth
+
+IA:
+- OpenAI API
+- Structured Outputs
+
+Testes:
+- Vitest
+- React Testing Library
+- Playwright
+
+Qualidade:
+- ESLint
+- Prettier
+- TypeScript strict
+
+Deploy:
+- Vercel
+
+CI:
+- GitHub Actions
+
+Package Manager:
+- pnpm
+
+Não vamos criar um Express/Nest separado apenas para dizer que temos backend.
+
+O backend inicialmente fica dentro do Next.js e roda em Node.
+
+Não vamos usar monorepo no MVP.
+
+==================================================
+
+3. ARCHITECTURE.md
+
+Direção arquitetural principal:
+
+UI
+↓
+Application
+↓
+Domain
+↓
+Infrastructure
+
+Frontend e backend estão no mesmo projeto Next.js, mas as responsabilidades são separadas.
+
+Princípios:
+
+- Server Components por padrão;
+- Client Components somente quando necessário;
+- business logic fora de componentes;
+- Route Handlers e Server Actions são boundaries, não lugares para colocar todo o domínio;
+- Prisma deve ficar restrito à infraestrutura quando fizer sentido;
+- Application Services coordenam operações;
+- domínio deve ser testável;
+- integrações externas devem ser encapsuladas;
+- DTOs podem ser usados nas fronteiras;
+- erros devem possuir códigos estáveis;
+- logs estruturados;
+- autorização sempre server-side;
+- evitar internal HTTP calls desnecessárias;
+- evitar overengineering.
+
+Estrutura conceitual:
+
+src/
+├── app/
+├── components/
+├── features/
+├── lib/
+├── shared/
+└── test/
+
+Features planejadas:
+
+- auth;
+- countries;
+- visas;
+- profile;
+- recommendations;
+- processes;
+- checklists;
+- sources.
+
+==================================================
+
+4. DATA-MODEL.md
+
+Modelo inicial de dados.
+
+Principais entidades:
+
+- UserProfile
+- Country
+- VisaCategory
+- Visa
+- VisaRequirement
+- VisaRequirementCondition
+- OfficialSource
+- RequirementSource
+- VisaSource
+- VisaAttribute
+- ProfileQuestion
+- QuestionOption
+- ProfileAnswer
+- RecommendationRun
+- RecommendationResult
+- ImmigrationProcess
+- ProcessSnapshot
+- Checklist
+- ChecklistItem
+- ChecklistItemSource
+- AIGeneration
+- SourceVerification
+
+Nem todas precisam entrar na primeira migration.
+
+Uma decisão importante foi separar:
+
+VisaRequirement
+=
+informação oficial/base
+
+ChecklistItem
+=
+representação personalizada daquela informação para o usuário.
+
+Também decidimos usar ProcessSnapshot para preservar o contexto e regras usadas quando um processo é criado.
+
+Assim, futuramente podemos detectar:
+
+"Seu processo foi criado com informações antigas e há atualizações."
+
+Regras importantes:
+
+- não armazenar dados pessoais desnecessários;
+- não usar JSON no lugar de relações importantes;
+- IDs reais e foreign keys;
+- índices coerentes;
+- slugs amigáveis;
+- timestamps em UTC;
+- valores monetários nunca em floating point;
+- evitar colunas específicas por país;
+- ruleEngineVersion;
+- promptVersion;
+- seed deve ser controlado e revisado.
+
+==================================================
+
+5. AI-ARCHITECTURE.md
+
+Essa é uma parte central do projeto.
+
+Princípio principal:
+
+Official structured data
++
+Deterministic rules
+↓
+Truth layer
+↓
+AI
+↓
+Explanation / Personalization
+
+Nunca:
+
+User
+→ LLM
+→ verdade migratória
+
+A IA pode:
+
+- explicar;
+- resumir;
+- personalizar;
+- organizar;
+- enriquecer checklist.
+
+A IA NÃO pode decidir livremente:
+
+- elegibilidade;
+- requisitos legais;
+- taxas;
+- prazos oficiais;
+- URLs;
+- existência de vistos;
+- fontes confiáveis.
+
+Principais usos no MVP:
+
+1. explicação das recomendações;
+2. personalização do checklist;
+3. explicação simplificada de requisitos.
+
+Recommendation Engine:
+
+Profile
+↓
+Deterministic Rules
+↓
+Compatibility Result
+↓
+AI Explanation
+
+Checklist:
+
+Official Requirements
+↓
+Base Checklist
+↓
+AI Personalization
+↓
+Validation
+↓
+Mandatory Merge
+↓
+Final Checklist
+
+Requisitos obrigatórios nunca podem ser removidos pela IA.
+
+Fontes devem usar IDs já conhecidos pelo sistema.
+
+A IA não pode inventar URL.
+
+Structured Outputs + Zod + Business Validation.
+
+O projeto deve continuar funcionando se a IA falhar.
+
+Fallback obrigatório.
+
+Testes normais usam FakeAIProvider.
+
+Não depender da OpenAI real em cada CI.
+
+==================================================
+
+6. SECURITY.md
+
+Princípios:
+
+- Least Privilege;
+- Server-Side Trust;
+- Zero Trust for Input;
+- Fail Closed;
+- minimização de dados;
+- defense in depth.
+
+Autenticação:
+Supabase Auth.
+
+Autorização:
+sempre server-side.
+
+Nunca confiar em:
+
+userId
+ownerId
+authUserId
+
+vindos do browser.
+
+Proteção contra IDOR.
+
+Input validation com Zod.
+
+Não fazer mass assignment.
+
+Secrets apenas server-side.
+
+Não expor:
+
+OPENAI_API_KEY
+DATABASE_URL
+service-role keys
+tokens
+
+Importante:
+
+o projeto valida URLs externas, então SSRF é uma ameaça importante.
+
+A validação deve considerar:
+
+- HTTPS;
+- allowlist de hostname;
+- correspondência segura de hostname;
+- bloqueio de localhost/private IP;
+- redirect validation;
+- limite de redirects;
+- timeout;
+- portas;
+- credentials em URL;
+- response size;
+- protocolos proibidos.
+
+Também definimos regras para:
+
+- XSS;
+- CSRF;
+- rate limiting;
+- logging;
+- CORS;
+- headers;
+- open redirect;
+- host headers;
+- personal data;
+- LGPD/GDPR awareness;
+- account deletion;
+- dependency security;
+- CI security.
+
+==================================================
+
+7. TESTING.md
+
+Ferramentas:
+
+- Vitest;
+- React Testing Library;
+- Playwright.
+
+Estratégia:
+
+muitos testes rápidos
+↓
+alguns integration
+↓
+poucos E2E críticos
+
+Tipos:
+
+- Unit;
+- Domain;
+- Application;
+- Integration;
+- Component;
+- Security;
+- AI Evaluation;
+- E2E.
+
+Áreas mais importantes:
+
+- Recommendation Engine;
+- Checklist Engine;
+- mandatory requirements;
+- authorization;
+- IDOR;
+- source validation;
+- AI business validation;
+- persistência do progresso.
+
+FakeAIProvider nos testes.
+
+Nunca depender normalmente da OpenAI real.
+
+Unit tests sem rede externa.
+
+Prisma deve preferir database de teste real em integração, em vez de mockar todo Prisma.
+
+Fluxos E2E importantes:
+
+Visitor:
+Landing
+→ Ireland
+→ Visa
+
+Authenticated:
+Login
+→ Questionnaire
+→ Recommendation
+→ Process
+→ Checklist
+
+Persistence:
+complete item
+→ reload
+→ state saved
+
+Coverage não é objetivo por si só.
+
+==================================================
+
+8. ROADMAP.md
+
+Criamos um roadmap detalhado por fases.
+
+A filosofia é:
+
+não pedir:
+"Codex, construa o projeto inteiro."
+
+Em vez disso:
+
+fase pequena
+→ implementação
+→ testes
+→ review
+→ aprovação
+→ próxima fase
+
+==================================================
+AGENTS.md
+==================================================
+
+O AGENTS.md funciona como a constituição operacional do projeto.
+
+Ele referencia os documentos em docs/ em vez de duplicar tudo.
+
+Regras importantes:
+
+- investigar antes de editar;
+- manter escopo;
+- não fazer refactors não relacionados;
+- seguir arquitetura;
+- Server Components por padrão;
+- TypeScript strict;
+- não confiar em client ownership;
+- IA não é truth layer;
+- Structured Output;
+- mandatory requirements protegidos;
+- segurança em boundaries;
+- testes proporcionais;
+- revisão do diff;
+- documentação atualizada;
+- não avançar automaticamente no roadmap.
+
+Também adicionamos uma seção específica de eficiência de contexto/tokens.
+
+Regra:
+
+não ler toda documentação para cada tarefa.
+
+Começar com:
+- AGENTS.md;
+- tarefa;
+- arquivos diretamente relacionados.
+
+Depois abrir somente documentação necessária.
+
+Exemplos:
+
+UI:
+PRODUCT + partes relevantes de ARCHITECTURE.
+
+Database:
+DATA-MODEL + ARCHITECTURE.
+
+AI:
+AI-ARCHITECTURE + SECURITY.
+
+Auth:
+SECURITY + ARCHITECTURE.
+
+Testing:
+TESTING + docs da feature.
+
+Também:
+
+- não reler arquivos sem mudança desnecessariamente;
+- não fazer full repository scan sem necessidade;
+- não abrir diretórios não relacionados;
+- manter progress reports curtos;
+- reaproveitar contexto já descoberto;
+- parar quando o escopo terminar.
+
+==================================================
+CODEX SKILLS
+==================================================
+
+Criamos Skills em:
+
+.agents/skills/
+
+1. architecture-planning
+
+Responsabilidade:
+
+investigar e planejar tarefas complexas.
+
+Ela NÃO deve implementar.
+
+Usada para:
+
+- arquitetura;
+- autenticação;
+- banco;
+- IA;
+- refactors grandes;
+- mudanças envolvendo vários domínios.
+
+Pode criar:
+
+docs/exec-plans/<feature>.md
+
+Formato:
+
+Goal
+Current State
+Scope
+Non-goals
+Proposed Architecture
+Implementation Steps
+Files Expected to Change
+Data Changes
+Security Considerations
+Testing
+Risks
+Definition of Done
+
+Pode criar ADR somente quando uma decisão realmente muda a arquitetura de longo prazo.
+
+==================================================
+
+2. feature-development
+
+Responsável por implementação.
+
+Fluxo:
+
+investigar
+→ definir escopo
+→ implementar
+→ testar
+→ revisar diff
+→ reportar
+
+Regras:
+
+- business logic fora de UI;
+- migrations para database changes;
+- auth e ownership server-side;
+- AIProvider;
+- Structured Outputs;
+- mandatory requirements preservados;
+- loading/error/empty/success;
+- acessibilidade;
+- responsividade;
+- sem refactor não relacionado.
+
+==================================================
+
+3. testing
+
+Responsável por:
+
+- desenhar testes;
+- adicionar testes;
+- encontrar gaps;
+- regressions;
+- security negative tests;
+- AI tests.
+
+Preferir o menor nível de teste que forneça confiança.
+
+FakeAIProvider.
+
+Sem OpenAI real nos testes normais.
+
+Sem produção.
+
+==================================================
+
+4. code-review
+
+Responsável por revisão independente.
+
+Não modifica código inicialmente.
+
+Começa pelo:
+
+git status
+git diff
+git diff --staged
+
+e só expande contexto quando necessário.
+
+Revisa:
+
+- correctness;
+- security;
+- regressions;
+- arquitetura;
+- TypeScript;
+- database;
+- AI;
+- tests;
+- accessibility;
+- performance;
+- scope creep.
+
+Findings classificados:
+
+CRITICAL
+HIGH
+MEDIUM
+LOW
+
+Não inventar problemas.
+
+==================================================
+
+5. security-review
+
+Responsável por revisão de segurança independente.
+
+Não modifica código inicialmente.
+
+Começa pela parte security-sensitive do diff.
+
+Revisa:
+
+- authentication;
+- authorization;
+- ownership;
+- IDOR;
+- validation;
+- mass assignment;
+- database;
+- secrets;
+- AI endpoints;
+- prompt injection;
+- SSRF;
+- redirects;
+- XSS;
+- CSRF;
+- rate limit;
+- DoS;
+- logs;
+- privacy;
+- error disclosure.
+
+Findings:
+
+CRITICAL
+HIGH
+MEDIUM
+LOW
+
+==================================================
+
+6. feature-workflow
+
+Essa é a principal Skill de automação.
+
+Uso típico:
+
+$feature-workflow
+
+Implemente a Fase X...
+
+Ela coordena:
+
+Understand Feature
+↓
+Architecture Planning
+↓
+Architecture Gate
+↓
+Feature Development
+↓
+Testing
+↓
+Verification
+↓
+Code Review
+↓
+Remediation
+↓
+Security Review se necessário
+↓
+Final Verification
+
+Ela classifica tarefas:
+
+SMALL
+MEDIUM
+LARGE
+SECURITY_SENSITIVE
+
+Security Review é obrigatório para:
+
+- auth;
+- authorization;
+- ownership;
+- AI endpoints;
+- private user data;
+- server-side URL fetching;
+- account deletion;
+- secrets;
+- rate limits;
+- privileged integrations.
+
+Ela possui gates.
+
+Se existe decisão de produto/arquitetura realmente importante:
+
+PARA e pergunta ao usuário.
+
+Se é uma decisão técnica pequena:
+
+resolve sozinha.
+
+Se testes falharem:
+
+corrige e retesta.
+
+Se Code Review encontrar CRITICAL/HIGH:
+
+corrige
+→ retesta
+→ revisa novamente.
+
+Se Security Review encontrar CRITICAL/HIGH:
+
+corrige
+→ security tests
+→ security review novamente.
+
+Evitar loops infinitos.
+
+Após duas tentativas sem resolver, parar e reportar.
+
+Status final:
+
+READY
+READY_WITH_MINOR_FINDINGS
+BLOCKED
+
+==================================================
+OTIMIZAÇÃO DO CODEX
+==================================================
+
+Queremos aproveitar o Codex Pro sem desperdiçar contexto/uso.
+
+Regras:
+
+Durante desenvolvimento:
+usar verificações direcionadas.
+
+Exemplo:
+
+alterou domain:
+rodar testes daquela área.
+
+alterou UI:
+component tests + typecheck quando necessário.
+
+database:
+repository/integration tests.
+
+AI:
+AI tests relevantes.
+
+Não rodar:
+
+lint
+typecheck
+todos testes
+build
+E2E
+
+depois de cada pequena alteração.
+
+A verificação completa acontece principalmente no Final Gate.
+
+Final Verification para feature significativa:
+
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+
+e:
+
+pnpm test:e2e
+
+quando necessário.
+
+Code Review:
+
+começa pelo diff.
+
+Security Review:
+
+começa pelo diff sensível.
+
+Só expande para arquivos externos quando necessário.
+
+==================================================
+MODELOS / REASONING
+==================================================
+
+Nossa estratégia é não usar reasoning alto para tudo.
+
+Regra prática:
+
+Tarefas simples:
+Low
+
+Exemplos:
+- UI;
+- CSS;
+- feature simples;
+- implementação de plano claro;
+- testes simples;
+- code review simples.
+
+Planejamento:
+Medium
+
+Auth / Security:
+Medium
+
+Debug complexo:
+Medium ou High
+
+Arquitetura realmente difícil:
+High
+
+Problema excepcionalmente difícil:
+Extra High
+
+Extra High não deve ser padrão.
+
+A ideia é usar o menor nível de reasoning que entregue qualidade suficiente.
+
+==================================================
+AUTONOMIA DO CODEX
+==================================================
+
+Discutimos permitir mais autonomia ao Codex.
+
+Por enquanto NÃO alteramos configurações de Full Access ou Auto Review.
+
+Então continuar trabalhando com as permissões normais do Codex.
+
+Caso o usuário queira no futuro, podemos ajustar.
+
+==================================================
+PROGRESSO REAL DO PROJETO
+==================================================
+
+FASE 0 — Repository Foundation
+✅ CONCLUÍDA
+
+Foi criada toda a documentação:
+
+AGENTS.md
+docs/*
+.agents/skills/*
+
+==================================================
+
+FASE 1 — Bootstrap técnico
+✅ CONCLUÍDA
+
+Objetivo da fase:
+
+- Next.js;
+- React;
+- TypeScript strict;
+- App Router;
+- src/;
+- pnpm;
+- Tailwind;
+- ESLint;
+- Prettier;
+- Vitest;
+- .nvmrc;
+- .env.example;
+- scripts;
+- estrutura inicial do projeto.
+
+Foi executada usando planejamento + implementação + review.
+
+==================================================
+
+FASE 2 — Design Foundation
+✅ CONCLUÍDA
+
+Foi usada a Skill:
+
+$feature-workflow
+
+Objetivo:
+
+- design tokens;
+- cores;
+- tipografia;
+- spacing;
+- radius;
+- containers;
+- focus states;
+- shadcn/ui;
+- componentes base;
+- layout base.
+
+Componentes desejados:
+
+- Button;
+- Input;
+- Textarea;
+- Select;
+- Card;
+- Badge;
+- Progress;
+- Alert;
+- Dialog;
+- Skeleton.
+
+Layouts:
+
+- Container;
+- Header;
+- Footer;
+- PageSection.
+
+Direção visual:
+
+- moderna;
+- limpa;
+- profissional;
+- confiável;
+- SaaS moderno;
+- sem aparência acadêmica;
+- sem excesso de glassmorphism;
+- sem excesso de gradientes;
+- sem animações exageradas.
+
+✅ Usuário aprovou o resultado.
+
+==================================================
+
+FASE 3 — Landing Page
+✅ CONCLUÍDA
+
+Também implementada com:
+
+$feature-workflow
+
+Landing contém conceito de:
+
+- Header;
+- Hero;
+- Como funciona;
+- Por que usar;
+- Fontes oficiais / confiança;
+- Irlanda;
+- Personalização / IA;
+- CTA final;
+- Footer.
+
+Direção:
+
+produto profissional de portfólio.
+
+Sem:
+
+- backend;
+- banco;
+- auth;
+- IA real.
+
+✅ Usuário gostou bastante e aprovou visualmente.
+
+==================================================
+
+FASE 4 — Navegação pública da Irlanda
+✅ CONCLUÍDA
+
+Rotas planejadas/implementadas:
+
+/ireland
+/ireland/work
+/ireland/study
+/ireland/family
+
+Objetivo:
+
+Landing
+↓
+Irlanda
+↓
+Categorias
+
+Work inclui estrutura para:
+
+- Critical Skills Employment Permit
+- General Employment Permit
+
+Study e Family foram preparados sem inventar dados legais.
+
+Dados ainda podem ser locais/controlados.
+
+Ainda NÃO adicionamos PostgreSQL.
+
+Ainda NÃO implementamos a página completa de detalhes do visto.
+
+✅ Fase 4 foi implementada.
+
+==================================================
+ESTADO ATUAL
+==================================================
+
+Agora devemos iniciar:
+
+FASE 5 — Página de visto
+
+Essa é a próxima fase.
+
+NÃO voltar para Fase 4.
+
+NÃO pular para banco/auth/IA.
+
+==================================================
+ROADMAP COMPLETO A PARTIR DAQUI
+==================================================
+
+FASE 5 — Página de visto
+
+Objetivo:
+
+criar a primeira página detalhada real de uma opção migratória.
+
+Primeiro caso:
+
+Critical Skills Employment Permit
+
+Rota:
+
+/ireland/visas/critical-skills-employment-permit
+
+A página deverá futuramente apresentar:
+
+- título;
+- descrição;
+- categoria;
+- para quem pode ser relevante;
+- requisitos;
+- etapas;
+- atributos;
+- fontes;
+- última revisão;
+- disclaimer.
+
+Nesta fase ainda podemos trabalhar com conteúdo controlado sem banco, mas NÃO inventar dados migratórios oficiais.
+
+==================================================
+
+FASE 6 — Banco de dados
+
+Configurar:
+
+- PostgreSQL;
+- provider;
+- Prisma;
+- migrations;
+- client;
+- env validation.
+
+Primeiras entidades:
+
+- Country;
+- VisaCategory;
+- Visa;
+- VisaRequirement;
+- OfficialSource;
+- RequirementSource;
+- VisaSource.
+
+Criar seed da Irlanda.
+
+==================================================
+
+FASE 7 — Repository Layer
+
+Criar:
+
+- CountryRepository;
+- VisaRepository;
+- OfficialSourceRepository.
+
+Páginas públicas passam a buscar dados reais do banco.
+
+==================================================
+
+FASE 8 — Fontes oficiais
+
+Implementar:
+
+- source registry;
+- hostname allowlist;
+- source metadata;
+- status;
+- last verification.
+
+UI mostra:
+
+- fonte;
+- autoridade;
+- last reviewed;
+- link oficial.
+
+==================================================
+
+FASE 9 — URL Validation
+
+Criar:
+
+validateOfficialSourceUrl()
+
+Considerando:
+
+- HTTPS;
+- hostname allowlist;
+- redirects;
+- timeout;
+- SSRF;
+- private IP;
+- malicious URLs.
+
+Security-sensitive.
+
+Usar security review.
+
+==================================================
+
+FASE 10 — Autenticação
+
+Configurar Supabase Auth.
+
+Fluxos:
+
+- register;
+- login;
+- logout;
+- forgot password.
+
+Helpers:
+
+getCurrentUser()
+requireUser()
+
+Security-sensitive.
+
+==================================================
+
+FASE 11 — UserProfile
+
+Criar entidade ligada ao auth user.
+
+Campos iniciais:
+
+- display name;
+- locale;
+- authUserId.
+
+==================================================
+
+FASE 12 — Dashboard
+
+Criar:
+
+/dashboard
+
+Primeiro estado:
+
+- saudação;
+- processos;
+- empty state;
+- CTA para Irlanda.
+
+==================================================
+
+FASE 13 — Questionário
+
+Entidades:
+
+- ProfileQuestion;
+- QuestionOption;
+- ProfileAnswer.
+
+Perguntas iniciais:
+
+- objetivo;
+- nacionalidade;
+- emprego;
+- profissão;
+- formação;
+- estudo;
+- família.
+
+==================================================
+
+FASE 14 — Questionário dinâmico
+
+Perguntas passam a depender das respostas anteriores.
+
+Sem criar engine exageradamente complexa.
+
+==================================================
+
+FASE 15 — Normalização do perfil
+
+Converter:
+
+ProfileAnswer[]
+
+em:
+
+ImmigrationProfile
+
+para uso pelo domínio.
+
+==================================================
+
+FASE 16 — Recommendation Engine V1
+
+Criar recomendação determinística SEM IA.
+
+Primeiros caminhos:
+
+- Critical Skills Employment Permit;
+- General Employment Permit.
+
+Retorno:
+
+- compatibility;
+- matchedCriteria;
+- missingCriteria;
+- blockers.
+
+==================================================
+
+FASE 17 — Recommendation UI
+
+Apresentar as recomendações visualmente.
+
+Exemplo:
+
+Critical Skills
+
+Alta compatibilidade
+
+Por que apareceu:
+✓ ...
+
+Ainda precisa confirmar:
+• ...
+
+==================================================
+
+FASE 18 — Testes do Recommendation Engine
+
+Cobrir:
+
+- HIGH;
+- MEDIUM;
+- LOW;
+- missing information;
+- blockers.
+
+Antes de adicionar IA.
+
+==================================================
+
+FASE 19 — Immigration Process
+
+Permitir:
+
+Recommendation
+→ Start Process
+→ ImmigrationProcess
+
+==================================================
+
+FASE 20 — Process Snapshot
+
+Guardar:
+
+- profile snapshot;
+- visa snapshot;
+- requirements snapshot;
+- ruleEngineVersion.
+
+==================================================
+
+FASE 21 — Base Checklist Engine
+
+Criar checklist sem IA.
+
+Entidades:
+
+- Checklist;
+- ChecklistItem;
+- ChecklistItemSource.
+
+==================================================
+
+FASE 22 — Checklist UI
+
+Criar:
+
+/processes/[id]
+
+Mostrar:
+
+- processo;
+- visto;
+- progresso;
+- categorias;
+- itens;
+- fontes.
+
+==================================================
+
+FASE 23 — Checklist Progress
+
+Status:
+
+PENDING
+IN_PROGRESS
+COMPLETED
+NOT_APPLICABLE
+
+Progresso calculado pelo domínio.
+
+==================================================
+
+FASE 24 — Ownership Security
+
+Obrigatória.
+
+Testar:
+
+User A não acessa User B.
+
+Para:
+
+- process;
+- checklist;
+- mutations;
+- AI operations futuramente.
+
+==================================================
+
+FASE 25 — AI Foundation
+
+Adicionar:
+
+- AIProvider;
+- OpenAIProvider;
+- FakeAIProvider;
+- configs;
+- timeout;
+- errors;
+- logging.
+
+Ainda sem alterar comportamento central.
+
+==================================================
+
+FASE 26 — Structured AI
+
+Criar base para:
+
+generateStructured()
+
+com:
+
+- schema;
+- validation;
+- retry controlado;
+- timeout;
+- errors.
+
+==================================================
+
+FASE 27 — Recommendation Explanation AI
+
+A IA começa a explicar a Recommendation Engine.
+
+Rule Engine decide.
+
+IA explica.
+
+Fallback determinístico obrigatório.
+
+==================================================
+
+FASE 28 — Checklist Personalization AI
+
+Fluxo:
+
+Base Checklist
+↓
+AI Enhancement
+↓
+Validation
+↓
+Mandatory Merge
+↓
+Final Checklist
+
+Mandatory requirement nunca pode desaparecer.
+
+==================================================
+
+FASE 29 — AI Observability
+
+Registrar:
+
+- operation;
+- model;
+- promptVersion;
+- latency;
+- status;
+- fallbackUsed.
+
+Sem PII desnecessário.
+
+==================================================
+
+FASE 30 — AI Rate Limiting
+
+Proteger endpoints caros.
+
+Rate limiting distribuído compatível com Vercel.
+
+Security-sensitive.
+
+==================================================
+
+FASE 31 — Process History
+
+Dashboard passa a listar processos existentes.
+
+Permitir:
+
+- continuar;
+- pausar;
+- arquivar.
+
+==================================================
+
+FASE 32 — Account Settings
+
+Criar:
+
+/settings
+
+Inicialmente:
+
+- nome;
+- preferências;
+- logout;
+- exclusão de conta.
+
+==================================================
+
+FASE 33 — Privacy and Terms
+
+Criar:
+
+/privacy
+/terms
+
+Explicar:
+
+- dados coletados;
+- IA;
+- fontes;
+- serviços externos;
+- exclusão;
+- caráter informativo.
+
+==================================================
+
+FASE 34 — Accessibility Pass
+
+Revisar:
+
+- keyboard;
+- focus;
+- labels;
+- headings;
+- forms;
+- screen readers;
+- contrast.
+
+==================================================
+
+FASE 35 — Responsive Pass
+
+Revisar:
+
+- mobile;
+- tablet;
+- desktop.
+
+Principalmente:
+
+- dashboard;
+- questionnaire;
+- recommendations;
+- checklist.
+
+==================================================
+
+FASE 36 — Error UX
+
+Garantir:
+
+- loading;
+- error;
+- empty;
+- not found;
+- retry.
+
+==================================================
+
+FASE 37 — SEO
+
+Otimizar:
+
+/
+ /ireland
+ /ireland/work
+ /ireland/study
+ /ireland/visas/*
+
+Adicionar:
+
+- metadata;
+- Open Graph;
+- canonical;
+- sitemap;
+- robots.
+
+==================================================
+
+FASE 38 — Analytics
+
+Adicionar Vercel Analytics.
+
+Eventos:
+
+- visa_viewed;
+- questionnaire_started;
+- questionnaire_completed;
+- recommendation_generated;
+- process_started;
+- checklist_item_completed;
+- official_source_opened.
+
+Sem PII.
+
+==================================================
+
+FASE 39 — Performance
+
+Revisar:
+
+- client bundle;
+- Server/Client boundaries;
+- images;
+- cache;
+- DB queries;
+- waterfalls;
+- Core Web Vitals.
+
+==================================================
+
+FASE 40 — GitHub Actions
+
+Pipeline:
+
+install
+↓
+lint
+↓
+typecheck
+↓
+tests
+↓
+build
+
+Adicionar integração/E2E conforme necessário.
+
+==================================================
+
+FASE 41 — E2E Critical Flows
+
+Visitor:
+
+Landing
+→ Ireland
+→ Visa
+
+Authenticated:
+
+Login
+→ Questionnaire
+→ Recommendation
+→ Process
+→ Checklist
+
+Persistence:
+
+complete
+→ reload
+→ saved
+
+==================================================
+
+FASE 42 — Security Review geral
+
+Antes de produção revisar:
+
+- auth;
+- authorization;
+- IDOR;
+- SSRF;
+- XSS;
+- CSRF;
+- secrets;
+- AI endpoints;
+- rate limit;
+- logs;
+- privacy;
+- dependencies.
+
+Resolver CRITICAL/HIGH.
+
+==================================================
+
+FASE 43 — Production Seed Review
+
+Revisar manualmente dados reais da Irlanda.
+
+Verificar:
+
+- nomes;
+- requisitos;
+- URLs;
+- fontes;
+- autoridades;
+- datas;
+- wording.
+
+Não publicar seed fictício.
+
+==================================================
+
+FASE 44 — Production Database
+
+Configurar:
+
+- produção;
+- migrations;
+- backup;
+- connection strategy.
+
+Preview separado de production.
+
+==================================================
+
+FASE 45 — Vercel Production Configuration
+
+Configurar:
+
+- projeto;
+- Preview;
+- Production;
+- env variables;
+- database;
+- Supabase;
+- OpenAI;
+- analytics.
+
+==================================================
+
+FASE 46 — Production Deploy
+
+Publicar versão inicial.
+
+Validar:
+
+- home;
+- auth;
+- banco;
+- questionnaire;
+- recommendations;
+- process;
+- checklist;
+- AI;
+- sources.
+
+==================================================
+
+FASE 47 — Production Smoke Test
+
+Executar fluxo real de teste após deploy.
+
+==================================================
+
+FASE 48 — Portfolio Polish
+
+Finalizar apresentação do projeto.
+
+README deve conter:
+
+- product overview;
+- problem;
+- solution;
+- screenshots;
+- architecture;
+- tech stack;
+- AI architecture;
+- security;
+- testing;
+- setup;
+- deployment;
+- roadmap.
+
+Criar screenshots:
+
+- Landing;
+- Visa;
+- Recommendation;
+- Dashboard;
+- Checklist.
+
+Adicionar diagrama de arquitetura.
+
+Criar case study para portfolio:
+
+Problema
+→ Solução
+→ Decisões técnicas
+→ Desafios
+→ Resultado
+
+==================================================
+MILESTONES
+==================================================
+
+Milestone A — Portfolio Preview
+
+Landing
++
+Ireland
++
+Visa Details
+
+Estamos quase chegando aqui.
+
+==================================================
+
+Milestone B — Full Product Flow
+
+Auth
++
+Questionnaire
++
+Recommendation
++
+Process
++
+Checklist
+
+Tudo funcionando sem IA.
+
+==================================================
+
+Milestone C — AI Product
+
+AI Explanation
++
+AI Checklist Personalization
++
+Fallback
+
+==================================================
+
+Milestone D — Production Ready
+
+Security
++
+Tests
++
+Accessibility
++
+Performance
++
+Privacy
++
+CI
++
+Production Data
+
+==================================================
+
+Milestone E — Portfolio Ready
+
+Production URL
++
+GitHub
++
+README
++
+Screenshots
++
+Architecture
++
+Case Study
+
+==================================================
+REGRA PARA ESTE NOVO CHAT
+==================================================
+
+Este chat deve sempre manter o estado atual do projeto.
+
+Neste momento:
+
+FASE 0 ✅
+FASE 1 ✅
+FASE 2 ✅
+FASE 3 ✅
+FASE 4 ✅
+
+PRÓXIMA:
+FASE 5 — Página detalhada do Critical Skills Employment Permit.
+
+Quando eu disser:
+
+"vamos para a fase 5"
+
+prepare somente a Fase 5.
+
+Quando eu aprovar e disser:
+
+"vamos para a 6"
+
+prepare somente a Fase 6.
+
+Não envie antecipadamente prompts gigantes de várias fases.
+
+Também quero continuar usando a lógica:
+
+feature normal:
+$feature-workflow
+
+planejamento isolado:
+$architecture-planning
+
+implementação isolada:
+$feature-development
+
+testes:
+$testing
+
+review:
+$code-review
+
+security:
+$security-review
+
+O principal objetivo é usar o Codex com bastante autonomia, mas mantendo arquitetura, qualidade e controle do projeto.
+
+Também priorizar eficiência:
+
+- contexto mínimo necessário;
+- testes direcionados durante desenvolvimento;
+- full verification no final;
+- review pelo diff;
+- sem scans completos desnecessários;
+- sem reasoning alto quando Low ou Medium forem suficientes.
+
+Agora aguarde minha instrução antes de iniciar a Fase 5.

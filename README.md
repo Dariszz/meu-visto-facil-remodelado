@@ -22,21 +22,21 @@ Abra [localhost:3000](http://localhost:3000). Home e design system dispensam ban
 
 ## Comandos
 
-| Comando                 | Finalidade                                                     |
-| ----------------------- | -------------------------------------------------------------- |
-| `pnpm dev`              | Servidor local com atualização após edição                     |
-| `pnpm build`            | Build de produção                                              |
-| `pnpm start`            | Servidor de produção, após o build                             |
-| `pnpm lint`             | ESLint, sem warnings permitidos                                |
-| `pnpm typecheck`        | Gera tipos Next.js e verifica TypeScript sem emitir código     |
-| `pnpm test`             | Executa os testes uma vez                                      |
-| `pnpm test:watch`       | Testes durante desenvolvimento                                 |
-| `pnpm format`           | Formata os arquivos do bootstrap                               |
-| `pnpm format:check`     | Confere a formatação                                           |
-| `pnpm db:validate`      | Valida o schema Prisma sem banco                               |
-| `pnpm db:generate`      | Gera cliente Prisma local, antes do typecheck                  |
-| `pnpm db:deploy`        | Aplica migrations versionadas no banco configurado             |
-| `pnpm db:seed`          | Seed de desenvolvimento, com confirmação explícita             |
+| Comando                 | Finalidade                                                    |
+| ----------------------- | ------------------------------------------------------------- |
+| `pnpm dev`              | Servidor local com atualização após edição                    |
+| `pnpm build`            | Build de produção                                             |
+| `pnpm start`            | Servidor de produção, após o build                            |
+| `pnpm lint`             | ESLint, sem warnings permitidos                               |
+| `pnpm typecheck`        | Gera tipos Next.js e verifica TypeScript sem emitir código    |
+| `pnpm test`             | Executa os testes uma vez                                     |
+| `pnpm test:watch`       | Testes durante desenvolvimento                                |
+| `pnpm format`           | Formata os arquivos do bootstrap                              |
+| `pnpm format:check`     | Confere a formatação                                          |
+| `pnpm db:validate`      | Valida o schema Prisma sem banco                              |
+| `pnpm db:generate`      | Gera cliente Prisma local, antes do typecheck                 |
+| `pnpm db:deploy`        | Aplica migrations versionadas no banco configurado            |
+| `pnpm db:seed`          | Seed de desenvolvimento, com confirmação explícita            |
 | `pnpm test:integration` | Migrations repetíveis, seed, constraints e repositórios reais |
 
 Setup, permissões, conexões e comandos de criação de migrations: [DATABASE-SETUP.md](docs/DATABASE-SETUP.md). Evidências e pendências da Fase 6: [plano de execução](docs/exec-plans/phase-6-database-foundation.md).

@@ -45,7 +45,11 @@ const databaseUrl = z
 
 export function readDatabaseUrl(
   value: unknown,
-  name: "DATABASE_URL" | "DIRECT_URL" | "TEST_DATABASE_URL",
+  name:
+    | "DATABASE_URL"
+    | "DIRECT_URL"
+    | "TEST_DATABASE_URL"
+    | "PROFILE_DATABASE_URL",
 ): string {
   const result = databaseUrl.safeParse(value);
   if (!result.success) throw new Error(`DATABASE_CONFIG_INVALID: ${name}`);

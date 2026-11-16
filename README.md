@@ -1,6 +1,6 @@
 # Meu Visto Fácil
 
-Aplicação de apoio à exploração de caminhos de imigração, com foco inicial na Irlanda. O catálogo público usa PostgreSQL no Supabase por repositórios server-only. A Fase 8 apresenta metadados das fontes; a Fase 9 acrescenta validação segura de URLs e registro manual do resultado técnico, sem chamadas durante renderização. A Fase 10 não foi iniciada.
+Aplicação de apoio à exploração de caminhos de imigração, com foco inicial na Irlanda. O catálogo público usa PostgreSQL no Supabase por repositórios server-only. A Fase 8 apresenta metadados das fontes; a Fase 9 acrescenta validação segura de URLs e registro manual do resultado técnico, sem chamadas durante renderização. A Fase 10 (autenticação com Supabase Auth) e a Fase 11 (perfil da aplicação) estão implementadas; validação hospedada da autenticação e integração PostgreSQL do perfil estão pendentes.
 
 O [registro de continuidade](docs/PROJECT-CONTEXT.md) reúne o contexto de desenvolvimento, a forma de trabalho e o ponto de retomada. Consulte o [roadmap](docs/ROADMAP.md) para o escopo das fases.
 
@@ -58,7 +58,7 @@ Após o build, executar `pnpm start` e conferir `/`, CSS e ausência de overflow
 | `src/shared`     | Contratos realmente compartilhados              |
 | `src/test`       | Suporte aos testes                              |
 
-Há design system, landing page e navegação pública da Irlanda conectada ao PostgreSQL. Critical Skills usa nomes, descrições, requisitos e fontes do banco; público potencial, atributos, permissões, etapas e disclaimer continuam editoriais locais. General Employment, Estudo e Família preservam seus estados em preparação. Ainda não há autenticação, IA real, questionário, recomendações ou checklist. CI, E2E e deploy pertencem às fases posteriores. As instruções de verificação do bootstrap acima registram o escopo original da Fase 1; as verificações das fases seguintes estão nos respectivos planos em `docs/exec-plans/`.
+Há design system, landing page e navegação pública da Irlanda conectada ao PostgreSQL. Critical Skills usa nomes, descrições, requisitos e fontes do banco; público potencial, atributos, permissões, etapas e disclaimer continuam editoriais locais. General Employment, Estudo e Família preservam seus estados em preparação. Há autenticação (Supabase Auth) e criação controlada de perfil em `/profile`; ainda não há IA real, questionário, recomendações ou checklist. CI, E2E e deploy pertencem às fases posteriores. As instruções de verificação do bootstrap acima registram o escopo original da Fase 1; as verificações das fases seguintes estão nos respectivos planos em `docs/exec-plans/`.
 
 ## Futura importação na Vercel
 

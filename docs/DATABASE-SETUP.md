@@ -1,5 +1,7 @@
 # Banco de desenvolvimento — Supabase
 
+Nota de evolução: as seções iniciais descrevem a fundação das fases 6/7. A autenticação foi implementada na fase 10 ([configuração](AUTHENTICATION.md)); a fase 11 acrescenta `UserProfile` e `PROFILE_DATABASE_URL` separada ([configuração e grants](USER-PROFILE.md)). A recomendação histórica de SELECT em todas as tabelas abaixo aplica-se apenas às tabelas públicas de catálogo, **nunca a UserProfile**.
+
 O usuário escolheu Supabase no lugar de Neon antes de configurar conexões ou aplicar migrations. A Fase 6 mantém PostgreSQL padrão, Prisma 7.10.0, adapter pg, schema catalog e Node 24.x. Não há SDK Supabase nem autenticação implementada. A Fase 7 adiciona leitura pública pelas páginas com DATABASE_URL somente leitura.
 
 ## Preparação no painel

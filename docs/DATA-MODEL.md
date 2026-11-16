@@ -114,6 +114,8 @@ O identificador do usuário autenticado será usado como referência no banco da
 
 # 5. UserProfile
 
+Implementação da fase 11: tabela privada `catalog.UserProfile`, id UUID, authUserId UUID único, displayName opcional (100 caracteres), preferredLocale (35 caracteres, padrão pt-BR) e timestamps. Criação controlada autenticada em `/profile`, idempotente sem sobrescrita; sem FK no schema gerenciado `auth`. [Fluxo e permissões](USER-PROFILE.md).
+
 Representa o perfil da aplicação associado ao usuário autenticado.
 
 Exemplo conceitual:

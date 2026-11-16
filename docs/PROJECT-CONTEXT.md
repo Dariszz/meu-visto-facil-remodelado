@@ -6,6 +6,10 @@ Atualizado em 10/09/2026 a partir do contexto enviado pelo usuário e da inspeç
 
 Reconstruir o Meu Visto Fácil sem reutilizar código do projeto antigo, preservando a ideia do TCC: organizar caminhos de imigração, fontes oficiais e checklists personalizados com IA controlada. O objetivo é uma aplicação funcional de portfólio, com backend, autenticação, banco, testes, segurança, publicação na Vercel e apresentação profissional no GitHub.
 
+## Ponto de retomada — 16/11/2026
+
+Projeto retomado após pausa desde 09/10/2026. Commits das Fases 4–9 enviados ao GitHub. Formatação pendente corrigida e finais de linha CRLF normalizados para LF. Fase 10 commitada; configuração Supabase hospedada e fluxo real de e-mail continuam pendentes. Fase 11 commitada com gate local; migration, role de perfil e integração PostgreSQL pendentes de execução no ambiente do usuário. Pasta `exports/` (pacote de agentes) removida por decisão do usuário. Próximo passo acordado: atualizar dependências por segurança (Next 16.4.6, Zod 4.6.7, Prisma 7.10.1 e versões menores). Deploy adiado por decisão do usuário até o produto estar construído. Fase 12 não iniciada.
+
 ## Ponto de retomada — 29/09/2026
 
 Atualização mais recente: Fase 8 commitada em `64a4ae8`. Fase 9 implementada com agentes: validação segura de URLs, persistência otimista e CLI manual por ID. Migration aditiva aplicada em desenvolvimento e teste; 206 testes, integração PostgreSQL, lint, typecheck e build passaram. Nenhuma consulta real a governo foi executada nesta fase; casos de rede usam fakes e transporte usa mocks. Ver [plano da Fase 9](exec-plans/phase-9-url-validation.md). Checkpoint Git da Fase 9 autorizado pelo usuário; Fase 10 não iniciada. O parágrafo abaixo registra o fechamento anterior.

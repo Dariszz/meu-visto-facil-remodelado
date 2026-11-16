@@ -537,6 +537,8 @@ requireUser()
 
 # 15. Fase 11 — Perfil da aplicação
 
+**Código implementado e commitado em 16/11/2026; validação com banco pendente.** Tabela privada `catalog.UserProfile` com migration aditiva, repositório server-only com `PROFILE_DATABASE_URL` dedicada, serviço autenticado e criação idempotente em `/profile`. Lint, typecheck, 280 testes e build passaram. Prisma validate/generate, aplicação da migration, role `mvf_profile_writer` e integração PostgreSQL ainda não executados. [Plano e evidências](exec-plans/phase-11-user-profile.md) e [configuração](USER-PROFILE.md). Fase 12 não iniciada.
+
 ## Objetivo
 
 Criar `UserProfile` associado à identidade Supabase.

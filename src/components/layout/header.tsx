@@ -26,6 +26,12 @@ export function Header() {
             </Link>
           ))}
         </nav>
+        <Link
+          href="/login"
+          className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium hover:text-primary"
+        >
+          Entrar
+        </Link>
         <Button asChild className="hidden sm:inline-flex">
           <Link href="/ireland">Explorar Irlanda</Link>
         </Button>

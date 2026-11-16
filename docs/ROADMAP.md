@@ -499,6 +499,8 @@ incluindo:
 
 # 14. Fase 10 — Autenticação
 
+**Implementação local concluída em 29/09/2026; validação hospedada pendente.** Cadastro, login, logout, confirmação por POST, recuperação e nova senha com Supabase Auth; helpers server-side, cookies seguros e respostas neutras. Sem UserProfile/migration. Lint, typecheck, 256 testes e build passaram; revisão independente de código e segurança sem findings relevantes. Smoke HTTP das rotas passou. Configuração Supabase/templates, fluxo real de e-mail e smoke visual ainda não validados. [Plano e evidências](exec-plans/phase-10-authentication.md) e [configuração](AUTHENTICATION.md). Fase 11 não iniciada.
+
 ## Objetivo
 
 Permitir criação e acesso a conta.

@@ -42,6 +42,7 @@ test("oferece navegação e CTAs com destinos existentes, sem rotas futuras queb
     expect(
       [
         "/",
+        "/login",
         "/ireland",
         "/ireland/work",
         "/ireland/study",

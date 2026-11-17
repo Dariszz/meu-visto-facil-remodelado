@@ -94,6 +94,8 @@ Países considerados para expansão:
 
 A aplicação não deve possuir regras de negócio excessivamente acopladas à Irlanda.
 
+**Atualização de 16/11/2026:** a direção de longo prazo passou a ser atender qualquer país escolhido pelo usuário, com cobertura crescente e sempre baseada em fontes oficiais revisadas ([ADR 0001](decisions/0001-expansao-multipais-fontes-oficiais.md)). Ordem: Irlanda, Portugal e Espanha, depois Itália, Alemanha e Holanda. Países sem cobertura revisada mostram apenas links oficiais verificados, sem checklist. O produto também ganha um módulo de planejamento da mudança, com calculadora de reserva financeira e ocupações com demanda, incluindo trabalhos sem exigência de diploma filtrados pelo que o visto permite ([ADR 0002](decisions/0002-modulo-de-planejamento.md)), e uma versão Android a partir do próprio site ([ADR 0003](decisions/0003-android-via-pwa.md)).
+
 ---
 
 # 6. Objetivos de imigração

@@ -8,22 +8,22 @@
   --color-popover: var(--card);
   --color-popover-foreground: var(--foreground);
   --color-primary: var(--primary);
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #e6eeef;
-  --color-secondary-foreground: #214a53;
-  --color-muted: #eef2f2;
-  --color-muted-foreground: #52656d;
-  --color-accent: #dceee7;
-  --color-accent-foreground: #205846;
-  --color-destructive: #b3293e;
-  --color-destructive-foreground: #ffffff;
-  --color-success: #21634d;
-  --color-success-subtle: #e5f3eb;
-  --color-warning: #805211;
-  --color-warning-subtle: #fff3d9;
-  --color-border: #d5dfe0;
-  --color-input: #7b9097;
-  --color-ring: #087b88;
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --font-sans: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --text-display: clamp(2.25rem, 5vw, 3.75rem);
   --text-display--line-height: 1.08;
@@ -36,8 +36,8 @@
   --container-reading: 44rem;
   --spacing: 0.25rem;
   --spacing-section: clamp(3rem, 7vw, 5rem);
-  --shadow-sm: 0 2px 5px rgb(20 47 56 / 0.04);
-  --shadow-card: 0 8px 30px rgb(20 47 56 / 0.05);
+  --shadow-sm: 0 2px 5px rgb(var(--shadow) / 0.06);
+  --shadow-card: 0 8px 30px rgb(var(--shadow) / 0.07);
 }
 
 :root {
@@ -46,6 +46,78 @@
   --foreground: #19343e;
   --card: #ffffff;
   --primary: #155b66;
+  --primary-foreground: #ffffff;
+  --secondary: #e6eeef;
+  --secondary-foreground: #214a53;
+  --muted: #eef2f2;
+  --muted-foreground: #52656d;
+  --accent: #dceee7;
+  --accent-foreground: #205846;
+  --destructive: #b3293e;
+  --destructive-foreground: #ffffff;
+  --success: #21634d;
+  --success-subtle: #e5f3eb;
+  --warning: #805211;
+  --warning-subtle: #fff3d9;
+  --border: #d5dfe0;
+  --input: #7b9097;
+  --ring: #087b88;
+  --shadow: 20 47 56;
+}
+
+/* Tema escuro: escolha explícita (.dark) ou preferência do sistema quando o
+   usuário não escolheu "claro". O script em layout.tsx aplica a classe antes
+   da primeira pintura; a media query cobre navegação sem JavaScript. */
+:root.dark {
+  color-scheme: dark;
+  --background: #0f2329;
+  --foreground: #e4eff0;
+  --card: #152d34;
+  --primary: #6cc0c9;
+  --primary-foreground: #06262b;
+  --secondary: #1d3d46;
+  --secondary-foreground: #cde4e7;
+  --muted: #1a343c;
+  --muted-foreground: #a3b9be;
+  --accent: #1d4136;
+  --accent-foreground: #bfe6d3;
+  --destructive: #ff8a9a;
+  --destructive-foreground: #2b070d;
+  --success: #7fd1aa;
+  --success-subtle: #143a2c;
+  --warning: #f0be6a;
+  --warning-subtle: #3a2b10;
+  --border: #2b4952;
+  --input: #7f9aa1;
+  --ring: #7ed3dc;
+  --shadow: 0 0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+    --background: #0f2329;
+    --foreground: #e4eff0;
+    --card: #152d34;
+    --primary: #6cc0c9;
+    --primary-foreground: #06262b;
+    --secondary: #1d3d46;
+    --secondary-foreground: #cde4e7;
+    --muted: #1a343c;
+    --muted-foreground: #a3b9be;
+    --accent: #1d4136;
+    --accent-foreground: #bfe6d3;
+    --destructive: #ff8a9a;
+    --destructive-foreground: #2b070d;
+    --success: #7fd1aa;
+    --success-subtle: #143a2c;
+    --warning: #f0be6a;
+    --warning-subtle: #3a2b10;
+    --border: #2b4952;
+    --input: #7f9aa1;
+    --ring: #7ed3dc;
+    --shadow: 0 0 0;
+  }
 }
 
 @layer base {
@@ -54,18 +126,22 @@
   }
   html {
     touch-action: manipulation;
-    -webkit-tap-highlight-color: rgb(21 91 102 / 0.15);
+    -webkit-tap-highlight-color: color-mix(
+      in srgb,
+      var(--primary) 20%,
+      transparent
+    );
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
   :focus-visible {
-    outline: 2px solid #087b88;
+    outline: 2px solid var(--ring);
     outline-offset: 3px;
   }
   ::selection {
-    background: #dceee7;
-    color: #205846;
+    background: var(--accent);
+    color: var(--accent-foreground);
   }
   [aria-invalid="true"] {
     @apply border-destructive;

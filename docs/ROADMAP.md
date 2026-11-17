@@ -560,6 +560,8 @@ UserProfile
 
 # 16. Fase 12 — Dashboard
 
+**Interface pronta como prévia (16/11/2026).** Painel, questionário, recomendações, processo com checklist e estados de carregamento/erro/vazio existem em `/preview` com dados de exemplo e componentes que recebem view models ([plano](exec-plans/ui-previews.md)). As fases 12, 13, 17, 22 e 23 passam a conectar dados reais a esses componentes, seguindo a [ADR 0004](decisions/0004-bff-no-proprio-next.md).
+
 ## Objetivo
 
 Criar área autenticada inicial.
@@ -2040,6 +2042,8 @@ family routes
 
 # 89. V2 — Segundo país
 
+> Atualizado em 16/11/2026: a expansão foi detalhada na seção 97 e na [ADR 0001](decisions/0001-expansao-multipais-fontes-oficiais.md). Portugal e Espanha vêm primeiro.
+
 Adicionar:
 
 ```text id="5c7j83"
@@ -2066,6 +2070,8 @@ Antes de adicionar:
 ---
 
 # 91. V3 — Advanced Intelligence
+
+> Atualizado em 16/11/2026: ingestão de documentos e monitoramento de mudanças foram antecipados para a expansão (seção 97), restritos a domínios oficiais aprovados. RAG e chat continuam aqui, só sobre snapshots oficiais.
 
 Somente depois considerar:
 
@@ -2176,3 +2182,39 @@ AI-generated chaos
 ```
 
 Cada fase deve aumentar o valor do produto sem destruir a clareza arquitetural construída nas fases anteriores.
+
+---
+
+# 97. Evolução aprovada em 16/11/2026
+
+Decisões registradas em [docs/decisions](decisions/README.md). Esta seção define a ordem; o MVP da Irlanda (fases 12 a 48) continua tendo prioridade, e o deploy segue adiado até o produto estar construído, por decisão do usuário.
+
+## Já entregue
+
+- **Tema claro e escuro** ([ADR 0005](decisions/0005-tema-claro-e-escuro.md)): tokens com os dois temas, preferência do sistema por padrão, seletor no cabeçalho.
+- **Prévias das telas privadas** (seção 16).
+
+## Fases da expansão
+
+Numeradas com prefixo X para não colidir com as fases do MVP. Cada uma terá plano de execução próprio quando começar.
+
+| Fase | Entrega | Base |
+| --- | --- | --- |
+| X1 — Fundações multipaís | `OfficialDomain` com evidência de oficialidade; allowlist lida do banco por país; `reviewStatus`, `lastVerifiedAt` e `sourceQuote` em requisitos; `Country.coverageLevel`; tela "país sem cobertura" com links oficiais verificados; migração das fontes da Irlanda. | ADR 0001 |
+| X2 — Gates da IA | Gates bloqueantes no servidor: fonte fora do contexto, URL fora da allowlist, obrigatório omitido, valor ou prazo inexistente no catálogo. Fallback para o checklist determinístico. Métricas de bloqueio por versão de prompt. | ADR 0001, AI-ARCHITECTURE |
+| X3 — Pipeline de ingestão | Crawler restrito à allowlist sobre o validador da Fase 9, `SourceSnapshot` com hash, extração com trecho literal verificado, fila de revisão. | ADR 0001 |
+| X4 — Portugal e Espanha | Domínios oficiais com evidência, 2 a 3 categorias de visto por país (estudo, trabalho, rendimentos/nômade digital), revisão completa. | ADR 0001 |
+| X5 — Monitoramento | Reprocessamento periódico, diff de hash, `NEEDS_REVIEW` e aviso ao usuário; descoberta de páginas novas com busca filtrada por domínio. | ADR 0001 |
+| X6 — Calculadora de reserva | `CostOfLivingItem` com fonte e data; cálculo determinístico de custos únicos e mensais por cidade, pessoas e meses; requisitos oficiais de meios de subsistência continuam no catálogo. | ADR 0002 |
+| X7 — Ocupações | `Occupation` e `VisaWorkRight`; listas "profissões com demanda oficial" e "trabalhos sem exigência de diploma", filtradas pelo que o visto permite; alerta contra propostas informais. | ADR 0002 |
+| X8 — PWA | Manifest, ícones, instalação, uso básico sem internet, revisão móvel nos dois temas. Depois do deploy. | ADR 0003 |
+| X9 — Play Store | Trusted Web Activity, Digital Asset Links, teste fechado (12 testadores por 14 dias em conta pessoal nova), publicação. | ADR 0003 |
+| X10 — Mais países | Itália, Alemanha e Holanda; depois Canadá, Austrália, EUA e Reino Unido. | ADR 0001 |
+
+## Regras que valem para todas as fases X
+
+- Nenhum item entra no checklist sem `reviewStatus = REVIEWED`.
+- Nenhuma URL ou fonte fora da allowlist do país chega ao usuário.
+- Estimativas (custo de vida, demanda de trabalho) sempre com fonte e data, e nunca como obrigação.
+- Lógica fica nos serviços de aplicação (ADR 0004); telas só consomem view models.
+

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Brand } from "./brand";
 import { Container } from "./container";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 export function Header() {
   return (
     <header className="border-b bg-card">
@@ -26,12 +27,15 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <Link
-          href="/login"
-          className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium hover:text-primary"
-        >
-          Entrar
-        </Link>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <Link
+            href="/login"
+            className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium hover:text-primary"
+          >
+            Entrar
+          </Link>
+        </div>
         <Button asChild className="hidden sm:inline-flex">
           <Link href="/ireland">Explorar Irlanda</Link>
         </Button>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "./container";
 import { Brand } from "./brand";
+import { ThemeSelect } from "@/components/theme/theme-select";
 export function Footer() {
   return (
     <footer className="border-t bg-card py-8">
@@ -31,7 +32,10 @@ export function Footer() {
             garantimos elegibilidade ou aprovação. As informações podem mudar.
             Confirme os detalhes com as autoridades oficiais.
           </p>
-          <p>Meu Visto Fácil: clareza para o seu próximo passo.</p>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <p>Meu Visto Fácil: clareza para o seu próximo passo.</p>
+            <ThemeSelect />
+          </div>
         </div>
       </Container>
     </footer>

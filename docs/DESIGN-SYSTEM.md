@@ -4,7 +4,7 @@ Fundação implementada na Fase 2. Demonstração em `/design-system`, marcada c
 
 ## Direção visual
 
-Azul-petróleo para orientação, tinta escura para leitura, superfícies névoa e branco para organização, sálvia para acolhimento. Marca inicial com bússola Lucide e favicon SVG local. Tema claro deliberado; não há alternância de tema nesta fase.
+Azul-petróleo para orientação, tinta escura para leitura, superfícies névoa e branco para organização, sálvia para acolhimento. Marca inicial com bússola Lucide e favicon SVG local. Temas claro e escuro desde 16/11/2026 ([ADR 0005](decisions/0005-tema-claro-e-escuro.md)): o escuro usa base azul-petróleo, não preto. A preferência padrão segue o sistema; o cabeçalho alterna claro/escuro e o rodapé oferece Sistema, Claro e Escuro.
 
 Tipografia de sistema (Segoe UI, Helvetica Neue, Arial): rápida, sem requisições de fontes externas. Títulos com peso 600 e tracking discreto. Texto corrido com entrelinha confortável. Evitar texto essencial menor que text-sm.
 
@@ -32,6 +32,8 @@ Fonte de verdade: `src/app/globals.css`, via `@theme inline` do Tailwind 4.
 | Breakpoints | padrões Tailwind: sm 640, md 768, lg 1024, xl 1280, 2xl 1536 px |
 
 Contrastes calculados: botão principal 7.72:1; texto secundário sobre background 5.77:1; erro sobre branco 6.36:1; foco sobre branco 5.00:1; borda de controle sobre branco 3.34:1.
+
+Tokens escuros (mesmos nomes, valores em `:root.dark` e na media query `prefers-color-scheme: dark`): background #0f2329; card #152d34; foreground #e4eff0; muted #1a343c / #a3b9be; primary #6cc0c9 / #06262b; secondary #1d3d46 / #cde4e7; accent #1d4136 / #bfe6d3; destructive #ff8a9a; success #7fd1aa / #143a2c; warning #f0be6a / #3a2b10; border #2b4952; input #7f9aa1; ring #7ed3dc. Todos os pares de texto e controle passam em WCAG AA nos dois temas (verificado por script em 16/11/2026). Cores fixas em componentes não são permitidas: usar só tokens.
 
 ## Componentes
 

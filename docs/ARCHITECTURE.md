@@ -84,6 +84,8 @@ Arquitetura geral:
 
 ---
 
+> **BFF (16/11/2026):** o papel de Backend for Frontend é cumprido pela camada de aplicação dentro do próprio Next.js, não por um serviço separado. Serviços de aplicação devolvem view models prontos; páginas e Server Actions ficam finas; API HTTP versionada só para clientes externos. Ver [ADR 0004](decisions/0004-bff-no-proprio-next.md).
+
 # 3. Princípio fundamental
 
 A interface não deve conter regras de negócio importantes.

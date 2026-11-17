@@ -74,11 +74,12 @@ export function DashboardView({
                 : "Você ainda não tem processos. Comece entendendo quais caminhos podem servir para você."}
             </p>
           </div>
-          {visible.length > 0 && links.recommendations && (
-            <Button asChild variant="outline">
-              <Link href={links.recommendations}>Ver recomendações</Link>
-            </Button>
-          )}
+          {links.recommendations &&
+            (visible.length > 0 || data.hasCompletedQuestionnaire) && (
+              <Button asChild variant="outline">
+                <Link href={links.recommendations}>Ver recomendações</Link>
+              </Button>
+            )}
         </header>
 
         <section aria-labelledby="processes-title" className="mt-12">

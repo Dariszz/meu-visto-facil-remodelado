@@ -42,7 +42,11 @@ export default async function DashboardPage() {
   return (
     <DashboardView
       data={result.view}
-      links={{ explore: "/ireland", questionnaire: "/questionnaire" }}
+      links={{
+        explore: "/ireland",
+        questionnaire: "/questionnaire",
+        recommendations: "/recommendations",
+      }}
     />
   );
 }

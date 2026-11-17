@@ -56,5 +56,5 @@ export async function saveIrelandQuestionnaireAction(
       status: "error",
       message: "O questionário deste destino não está disponível no momento.",
     };
-  redirect("/dashboard");
+  redirect("/recommendations");
 }

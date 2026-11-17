@@ -21,11 +21,11 @@ function form(answers: string | null) {
   return data;
 }
 
-test("salva para a Irlanda e leva ao painel, ignorando campos extras", async () => {
+test("salva para a Irlanda e leva às recomendações, ignorando campos extras", async () => {
   saveQuestionnaire.mockResolvedValue("SAVED");
   await expect(
     saveIrelandQuestionnaireAction(idle, form('{"objective":"work"}')),
-  ).rejects.toThrow("REDIRECT:/dashboard");
+  ).rejects.toThrow("REDIRECT:/recommendations");
   expect(saveQuestionnaire).toHaveBeenCalledWith("ireland", {
     objective: "work",
   });

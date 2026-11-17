@@ -679,6 +679,8 @@ Testes fortes nesta etapa.
 
 # 20. Fase 16 — Recommendation Engine V1
 
+**Implementada em 17/11/2026 (Fases 16 a 18 juntas)**: regras determinísticas `ireland-work-v1` para Critical Skills e General Employment, sem IA, rota `/recommendations` e cenários de teste de alta, média e baixa compatibilidade, falta de informação, impedimentos e nacionalidade do EEE. Ver [registro](exec-plans/madrugada-2026-11-17.md).
+
 ## Objetivo
 
 Criar recomendação determinística sem IA.

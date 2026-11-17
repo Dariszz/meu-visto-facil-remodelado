@@ -40,3 +40,11 @@ Antes de qualquer mudança, as três migrations existentes foram aplicadas no ba
 - **Testes:** 24 novos de unidade (validação, normalização, serviço, ação, página, modo de salvar) e 2 de integração (seed repetível igual aos dados versionados, substituição por país, isolamento entre pessoas, cascade ao excluir perfil, configuração inválida falha de forma segura, sem grants públicos). Suíte: 356 testes de unidade e 9 de integração no banco local.
 - **Pendente no ambiente real:** grants das tabelas novas e aplicação das migrations (SQL em PENDENCIAS.md).
 
+## Fases 16 a 18 — motor de recomendação V1
+
+- **Regras determinísticas** (`src/features/recommendations/engine/evaluate.ts`, versão `ireland-work-v1`), sem IA. Usam só o perfil normalizado. Fatos usados, todos de fontes oficiais: quem não é do EEE precisa de employment permit (página de employment permits no gov.ie); as autorizações dependem de oferta de emprego (enterprise.gov.ie); o Critical Skills pede oferta de pelo menos dois anos (conteúdo revisado na Fase 5).
+- **Compatibilidade:** impedimento → baixa; nacionalidade do EEE → "não indicado agora", com a explicação de que não precisa de autorização; informação central faltando → média; tudo confirmado → alta. General Employment nunca passa de média porque o conteúdo ainda não foi revisado. Ocupação, salário, qualificações e empregador ficam sempre "a confirmar", porque o questionário não coleta esses dados. "Não sei" nunca vira resposta negativa.
+- **Estudo e família** não recebem caminhos de trabalho; aparecem como categorias em preparação.
+- **Rota `/recommendations`** autenticada: sem perfil → criar perfil; questionário incompleto → questionário; pronto → caminhos ordenados e resumo das respostas. Salvar o questionário agora leva às recomendações, e o painel mostra "Ver recomendações" quando o questionário está completo. "Iniciar processo" fica oculto até a Fase 19.
+- **Testes (Fase 18):** 14 cenários do motor (inclusive um que verifica que nenhum texto promete elegibilidade), serviço (2) e página (3). Suíte: 370 testes de unidade; build ok.
+

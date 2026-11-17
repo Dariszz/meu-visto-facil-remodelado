@@ -42,6 +42,7 @@ export const config = {
     "/login",
     "/dashboard",
     "/questionnaire",
+    "/recommendations",
     "/profile",
     "/register",
     "/forgot-password",

@@ -1,4 +1,6 @@
 -- ADR 0001: cobertura por país e status de revisão do conteúdo. Migration aditiva.
+BEGIN;
+
 CREATE TYPE "catalog"."CoverageLevel" AS ENUM ('FULL', 'PARTIAL', 'LINKS_ONLY', 'NONE');
 CREATE TYPE "catalog"."ReviewStatus" AS ENUM ('REVIEWED', 'SOURCED_UNREVIEWED', 'NEEDS_REVIEW', 'DEPRECATED');
 
@@ -27,3 +29,5 @@ SET "reviewStatus" = 'REVIEWED'
 FROM "catalog"."Visa" AS v
 JOIN "catalog"."Country" AS c ON c."id" = v."countryId"
 WHERE r."visaId" = v."id" AND c."code" = 'IE';
+
+COMMIT;

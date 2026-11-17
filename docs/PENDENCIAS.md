@@ -21,7 +21,15 @@ Detalhes em [USER-PROFILE.md](USER-PROFILE.md).
 - [ ] Aplicar a migration `20261006000000_user_profile` no banco de desenvolvimento: `pnpm db:deploy` (com `DIRECT_URL` administrativa)
 - [ ] Criar a role `mvf_profile_writer` com o SQL do USER-PROFILE.md e definir uma senha forte fora do repositório
 - [ ] Adicionar `PROFILE_DATABASE_URL` ao `.env.local` (TLS `sslmode=verify-full` e `schema=catalog`)
-- [ ] `pnpm test:integration` (aplica as migrations no banco de teste e roda a integração, incluindo `user-profile.test.ts`)
+- [ ] Aplicar também as migrations novas de 17/11/2026 (`20261117000000_multicountry_foundation` e `20261117010000_profile_questionnaire`) com `pnpm db:deploy` e rodar `pnpm db:seed` (cria as perguntas da Irlanda; o seed não altera dados existentes)
+- [ ] Permissões das tabelas novas, no banco de desenvolvimento (ajuste os nomes se suas roles forem outras):
+
+  ```sql
+  GRANT SELECT ON TABLE "catalog"."ProfileQuestion", "catalog"."QuestionOption" TO mvf_catalog_reader;
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE "catalog"."ProfileAnswer" TO mvf_profile_writer;
+  ```
+
+- [ ] `pnpm test:integration` (aplica as migrations no banco de teste e roda a integração, incluindo perfil, destinos e questionário)
 - [ ] Registrar o resultado em [phase-11-user-profile.md](exec-plans/phase-11-user-profile.md) e no ROADMAP
 
 ## 3. Fechar a Fase 10 — autenticação (Supabase hospedado)

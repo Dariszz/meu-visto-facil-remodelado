@@ -9,12 +9,13 @@ datasource db {
 }
 
 model UserProfile {
-  id              String   @id @default(uuid()) @db.Uuid
-  authUserId      String   @unique @db.Uuid
-  displayName     String?  @db.VarChar(100)
-  preferredLocale String   @default("pt-BR") @db.VarChar(35)
-  createdAt       DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt       DateTime @updatedAt @db.Timestamptz(3)
+  id              String          @id @default(uuid()) @db.Uuid
+  authUserId      String          @unique @db.Uuid
+  displayName     String?         @db.VarChar(100)
+  preferredLocale String          @default("pt-BR") @db.VarChar(35)
+  createdAt       DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime        @updatedAt @db.Timestamptz(3)
+  answers         ProfileAnswer[]
 
   @@schema("catalog")
 }
@@ -109,6 +110,7 @@ model Country {
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
   visas     Visa[]
+  questions ProfileQuestion[]
   sources   OfficialSource[]
   @@schema("catalog")
 }
@@ -223,3 +225,77 @@ model VisaSource {
   @@index([sourceId])
   @@schema("catalog")
 }
+
+// Questionário configurável por país (Fases 13 e 14). Perguntas e opções são
+// catálogo público; respostas são privadas e pertencem ao UserProfile.
+enum QuestionType {
+  BOOLEAN
+  SINGLE_SELECT
+  MULTI_SELECT
+
+  @@schema("catalog")
+}
+
+enum QuestionStatus {
+  ACTIVE
+  ARCHIVED
+
+  @@schema("catalog")
+}
+
+model ProfileQuestion {
+  id          String         @id @default(cuid())
+  countryId   String
+  code        String         @db.VarChar(80)
+  question    String
+  shortLabel  String?        @db.VarChar(60)
+  description String?
+  type        QuestionType
+  required    Boolean        @default(true)
+  sortOrder   Int            @default(0)
+  status      QuestionStatus @default(ACTIVE)
+  // Condição simples de exibição: { "questionCode": string, "equalsAnyOf": (string | boolean)[] }.
+  showIf      Json?
+  createdAt   DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime       @updatedAt @db.Timestamptz(3)
+  country     Country        @relation(fields: [countryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  options     QuestionOption[]
+  answers     ProfileAnswer[]
+
+  @@unique([countryId, code])
+  @@index([countryId, status, sortOrder])
+  @@schema("catalog")
+}
+
+model QuestionOption {
+  id          String          @id @default(cuid())
+  questionId  String
+  value       String          @db.VarChar(80)
+  label       String
+  description String?
+  sortOrder   Int             @default(0)
+  createdAt   DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime        @updatedAt @db.Timestamptz(3)
+  question    ProfileQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([questionId, value])
+  @@index([questionId, sortOrder])
+  @@schema("catalog")
+}
+
+model ProfileAnswer {
+  id            String          @id @default(uuid()) @db.Uuid
+  userProfileId String          @db.Uuid
+  questionId    String
+  // Validado por Zod a partir do tipo da pergunta antes de gravar e ao ler.
+  value         Json
+  createdAt     DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime        @updatedAt @db.Timestamptz(3)
+  userProfile   UserProfile     @relation(fields: [userProfileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  question      ProfileQuestion @relation(fields: [questionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([userProfileId, questionId])
+  @@index([questionId])
+  @@schema("catalog")
+}
+

@@ -1,5 +1,6 @@
 import "server-only";
 import { getCurrentUserProfile } from "@/features/profile/service";
+import { getQuestionnaire } from "@/features/questionnaire/application/questionnaire-service";
 import type { DashboardView } from "../types";
 
 export type DashboardResult =
@@ -11,12 +12,14 @@ export type DashboardResult =
 export async function getDashboard(): Promise<DashboardResult> {
   const profile = await getCurrentUserProfile();
   if (!profile) return { kind: "PROFILE_REQUIRED" };
+  const questionnaire = await getQuestionnaire("ireland");
   return {
     kind: "READY",
     view: {
       displayName: profile.displayName,
       processes: [],
-      hasCompletedQuestionnaire: false,
+      hasCompletedQuestionnaire:
+        questionnaire.kind === "READY" && questionnaire.complete,
     },
   };
 }

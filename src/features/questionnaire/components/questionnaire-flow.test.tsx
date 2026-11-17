@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import { exampleQuestions } from "@/features/previews/fixtures";
 import { QuestionnaireFlow } from "./questionnaire-flow";
 
@@ -78,4 +78,31 @@ test("alterar resposta na revisão volta para a pergunta", () => {
     }),
   );
   expect(screen.getByRole("radio", { name: /Reino Unido/ })).toBeChecked();
+});
+
+test("modo de salvar envia só as respostas visíveis", () => {
+  const action = vi.fn(async (state: { status: "idle" | "error" }) => state);
+  render(
+    <QuestionnaireFlow
+      questions={exampleQuestions}
+      initialAnswers={{
+        objective: "study",
+        region: "uk",
+        has_employment_offer: true,
+      }}
+      submitAction={action}
+    />,
+  );
+  for (let i = 0; i < 3; i += 1)
+    fireEvent.click(screen.getByRole("button", { name: /Continuar|Pular/ }));
+  expect(
+    screen.getByRole("button", { name: "Salvar respostas" }),
+  ).toBeInTheDocument();
+  const hidden = document.querySelector<HTMLInputElement>(
+    'input[name="answers"]',
+  )!;
+  expect(JSON.parse(hidden.value)).toEqual({
+    objective: "study",
+    region: "uk",
+  });
 });

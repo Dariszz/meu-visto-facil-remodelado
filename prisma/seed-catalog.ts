@@ -4,6 +4,7 @@ import {
   criticalSkills,
   criticalSkillsSources,
 } from "./seed-data/critical-skills";
+import { irelandQuestions } from "../src/features/questionnaire/data/ireland-questions";
 
 const requirementCodes = [
   "employment-offer",
@@ -112,6 +113,51 @@ export async function seedCatalog(tx: Prisma.TransactionClient) {
           requirementId: requirement.id,
           sourceId: record.id,
           relationType: "PRIMARY",
+        },
+      });
+    }
+  }
+  await seedQuestions(tx, country.id);
+}
+
+// Questionário da Irlanda (Fase 13). Create-only, como o restante do seed.
+async function seedQuestions(tx: Prisma.TransactionClient, countryId: string) {
+  for (const [index, item] of irelandQuestions.entries()) {
+    const question = await tx.profileQuestion.upsert({
+      where: { countryId_code: { countryId, code: item.code } },
+      update: {},
+      create: {
+        id: `seed-question-ie-${item.code}`,
+        countryId,
+        code: item.code,
+        question: item.question,
+        shortLabel: item.shortLabel ?? null,
+        description: item.description ?? null,
+        type: item.type,
+        required: item.required,
+        sortOrder: index,
+        ...(item.showIf
+          ? {
+              showIf: {
+                questionCode: item.showIf.questionCode,
+                equalsAnyOf: [...item.showIf.equalsAnyOf],
+              },
+            }
+          : {}),
+      },
+    });
+    for (const [optionIndex, option] of (item.options ?? []).entries()) {
+      await tx.questionOption.upsert({
+        where: {
+          questionId_value: { questionId: question.id, value: option.value },
+        },
+        update: {},
+        create: {
+          questionId: question.id,
+          value: option.value,
+          label: option.label,
+          description: option.description ?? null,
+          sortOrder: optionIndex,
         },
       });
     }

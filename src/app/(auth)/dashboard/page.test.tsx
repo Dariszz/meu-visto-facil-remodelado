@@ -28,7 +28,7 @@ test("sem perfil, leva à criação do perfil", async () => {
   await expect(DashboardPage()).rejects.toThrow("REDIRECT:/profile");
 });
 
-test("painel real sem processos orienta a explorar, sem atalhos inexistentes", async () => {
+test("painel real sem processos orienta ao questionário e à exploração", async () => {
   getDashboard.mockResolvedValue({
     kind: "READY",
     view: {
@@ -48,7 +48,10 @@ test("painel real sem processos orienta a explorar, sem atalhos inexistentes", a
     screen.getByRole("link", { name: "Explorar Irlanda" }),
   ).toHaveAttribute("href", "/ireland");
   expect(
-    screen.queryByRole("link", { name: /questionário/i }),
+    screen.getByRole("link", { name: "Responder questionário" }),
+  ).toHaveAttribute("href", "/questionnaire");
+  expect(
+    screen.queryByRole("link", { name: "Ver recomendações" }),
   ).not.toBeInTheDocument();
 });
 

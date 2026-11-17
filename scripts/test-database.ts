@@ -33,6 +33,7 @@ async function main() {
       "tests/integration/source-verification.test.ts",
       "tests/integration/user-profile.test.ts",
       "tests/integration/destinations.test.ts",
+      "tests/integration/questionnaire.test.ts",
     ],
     { env: process.env, encoding: "utf8" },
   );

@@ -597,6 +597,8 @@ Comece sua jornada
 
 # 17. Fase 13 — Questionário
 
+**Implementada em 17/11/2026 (Fases 13 a 15 juntas)**: perguntas configuráveis por país no banco, respostas privadas em `ProfileAnswer`, rota `/questionnaire` autenticada, perguntas condicionais e `normalizeProfile()`. Integração validada em PostgreSQL local; permissões e Supabase pendentes. Ver [registro](exec-plans/madrugada-2026-11-17.md).
+
 ## Objetivo
 
 Coletar perfil migratório.

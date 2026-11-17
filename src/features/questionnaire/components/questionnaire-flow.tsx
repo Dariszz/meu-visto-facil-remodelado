@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
@@ -21,16 +21,30 @@ import type {
 
 const REVIEW = "review";
 
+export type QuestionnaireSubmitState = {
+  status: "idle" | "error";
+  message?: string;
+};
+
 export function QuestionnaireFlow({
   questions,
   initialAnswers = {},
   resultHref,
+  submitAction,
 }: {
   questions: readonly QuestionView[];
   initialAnswers?: Answers;
-  // Fase 13: substituir por envio a uma Server Action que salva ProfileAnswer.
-  resultHref: string;
+  // Prévias: link para o resultado. Rota real: Server Action que salva.
+  resultHref?: string;
+  submitAction?: (
+    state: QuestionnaireSubmitState,
+    form: FormData,
+  ) => Promise<QuestionnaireSubmitState>;
 }) {
+  const [submitState, submit, submitting] = useActionState(
+    submitAction ?? (async (state: QuestionnaireSubmitState) => state),
+    { status: "idle" },
+  );
   const [answers, setAnswers] = useState<Answers>(initialAnswers);
   const [step, setStep] = useState(0);
   const [showError, setShowError] = useState(false);
@@ -200,14 +214,46 @@ export function QuestionnaireFlow({
                   </div>
                 ))}
               </dl>
-              <div className="mt-10 flex flex-wrap-reverse items-center justify-between gap-3">
-                <Button variant="ghost" onClick={back}>
-                  Voltar
-                </Button>
-                <Button asChild size="lg">
-                  <Link href={resultHref}>Ver caminhos possíveis</Link>
-                </Button>
-              </div>
+              {submitAction ? (
+                <form action={submit} className="mt-10">
+                  <input
+                    type="hidden"
+                    name="answers"
+                    value={JSON.stringify(
+                      pruneHiddenAnswers(questions, answers),
+                    )}
+                  />
+                  <p
+                    aria-live="polite"
+                    className="mb-4 min-h-5 text-sm font-medium text-destructive"
+                  >
+                    {submitState.status === "error" ? submitState.message : ""}
+                  </p>
+                  <div className="flex flex-wrap-reverse items-center justify-between gap-3">
+                    <Button
+                      variant="ghost"
+                      onClick={back}
+                      disabled={submitting}
+                    >
+                      Voltar
+                    </Button>
+                    <Button type="submit" size="lg" disabled={submitting}>
+                      {submitting ? "Salvando…" : "Salvar respostas"}
+                    </Button>
+                  </div>
+                </form>
+              ) : (
+                <div className="mt-10 flex flex-wrap-reverse items-center justify-between gap-3">
+                  <Button variant="ghost" onClick={back}>
+                    Voltar
+                  </Button>
+                  {resultHref && (
+                    <Button asChild size="lg">
+                      <Link href={resultHref}>Ver caminhos possíveis</Link>
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

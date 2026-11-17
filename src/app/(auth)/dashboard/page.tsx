@@ -39,5 +39,10 @@ export default async function DashboardPage() {
     );
   }
   if (result.kind === "PROFILE_REQUIRED") redirect("/profile");
-  return <DashboardView data={result.view} links={{ explore: "/ireland" }} />;
+  return (
+    <DashboardView
+      data={result.view}
+      links={{ explore: "/ireland", questionnaire: "/questionnaire" }}
+    />
+  );
 }

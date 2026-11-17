@@ -33,3 +33,8 @@ O usuário quer que o Meu Visto Fácil atenda qualquer país escolhido: listar o
 - O gargalo passa a ser a revisão humana; o pipeline reduz o trabalho a conferir trechos destacados. Capacidade realista para um projeto solo: 5 a 8 países bem mantidos.
 - Gates bloqueantes no servidor: fonte fora do contexto, URL fora da allowlist, item obrigatório omitido ou valor/prazo inexistente no catálogo derrubam a resposta da IA para o checklist determinístico.
 - Licença e termos de reutilização registrados por domínio; o produto resume e cita trechos curtos com link, sem republicar páginas inteiras.
+
+## Ajuste de 17/11/2026 (implementação da X1)
+
+A allowlist por país ficou **no código** (`src/features/sources/official-domains.ts`), não numa tabela `OfficialDomain`. Motivo: ampliar a allowlist aumenta a superfície de requisições do servidor (validador da Fase 9). Mantida no código, cada domínio novo passa por revisão de diff e por testes que exigem hostname exato, país, evidência HTTPS vinda de outro site e data de revisão. O banco guarda cobertura (`Country.coverageLevel`) e status de revisão (`Visa.reviewStatus`, `VisaRequirement.reviewStatus`, `lastVerifiedAt`, `sourceQuote`). Reavaliar uma tabela se o número de domínios crescer a ponto de dificultar a revisão no código.
+

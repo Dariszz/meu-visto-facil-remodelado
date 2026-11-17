@@ -560,6 +560,8 @@ UserProfile
 
 # 16. Fase 12 — Dashboard
 
+**Implementada em 17/11/2026** em `/dashboard`, com serviço de aplicação e estado vazio real; validação com sessão real depende da configuração do Supabase (PENDENCIAS.md). Ver [registro](exec-plans/madrugada-2026-11-17.md).
+
 **Interface pronta como prévia (16/11/2026).** Painel, questionário, recomendações, processo com checklist e estados de carregamento/erro/vazio existem em `/preview` com dados de exemplo e componentes que recebem view models ([plano](exec-plans/ui-previews.md)). As fases 12, 13, 17, 22 e 23 passam a conectar dados reais a esses componentes, seguindo a [ADR 0004](decisions/0004-bff-no-proprio-next.md).
 
 ## Objetivo
@@ -2200,7 +2202,7 @@ Numeradas com prefixo X para não colidir com as fases do MVP. Cada uma terá pl
 
 | Fase | Entrega | Base |
 | --- | --- | --- |
-| X1 — Fundações multipaís | `OfficialDomain` com evidência de oficialidade; allowlist lida do banco por país; `reviewStatus`, `lastVerifiedAt` e `sourceQuote` em requisitos; `Country.coverageLevel`; tela "país sem cobertura" com links oficiais verificados; migração das fontes da Irlanda. | ADR 0001 |
+| X1 — Fundações multipaís (**feita em 17/11/2026**, ver [registro](exec-plans/madrugada-2026-11-17.md)) | `OfficialDomain` com evidência de oficialidade; allowlist lida do banco por país; `reviewStatus`, `lastVerifiedAt` e `sourceQuote` em requisitos; `Country.coverageLevel`; tela "país sem cobertura" com links oficiais verificados; migração das fontes da Irlanda. | ADR 0001 |
 | X2 — Gates da IA | Gates bloqueantes no servidor: fonte fora do contexto, URL fora da allowlist, obrigatório omitido, valor ou prazo inexistente no catálogo. Fallback para o checklist determinístico. Métricas de bloqueio por versão de prompt. | ADR 0001, AI-ARCHITECTURE |
 | X3 — Pipeline de ingestão | Crawler restrito à allowlist sobre o validador da Fase 9, `SourceSnapshot` com hash, extração com trecho literal verificado, fila de revisão. | ADR 0001 |
 | X4 — Portugal e Espanha | Domínios oficiais com evidência, 2 a 3 categorias de visto por país (estudo, trabalho, rendimentos/nômade digital), revisão completa. | ADR 0001 |

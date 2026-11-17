@@ -19,6 +19,26 @@ model UserProfile {
   @@schema("catalog")
 }
 
+// Quanto do país está coberto com conteúdo revisado (ADR 0001).
+enum CoverageLevel {
+  FULL
+  PARTIAL
+  LINKS_ONLY
+  NONE
+
+  @@schema("catalog")
+}
+
+// Só REVIEWED compõe checklist e página pública de requisitos (ADR 0001).
+enum ReviewStatus {
+  REVIEWED
+  SOURCED_UNREVIEWED
+  NEEDS_REVIEW
+  DEPRECATED
+
+  @@schema("catalog")
+}
+
 enum CountryStatus {
   ACTIVE
   COMING_SOON
@@ -85,6 +105,7 @@ model Country {
   slug      String @unique
   name      String
   status    CountryStatus @default(COMING_SOON)
+  coverageLevel CoverageLevel @default(NONE)
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
   visas     Visa[]
@@ -115,6 +136,7 @@ model Visa {
   officialName     String?
   authorityName    String?
   lastReviewedAt   DateTime? @db.Timestamptz(3)
+  reviewStatus     ReviewStatus @default(SOURCED_UNREVIEWED)
   createdAt        DateTime @default(now()) @db.Timestamptz(3)
   updatedAt        DateTime @updatedAt @db.Timestamptz(3)
   country          Country @relation(fields: [countryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
@@ -139,6 +161,10 @@ model VisaRequirement {
   isMandatory     Boolean @default(false)
   sourceControlled Boolean @default(true)
   sortOrder       Int @default(0)
+  reviewStatus    ReviewStatus @default(SOURCED_UNREVIEWED)
+  lastVerifiedAt  DateTime? @db.Timestamptz(3)
+  // Trecho literal curto da fonte oficial que sustenta o requisito.
+  sourceQuote     String? @db.VarChar(500)
   createdAt       DateTime @default(now()) @db.Timestamptz(3)
   updatedAt       DateTime @updatedAt @db.Timestamptz(3)
   visa            Visa @relation(fields: [visaId], references: [id], onDelete: Restrict, onUpdate: Cascade)

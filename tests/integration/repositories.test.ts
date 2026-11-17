@@ -106,12 +106,32 @@ test("public repositories: publication, country isolation, ordering, source rela
                 description: "Text from PostgreSQL",
                 category: "OTHER",
                 requirementType: "INFORMATION",
+                reviewStatus: "REVIEWED",
                 sources: {
                   create: {
                     sourceId: requirementOnly.id,
                     relationType: "SUPPORTING",
                   },
                 },
+              },
+            });
+          }
+          // Conteúdo não revisado ou obsoleto nunca chega à página pública.
+          for (const reviewStatus of [
+            "SOURCED_UNREVIEWED",
+            "NEEDS_REVIEW",
+            "DEPRECATED",
+          ] as const) {
+            await tx.visaRequirement.create({
+              data: {
+                visaId: visa.id,
+                code: `hidden-${reviewStatus.toLowerCase()}`,
+                sortOrder: 0,
+                title: "Unreviewed requirement",
+                description: "Must not be public",
+                category: "OTHER",
+                requirementType: "INFORMATION",
+                reviewStatus,
               },
             });
           }
@@ -251,6 +271,7 @@ test("public repositories: publication, country isolation, ordering, source rela
               description: "Must never be silently truncated",
               category: "OTHER" as const,
               requirementType: "INFORMATION" as const,
+              reviewStatus: "REVIEWED" as const,
             })),
           });
           await assert.rejects(

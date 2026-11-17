@@ -32,6 +32,7 @@ async function main() {
       "tests/integration/repositories.test.ts",
       "tests/integration/source-verification.test.ts",
       "tests/integration/user-profile.test.ts",
+      "tests/integration/destinations.test.ts",
     ],
     { env: process.env, encoding: "utf8" },
   );

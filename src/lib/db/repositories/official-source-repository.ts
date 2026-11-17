@@ -5,6 +5,46 @@ import type { Prisma } from "../generated/client";
 import { getDatabaseClient } from "../client";
 import { catalogSlug, publicQuery } from "./public-query";
 
+export const publicSourceSelect = {
+  id: true,
+  title: true,
+  authority: true,
+  url: true,
+  hostname: true,
+  status: true,
+  editorialConsultedAt: true,
+  lastVerifiedAt: true,
+  lastSuccessfulVerificationAt: true,
+} satisfies Prisma.OfficialSourceSelect;
+
+type PublicSourceRow = Prisma.OfficialSourceGetPayload<{
+  select: typeof publicSourceSelect;
+}>;
+
+// Fontes arquivadas somem; só ACTIVE vira link, e apenas se o hostname estiver
+// no registro de domínios oficiais.
+export function toCatalogSource(source: PublicSourceRow): CatalogSource[] {
+  if (source.status === "ARCHIVED") return [];
+  return [
+    {
+      id: source.id,
+      title: source.title,
+      authority: source.authority,
+      hostname: source.hostname,
+      status: source.status,
+      url:
+        source.status === "ACTIVE"
+          ? safeSourceLink(source.url, source.hostname)
+          : null,
+      consultedAt:
+        source.editorialConsultedAt?.toISOString().slice(0, 10) ?? null,
+      lastVerifiedAt: source.lastVerifiedAt?.toISOString() ?? null,
+      lastSuccessfulVerificationAt:
+        source.lastSuccessfulVerificationAt?.toISOString() ?? null,
+    },
+  ];
+}
+
 export async function listPublicVisaSources(
   countrySlug: string,
   visaSlug: string,
@@ -31,42 +71,11 @@ export async function listPublicVisaSources(
           { requirements: { some: { requirement: { visa } } } },
         ],
       },
-      select: {
-        id: true,
-        title: true,
-        authority: true,
-        url: true,
-        hostname: true,
-        status: true,
-        editorialConsultedAt: true,
-        lastVerifiedAt: true,
-        lastSuccessfulVerificationAt: true,
-      },
+      select: publicSourceSelect,
       orderBy: [{ title: "asc" }, { id: "asc" }],
       take: 101,
     });
     if (sources.length > 100) throw new Error("CATALOG_SOURCE_LIMIT_EXCEEDED");
-    return sources.flatMap((source) =>
-      source.status === "ARCHIVED"
-        ? []
-        : [
-            {
-              id: source.id,
-              title: source.title,
-              authority: source.authority,
-              hostname: source.hostname,
-              status: source.status,
-              url:
-                source.status === "ACTIVE"
-                  ? safeSourceLink(source.url, source.hostname)
-                  : null,
-              consultedAt:
-                source.editorialConsultedAt?.toISOString().slice(0, 10) ?? null,
-              lastVerifiedAt: source.lastVerifiedAt?.toISOString() ?? null,
-              lastSuccessfulVerificationAt:
-                source.lastSuccessfulVerificationAt?.toISOString() ?? null,
-            },
-          ],
-    );
+    return sources.flatMap(toCatalogSource);
   });
 }

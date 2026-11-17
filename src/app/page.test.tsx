@@ -45,6 +45,7 @@ test("oferece navegação e CTAs com destinos existentes, sem rotas futuras queb
       [
         "/",
         "/login",
+        "/destinos",
         "/ireland",
         "/ireland/work",
         "/ireland/study",

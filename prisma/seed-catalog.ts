@@ -23,6 +23,7 @@ export async function seedCatalog(tx: Prisma.TransactionClient) {
       slug: "ireland",
       name: "Irlanda",
       status: "ACTIVE",
+      coverageLevel: "PARTIAL",
     },
   });
   const category = await tx.visaCategory.upsert({
@@ -49,6 +50,7 @@ export async function seedCatalog(tx: Prisma.TransactionClient) {
       shortDescription: criticalSkills.description,
       description: criticalSkills.description,
       status: "DRAFT",
+      reviewStatus: "REVIEWED",
       lastReviewedAt: new Date(`${criticalSkills.consultedAt}T00:00:00Z`),
     },
   });
@@ -93,6 +95,8 @@ export async function seedCatalog(tx: Prisma.TransactionClient) {
           importance: "HIGH",
           isMandatory: true,
           sourceControlled: true,
+          // Conteúdo pesquisado em 10/09/2026 e aprovado nas Fases 5 a 7.
+          reviewStatus: "REVIEWED",
           sortOrder: index,
         },
       });

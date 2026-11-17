@@ -2441,3 +2441,14 @@ Através de perfil, regras e resultados estruturados.
 Através de `ProcessSnapshot`, requisitos e versões utilizadas.
 
 Essas três capacidades são fundamentais para o diferencial técnico e de confiabilidade do Meu Visto Fácil.
+
+---
+
+# Atualização de 17/11/2026 — cobertura e revisão (ADR 0001)
+
+- `CoverageLevel` (`FULL`, `PARTIAL`, `LINKS_ONLY`, `NONE`) em `Country.coverageLevel`, padrão `NONE`. Destinos públicos exigem `status = ACTIVE` e cobertura diferente de `NONE`.
+- `ReviewStatus` (`REVIEWED`, `SOURCED_UNREVIEWED`, `NEEDS_REVIEW`, `DEPRECATED`) em `Visa.reviewStatus` e `VisaRequirement.reviewStatus`, padrão `SOURCED_UNREVIEWED`. A página pública e o futuro checklist usam só `REVIEWED`.
+- `VisaRequirement.lastVerifiedAt` e `VisaRequirement.sourceQuote` (até 500 caracteres; trecho literal curto da fonte).
+- Migration `20261117000000_multicountry_foundation`: aditiva; marca a Irlanda como `PARTIAL` e o conteúdo irlandês existente como `REVIEWED`, preservando o comportamento anterior.
+- Domínios oficiais ficam no código (`official-domains.ts`), não no banco; ver ajuste na ADR 0001.
+

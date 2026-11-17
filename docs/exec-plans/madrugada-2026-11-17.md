@@ -20,3 +20,13 @@ Antes de qualquer mudança, as três migrations existentes foram aplicadas no ba
 - Login bem-sucedido e criação de perfil passam a levar ao painel; a tela de sessão ativa ganhou "Ir para o painel".
 - Erro de banco mostra estado de erro com nova tentativa, sem detalhes técnicos.
 - Testes: serviço (3), página (4) e ajustes nos redirects de login e perfil. Suíte: 325 testes.
+
+## X1 — fundações multipaís
+
+- **Registro de domínios oficiais no código**, com país, autoridade, finalidade, evidência (tipo, URL de outro site, nota), data de revisão e aviso de reutilização. `safeSourceLink` passou a consultá-lo. Evidências da Irlanda conferidas por pesquisa em 17/11: página do departamento no gov.ie para enterprise.gov.ie e página de vistos do ireland.ie (Relações Exteriores) para o ISD. Testes exigem hostname exato, evidência HTTPS de outro domínio e bloqueiam subdomínios e parecidos.
+- **Schema:** `CoverageLevel`, `ReviewStatus` e campos novos; a migration foi testada em PostgreSQL local com dados pré-existentes (backfill da Irlanda conferido). O seed cria a Irlanda como `PARTIAL` e o Critical Skills como `REVIEWED`.
+- **Página pública mostra só requisitos `REVIEWED`.** Novo teste de integração confirma que requisitos não revisados, a revisar ou obsoletos não aparecem.
+- **Destinos:** `/destinos` lista países publicados com o nível de cobertura; `/destinos/[pais]` explica a cobertura, leva às páginas próprias quando existem (Irlanda) e lista os sites oficiais, só com link para domínios do registro. Sem checklist para destinos `LINKS_ONLY`. O cabeçalho troca "Irlanda" por "Destinos".
+- **Testes:** registro de domínios (4), páginas de destinos (3) e integração de destinos (1). Suíte: 336 testes unitários e 7 de integração no banco local.
+- **Decisão registrada:** allowlist no código em vez da tabela `OfficialDomain` da ADR 0001, por segurança; ajuste anotado na própria ADR.
+

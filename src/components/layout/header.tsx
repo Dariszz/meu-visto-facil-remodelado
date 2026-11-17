@@ -15,12 +15,12 @@ export function Header() {
           {[
             ["como-funciona", "Como funciona"],
             ["por-que-usar", "Por que usar"],
-            ["irlanda", "Irlanda"],
+            ["destinos", "Destinos"],
             ["sobre", "Sobre"],
           ].map(([id, label]) => (
             <Link
               key={id}
-              href={id === "irlanda" ? "/ireland" : `/#${id}`}
+              href={id === "destinos" ? "/destinos" : `/#${id}`}
               className="inline-flex min-h-11 items-center rounded-md text-sm text-muted-foreground hover:text-primary"
             >
               {label}

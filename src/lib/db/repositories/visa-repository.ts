@@ -65,6 +65,8 @@ export async function findPublicVisa(
         description: true,
         country: { select: { code: true, slug: true, name: true } },
         requirements: {
+          // Só conteúdo revisado chega à página pública (ADR 0001).
+          where: { reviewStatus: "REVIEWED" },
           orderBy: [{ sortOrder: "asc" }, { code: "asc" }],
           take: 201,
           select: {

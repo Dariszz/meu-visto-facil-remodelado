@@ -47,6 +47,8 @@ Instalação manual a partir do registro oficial shadcn/ui, estilo new-york, com
 - Dialog: primitivas Radix; título e descrição obrigatórios na composição; Escape, contenção e retorno de foco; botão Fechar em português; largura e altura limitadas à viewport.
 - Skeleton: visual de carregamento; agrupar sob status com nome acessível. Respeita movimento reduzido.
 
+Estados (adicionados em 16/11/2026): `StatePanel` em `src/components/feedback` para vazio e erro (role=alert no tom de erro, nível de heading configurável) e `LoadingRegion` para agrupar Skeletons sob status com nome acessível. Prévias em `/preview/estados`.
+
 Layout: Container, PageSection, Header e Footer. Brand é composição interna. RootLayout permanece Server Component; Select, Dialog e Progress contêm suas fronteiras client. Páginas devem ter um único main com id=main-content e tabIndex=-1 para o skip link.
 
 ## Verificação desta fase

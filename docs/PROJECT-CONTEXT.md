@@ -8,7 +8,7 @@ Reconstruir o Meu Visto Fácil sem reutilizar código do projeto antigo, preserv
 
 ## Ponto de retomada — 16/11/2026
 
-Projeto retomado após pausa desde 09/10/2026. Commits das Fases 4–9 enviados ao GitHub. Formatação pendente corrigida e finais de linha CRLF normalizados para LF. Fase 10 commitada; configuração Supabase hospedada e fluxo real de e-mail continuam pendentes. Fase 11 commitada com gate local; migration, role de perfil e integração PostgreSQL pendentes de execução no ambiente do usuário. Pasta `exports/` (pacote de agentes) removida por decisão do usuário. Próximo passo acordado: atualizar dependências por segurança (Next 16.4.6, Zod 4.6.7, Prisma 7.10.1 e versões menores). Deploy adiado por decisão do usuário até o produto estar construído. Fase 12 não iniciada.
+Projeto retomado após pausa desde 09/10/2026. Commits das Fases 4–9 enviados ao GitHub. Formatação pendente corrigida e finais de linha CRLF normalizados para LF. Fase 10 commitada; configuração Supabase hospedada e fluxo real de e-mail continuam pendentes. Fase 11 commitada com gate local; migration, role de perfil e integração PostgreSQL pendentes de execução no ambiente do usuário. Pasta `exports/` (pacote de agentes) removida por decisão do usuário. Próximo passo acordado: atualizar dependências por segurança (Next 16.4.6, Zod 4.6.7, Prisma 7.10.1 e versões menores). Deploy adiado por decisão do usuário até o produto estar construído. Fase 12 não iniciada. Ações manuais pendentes reunidas em [PENDENCIAS.md](PENDENCIAS.md).
 
 ## Ponto de retomada — 29/09/2026
 

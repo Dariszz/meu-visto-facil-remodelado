@@ -2,10 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, Lock, PencilLine } from "lucide-react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/cn";
 import {
   countPotentialQuestions,
@@ -47,7 +45,6 @@ export function QuestionnaireFlow({
     countPotentialQuestions(questions, answers),
     visible.length,
   );
-  const percent = Math.round((Math.min(step, total) / total) * 100);
 
   useEffect(() => {
     if (firstRender.current) {
@@ -78,134 +75,172 @@ export function QuestionnaireFlow({
     setStep((value) => Math.max(0, value - 1));
   }
 
-  return (
-    <div className="mx-auto w-full max-w-2xl">
-      <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground">
-        <span>
-          {isReview
-            ? "Revisão das respostas"
-            : `Pergunta ${step + 1} de ${total}`}
-        </span>
-        <span>{isReview ? 100 : percent}%</span>
-      </div>
-      <Progress
-        value={isReview ? 100 : percent}
-        aria-label="Progresso do questionário"
-        className="mt-3"
-      />
+  const answered = visible.filter(
+    (question, index) => index < step && isAnswered(answers[question.code]),
+  );
 
-      <Card className="mt-8 p-6 sm:p-10">
-        {current ? (
-          <form
-            noValidate
-            onSubmit={(event) => {
-              event.preventDefault();
-              next();
-            }}
-          >
-            <fieldset
-              aria-describedby={showError ? `${current.code}-error` : undefined}
+  return (
+    <div className="grid items-start gap-x-14 gap-y-8 lg:grid-cols-[minmax(0,1fr)_16rem]">
+      <div className="min-w-0 max-w-2xl">
+        <div className="flex items-baseline justify-between gap-4 text-sm tabular-nums">
+          <span className="font-medium">
+            {isReview
+              ? "Revisão das respostas"
+              : `Pergunta ${step + 1} de ${total}`}
+          </span>
+        </div>
+        <div aria-hidden="true" className="mt-3 flex h-1.5 gap-[3px]">
+          {Array.from({ length: total }, (_, index) => (
+            <span
+              key={index}
+              className={cn(
+                "flex-1 rounded-[2px] transition-colors duration-300",
+                isReview || index < step
+                  ? "bg-primary"
+                  : index === step
+                    ? "bg-primary/35"
+                    : "bg-border",
+              )}
+            />
+          ))}
+        </div>
+
+        <div className="mt-8 rounded-lg border bg-card p-6 sm:p-10">
+          {current ? (
+            <form
+              noValidate
+              onSubmit={(event) => {
+                event.preventDefault();
+                next();
+              }}
             >
-              <legend className="w-full">
-                <h2
-                  ref={headingRef}
-                  tabIndex={-1}
-                  className="text-2xl font-semibold leading-snug tracking-tight focus:outline-none sm:text-3xl"
-                >
-                  {current.question}
-                </h2>
-                {current.description && (
-                  <p className="mt-3 leading-relaxed text-muted-foreground">
-                    {current.description}
-                  </p>
-                )}
-                {!current.required && (
-                  <p className="mt-2 text-sm text-muted-foreground">Opcional</p>
-                )}
-              </legend>
-              <QuestionInput
-                question={current}
-                value={answers[current.code]}
-                invalid={showError}
-                onChange={(value) => answer(current.code, value)}
-              />
-            </fieldset>
-            {showError && (
+              <fieldset
+                aria-describedby={
+                  showError ? `${current.code}-error` : undefined
+                }
+              >
+                <legend className="w-full">
+                  <h2
+                    ref={headingRef}
+                    tabIndex={-1}
+                    className="text-2xl font-semibold leading-snug tracking-tight text-balance focus:outline-none sm:text-3xl"
+                  >
+                    {current.question}
+                  </h2>
+                  {current.description && (
+                    <p className="mt-3 leading-relaxed text-muted-foreground">
+                      {current.description}
+                    </p>
+                  )}
+                  {!current.required && (
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      Opcional
+                    </p>
+                  )}
+                </legend>
+                <QuestionInput
+                  question={current}
+                  value={answers[current.code]}
+                  invalid={showError}
+                  onChange={(value) => answer(current.code, value)}
+                />
+              </fieldset>
               <p
                 id={`${current.code}-error`}
-                role="alert"
-                className="mt-4 text-sm font-medium text-destructive"
+                aria-live="polite"
+                className="mt-4 min-h-5 text-sm font-medium text-destructive"
               >
-                Escolha uma opção para continuar.
+                {showError ? "Escolha uma opção para continuar." : ""}
               </p>
-            )}
-            <div className="mt-10 flex flex-wrap-reverse items-center justify-between gap-3">
-              <Button variant="ghost" onClick={back} disabled={step === 0}>
-                <ArrowLeft aria-hidden="true" /> Voltar
-              </Button>
-              <Button type="submit">
-                {!current.required && !isAnswered(answers[current.code])
-                  ? "Pular"
-                  : "Continuar"}
-                <ArrowRight aria-hidden="true" />
-              </Button>
-            </div>
-          </form>
-        ) : (
-          <div>
-            <h2
-              ref={headingRef}
-              tabIndex={-1}
-              className="text-2xl font-semibold tracking-tight focus:outline-none sm:text-3xl"
-            >
-              Confira suas respostas
-            </h2>
-            <p className="mt-3 leading-relaxed text-muted-foreground">
-              Você pode alterar qualquer resposta antes de ver os caminhos.
-            </p>
-            <dl className="mt-8 divide-y border-y">
-              {visible.map((question, index) => (
-                <div
-                  key={question.code}
-                  className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 py-4"
-                >
-                  <div className="min-w-0 flex-1">
-                    <dt className="text-sm text-muted-foreground">
-                      {question.question}
-                    </dt>
-                    <dd className="mt-1 font-medium">
-                      {formatAnswer(question, answers[question.code])}
-                    </dd>
-                  </div>
-                  <Button
-                    variant="link"
-                    size="sm"
-                    onClick={() => setStep(index)}
-                    aria-label={`Alterar resposta: ${question.question}`}
+              <div className="mt-6 flex flex-wrap-reverse items-center justify-between gap-3">
+                <Button variant="ghost" onClick={back} disabled={step === 0}>
+                  Voltar
+                </Button>
+                <Button type="submit">
+                  {!current.required && !isAnswered(answers[current.code])
+                    ? "Pular"
+                    : "Continuar"}
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <div>
+              <h2
+                ref={headingRef}
+                tabIndex={-1}
+                className="text-2xl font-semibold tracking-tight text-balance focus:outline-none sm:text-3xl"
+              >
+                Confira suas respostas
+              </h2>
+              <p className="mt-3 leading-relaxed text-muted-foreground">
+                Você pode alterar qualquer resposta antes de ver os caminhos.
+              </p>
+              <dl className="mt-8 divide-y border-y">
+                {visible.map((question, index) => (
+                  <div
+                    key={question.code}
+                    className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 py-4"
                   >
-                    <PencilLine aria-hidden="true" /> Alterar
-                  </Button>
-                </div>
-              ))}
-            </dl>
-            <div className="mt-10 flex flex-wrap-reverse items-center justify-between gap-3">
-              <Button variant="ghost" onClick={back}>
-                <ArrowLeft aria-hidden="true" /> Voltar
-              </Button>
-              <Button asChild size="lg">
-                <Link href={resultHref}>
-                  Ver caminhos possíveis <ArrowRight aria-hidden="true" />
-                </Link>
-              </Button>
+                    <div className="min-w-0 flex-1">
+                      <dt className="text-sm text-muted-foreground">
+                        {question.question}
+                      </dt>
+                      <dd className="mt-1 font-medium">
+                        {formatAnswer(question, answers[question.code])}
+                      </dd>
+                    </div>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => setStep(index)}
+                      aria-label={`Alterar resposta: ${question.question}`}
+                    >
+                      Alterar
+                    </Button>
+                  </div>
+                ))}
+              </dl>
+              <div className="mt-10 flex flex-wrap-reverse items-center justify-between gap-3">
+                <Button variant="ghost" onClick={back}>
+                  Voltar
+                </Button>
+                <Button asChild size="lg">
+                  <Link href={resultHref}>Ver caminhos possíveis</Link>
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
-      </Card>
+          )}
+        </div>
 
-      <p className="mt-6 flex items-center justify-center gap-2 text-center text-sm text-muted-foreground">
-        <Lock aria-hidden="true" className="size-4" />
-        Não pedimos documentos nem dados pessoais desnecessários.
-      </p>
+        <p className="mt-5 text-sm text-muted-foreground">
+          Não pedimos documentos nem dados pessoais desnecessários.
+        </p>
+      </div>
+
+      <aside
+        aria-label="Respostas até aqui"
+        className="hidden border-t border-foreground/15 pt-4 lg:block"
+      >
+        <h2 className="text-sm font-semibold">Suas respostas até aqui</h2>
+        {answered.length ? (
+          <dl className="mt-4 space-y-3 text-sm">
+            {answered.map((question) => (
+              <div key={question.code}>
+                <dt className="text-muted-foreground">
+                  {question.shortLabel ?? question.question}
+                </dt>
+                <dd className="font-medium">
+                  {formatAnswer(question, answers[question.code])}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        ) : (
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Cada resposta aparece aqui, montando o seu perfil.
+          </p>
+        )}
+      </aside>
     </div>
   );
 }

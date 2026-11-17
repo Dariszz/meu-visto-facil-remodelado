@@ -20,7 +20,11 @@ test("prévias não são indexadas e avisam que os dados são de exemplo", () =>
 
 test("índice lista as cinco prévias", () => {
   render(<PreviewIndexPage />);
-  expect(screen.getAllByRole("link", { name: /Abrir prévia/ })).toHaveLength(5);
+  expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(5);
+  expect(screen.getByRole("link", { name: "Questionário" })).toHaveAttribute(
+    "href",
+    "/preview/questionnaire",
+  );
 });
 
 test("painel e recomendações respeitam as variações por parâmetro", async () => {

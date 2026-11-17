@@ -1,4 +1,7 @@
-import type { ProcessStatus } from "@/features/checklists/types";
+import type {
+  ChecklistItemStatus,
+  ProcessStatus,
+} from "@/features/checklists/types";
 
 export type ProcessSummaryView = {
   id: string;
@@ -6,8 +9,8 @@ export type ProcessSummaryView = {
   visaName: string;
   countryName: string;
   status: ProcessStatus;
-  completedItems: number;
-  applicableItems: number;
+  // Status de cada item, na ordem do checklist, para a régua do processo.
+  itemStatuses: readonly ChecklistItemStatus[];
   nextStep: string | null;
   updatedAt: string;
   href: string;

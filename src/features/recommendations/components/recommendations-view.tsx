@@ -1,19 +1,10 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  CircleAlert,
-  CircleCheck,
-  CircleHelp,
-  Info,
-  PencilLine,
-  SearchX,
-} from "lucide-react";
+import { CircleAlert, CircleCheck, CircleHelp, SearchX } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Container } from "@/components/layout/container";
 import { StatePanel } from "@/components/feedback/state-panel";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/cn";
 import {
   compatibilityPresentation,
@@ -45,25 +36,22 @@ export function RecommendationsView({
             { label: "Recomendações" },
           ]}
         />
-        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+        <div className="grid items-start gap-x-14 gap-y-10 lg:grid-cols-[minmax(0,1fr)_17rem]">
           <div className="min-w-0">
-            <p className="text-sm font-medium text-primary">
-              Caminhos possíveis · {countryName}
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              O que pode fazer sentido para você
+            <h1 className="max-w-2xl pt-2 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+              Caminhos possíveis na {countryName}
             </h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">
-              Com base nas informações fornecidas, estes caminhos podem ser
-              compatíveis com o seu perfil. Veja por que cada um apareceu e o
-              que ainda precisa ser confirmado.
+              Com base nas suas respostas, estes caminhos podem ser compatíveis
+              com o seu perfil. Cada um mostra por que apareceu e o que ainda
+              precisa ser confirmado.
             </p>
 
             {sorted.length ? (
-              <ol className="mt-10 space-y-6">
+              <ol className="mt-10 space-y-8">
                 {sorted.map((recommendation) => (
                   <li key={recommendation.visaSlug}>
-                    <RecommendationCard recommendation={recommendation} />
+                    <RecommendationItem recommendation={recommendation} />
                   </li>
                 ))}
               </ol>
@@ -72,7 +60,7 @@ export function RecommendationsView({
                 className="mt-10"
                 icon={SearchX}
                 title="Nenhum caminho encontrado por enquanto"
-                description="Com as respostas atuais, não identificamos caminhos já revisados pela plataforma. Revise suas respostas ou explore o catálogo."
+                description="Com as respostas atuais, nenhum caminho já revisado pela plataforma se encaixa. Revise as respostas ou explore o catálogo."
                 action={
                   <>
                     <Button asChild>
@@ -89,15 +77,15 @@ export function RecommendationsView({
             {pendingCategories.length > 0 && (
               <section
                 aria-labelledby="pending-title"
-                className="mt-10 rounded-xl border border-dashed p-6"
+                className="mt-12 max-w-2xl border-t pt-6"
               >
                 <h2 id="pending-title" className="font-semibold">
                   Outros caminhos em preparação
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {pendingCategories.join(" e ")} ainda não fazem parte da
-                  análise. Estamos revisando as fontes oficiais antes de
-                  incluí-los.
+                  análise. As fontes oficiais estão em revisão antes de entrarem
+                  aqui.
                 </p>
               </section>
             )}
@@ -105,30 +93,26 @@ export function RecommendationsView({
 
           <aside
             aria-label="Seu perfil"
-            className="space-y-5 lg:sticky lg:top-6"
+            className="border-t border-foreground/15 pt-4 lg:sticky lg:top-6 lg:mt-2"
           >
-            <Card className="p-6">
-              <h2 className="font-semibold">Você informou que</h2>
-              <dl className="mt-4 space-y-4 text-sm">
-                {profileFacts.map((fact) => (
-                  <div key={fact.label}>
-                    <dt className="text-muted-foreground">{fact.label}</dt>
-                    <dd className="mt-1 font-medium">{fact.value}</dd>
-                  </div>
-                ))}
-              </dl>
-              <Button asChild variant="outline" className="mt-6 w-full">
-                <Link href={links.questionnaire}>
-                  <PencilLine aria-hidden="true" /> Revisar respostas
-                </Link>
-              </Button>
-            </Card>
-            <p className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
-              <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-              <span>
-                A compatibilidade é uma estimativa baseada em regras e fontes
-                oficiais. Não avalia elegibilidade nem garante aprovação.
-              </span>
+            <h2 className="text-sm font-semibold">Suas respostas</h2>
+            <dl className="mt-4 space-y-3 text-sm">
+              {profileFacts.map((fact) => (
+                <div key={fact.label}>
+                  <dt className="text-muted-foreground">{fact.label}</dt>
+                  <dd className="font-medium">{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <Link
+              href={links.questionnaire}
+              className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
+            >
+              Revisar respostas
+            </Link>
+            <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
+              A compatibilidade é uma estimativa baseada em regras e fontes
+              oficiais. Não avalia elegibilidade nem garante aprovação.
             </p>
           </aside>
         </div>
@@ -167,99 +151,95 @@ function CriteriaList({
   );
 }
 
-function RecommendationCard({
+function RecommendationItem({
   recommendation,
 }: {
   recommendation: RecommendationView;
 }) {
   const level = compatibilityPresentation[recommendation.compatibility];
-  const muted =
-    recommendation.compatibility === "LOW" ||
-    recommendation.compatibility === "NOT_RECOMMENDED";
   return (
-    <Card className={cn("overflow-hidden", muted && "bg-card/70")}>
-      <div className="p-6 sm:p-8">
-        <div className="flex flex-wrap items-center gap-3">
-          <span
-            className={cn(
-              "rounded-full px-3 py-1 text-xs font-semibold",
-              level.tone,
-            )}
-          >
-            {level.label}
-          </span>
-          <span className="text-sm text-muted-foreground">
-            {recommendation.categoryName}
-          </span>
-        </div>
-        <h2 className="mt-4 text-2xl font-semibold tracking-tight">
-          {recommendation.visaName}
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {level.description}
-        </p>
-        <p className="mt-4 leading-relaxed">{recommendation.summary}</p>
+    <article
+      aria-labelledby={`visa-${recommendation.visaSlug}`}
+      className={cn(
+        "rounded-r-lg border-l-4 bg-card py-6 pr-6 pl-6 sm:pr-8 sm:pl-8",
+        level.rule,
+      )}
+    >
+      <p className="text-sm">
+        <span className={cn("font-semibold", level.text)}>{level.label}</span>
+        <span className="text-muted-foreground">
+          {" "}
+          em {recommendation.categoryName.toLowerCase()}
+        </span>
+      </p>
+      <h2
+        id={`visa-${recommendation.visaSlug}`}
+        className="mt-2 text-2xl font-semibold tracking-tight text-balance"
+      >
+        {recommendation.visaName}
+      </h2>
+      <p className="mt-3 max-w-2xl leading-relaxed">{recommendation.summary}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{level.description}</p>
 
-        <div className="mt-6 grid gap-6 border-t pt-6 md:grid-cols-2">
-          <CriteriaList
-            title="Por que apareceu"
-            items={recommendation.matchedCriteria}
-            icon={CircleCheck}
-            iconClassName="text-success"
-          />
-          <CriteriaList
-            title="Ainda precisa confirmar"
-            items={recommendation.missingCriteria}
-            icon={CircleHelp}
-            iconClassName="text-primary"
-          />
-          {recommendation.blockers.length > 0 && (
-            <div className="rounded-lg bg-warning-subtle p-4 md:col-span-2">
-              <CriteriaList
-                title="Possíveis impedimentos"
-                items={recommendation.blockers}
-                icon={CircleAlert}
-                iconClassName="text-warning"
-              />
-            </div>
-          )}
-        </div>
-
-        {recommendation.sources.length > 0 && (
-          <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-            Fontes:{" "}
-            {recommendation.sources
-              .map((source) => `${source.title} (${source.authority})`)
-              .join("; ")}
-          </p>
+      <div className="mt-6 grid gap-6 border-t pt-6 md:grid-cols-2">
+        <CriteriaList
+          title="Por que apareceu"
+          items={recommendation.matchedCriteria}
+          icon={CircleCheck}
+          iconClassName="text-success"
+        />
+        <CriteriaList
+          title="Ainda precisa confirmar"
+          items={recommendation.missingCriteria}
+          icon={CircleHelp}
+          iconClassName="text-primary"
+        />
+        {recommendation.blockers.length > 0 && (
+          <div className="rounded-md bg-warning-subtle p-4 md:col-span-2">
+            <CriteriaList
+              title="Possíveis impedimentos"
+              items={recommendation.blockers}
+              icon={CircleAlert}
+              iconClassName="text-warning"
+            />
+          </div>
         )}
       </div>
-      <div className="flex flex-wrap gap-3 border-t bg-muted/40 px-6 py-4 sm:px-8">
+
+      {recommendation.sources.length > 0 && (
+        <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
+          Fonte:{" "}
+          {recommendation.sources
+            .map((source) => `${source.title} (${source.authority})`)
+            .join("; ")}
+        </p>
+      )}
+
+      <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
         {recommendation.startProcessHref && (
           <Button asChild>
             <Link
               href={recommendation.startProcessHref}
               aria-label={`Iniciar processo de ${recommendation.visaName}`}
             >
-              Iniciar processo <ArrowRight aria-hidden="true" />
+              Iniciar processo
             </Link>
           </Button>
         )}
         {recommendation.detailsHref ? (
-          <Button asChild variant="outline">
-            <Link
-              href={recommendation.detailsHref}
-              aria-label={`Ver detalhes de ${recommendation.visaName}`}
-            >
-              Ver detalhes
-            </Link>
-          </Button>
+          <Link
+            href={recommendation.detailsHref}
+            aria-label={`Ver detalhes de ${recommendation.visaName}`}
+            className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
+          >
+            Ver detalhes da permissão
+          </Link>
         ) : (
-          <Button variant="outline" disabled>
-            Detalhes em breve
-          </Button>
+          <p className="text-sm text-muted-foreground">
+            Página de detalhes em preparação
+          </p>
         )}
       </div>
-    </Card>
+    </article>
   );
 }

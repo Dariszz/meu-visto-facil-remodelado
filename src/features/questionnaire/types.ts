@@ -22,6 +22,8 @@ export type QuestionCondition = {
 export type QuestionView = {
   code: string;
   question: string;
+  // Rótulo curto para resumos (ex.: "Passaporte"); a pergunta completa é o padrão.
+  shortLabel?: string;
   description?: string;
   type: QuestionType;
   required: boolean;

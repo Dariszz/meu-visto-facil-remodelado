@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { expect, test } from "vitest";
 import { emptyDashboard, exampleDashboard } from "@/features/previews/fixtures";
 import { DashboardView } from "./dashboard-view";
@@ -10,15 +10,21 @@ const links = {
   recommendations: "/recomendacoes",
 };
 
-test("painel resume processos e permite continuar", () => {
+test("painel resume processos em texto e permite continuar", () => {
   render(<DashboardView data={exampleDashboard} links={links} />);
   expect(
     screen.getByRole("heading", { level: 1, name: "Olá, Marina" }),
   ).toBeInTheDocument();
-  const stats = screen.getByText("Processos ativos").closest("dl")!;
-  expect(within(stats).getByText("1")).toBeInTheDocument();
-  expect(within(stats).getByText("3")).toBeInTheDocument();
-  expect(within(stats).getByText("11")).toBeInTheDocument();
+  expect(
+    screen.getByText(
+      "Você tem 1 processo em andamento e 1 pausado. 3 itens concluídos, 11 em aberto.",
+    ),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("img", {
+      name: "2 de 8 itens concluídos, 1 em andamento",
+    }),
+  ).toBeInTheDocument();
   expect(
     screen.getByRole("link", {
       name: "Continuar Minha mudança com Critical Skills",
@@ -30,6 +36,9 @@ test("painel resume processos e permite continuar", () => {
     }),
   ).toBeInTheDocument();
   expect(screen.getByText("Pausado")).toBeInTheDocument();
+  expect(
+    screen.getByText("Conferir ocupação e remuneração"),
+  ).toBeInTheDocument();
 });
 
 test("painel vazio orienta o primeiro passo", () => {
@@ -37,7 +46,7 @@ test("painel vazio orienta o primeiro passo", () => {
   expect(
     screen.getByRole("heading", { name: "Nenhum processo salvo" }),
   ).toBeInTheDocument();
-  expect(screen.queryByText("Processos ativos")).not.toBeInTheDocument();
+  expect(screen.queryByRole("img")).not.toBeInTheDocument();
   expect(
     screen.getByRole("link", { name: "Responder questionário" }),
   ).toHaveAttribute("href", "/questionario");

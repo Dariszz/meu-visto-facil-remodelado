@@ -7,10 +7,7 @@ import type {
   ChecklistSourceRef,
   ProcessDetailView,
 } from "@/features/checklists/types";
-import {
-  calculateChecklistProgress,
-  findNextChecklistItem,
-} from "@/features/checklists/progress";
+import { findNextChecklistItem } from "@/features/checklists/progress";
 import type { DashboardView } from "@/features/dashboard/types";
 import type { QuestionView } from "@/features/questionnaire/types";
 import type {
@@ -55,6 +52,7 @@ const sources = {
 export const exampleQuestions: readonly QuestionView[] = [
   {
     code: "objective",
+    shortLabel: "Objetivo",
     question: "Qual é o seu principal objetivo na Irlanda?",
     description: "Isso define quais caminhos vamos analisar primeiro.",
     type: "SINGLE_SELECT",
@@ -84,6 +82,7 @@ export const exampleQuestions: readonly QuestionView[] = [
   },
   {
     code: "region",
+    shortLabel: "Passaporte",
     question: "De onde é o seu passaporte?",
     description:
       "Algumas exigências de entrada mudam conforme a nacionalidade. Não pedimos o número do documento.",
@@ -104,6 +103,7 @@ export const exampleQuestions: readonly QuestionView[] = [
   },
   {
     code: "has_employment_offer",
+    shortLabel: "Oferta de emprego",
     question: "Você já tem uma oferta de emprego na Irlanda?",
     type: "BOOLEAN",
     required: true,
@@ -111,6 +111,7 @@ export const exampleQuestions: readonly QuestionView[] = [
   },
   {
     code: "offer_duration",
+    shortLabel: "Duração da oferta",
     question: "Qual é a duração prevista da oferta?",
     type: "SINGLE_SELECT",
     required: true,
@@ -123,6 +124,7 @@ export const exampleQuestions: readonly QuestionView[] = [
   },
   {
     code: "occupation_area",
+    shortLabel: "Área",
     question: "Em qual área você atua?",
     type: "SINGLE_SELECT",
     required: true,
@@ -137,6 +139,7 @@ export const exampleQuestions: readonly QuestionView[] = [
   },
   {
     code: "education_level",
+    shortLabel: "Formação",
     question: "Qual é a sua formação mais alta?",
     type: "SINGLE_SELECT",
     required: false,
@@ -149,6 +152,7 @@ export const exampleQuestions: readonly QuestionView[] = [
   },
   {
     code: "family_in_country",
+    shortLabel: "Familiares na Irlanda",
     question: "Você tem familiares morando legalmente na Irlanda?",
     type: "BOOLEAN",
     required: true,
@@ -363,7 +367,6 @@ export const exampleProcess: ProcessDetailView = {
 const processItems = exampleProcess.categories.flatMap(
   (category) => category.items,
 );
-const processProgress = calculateChecklistProgress(processItems);
 
 export const exampleDashboard: DashboardView = {
   displayName: "Marina",
@@ -375,8 +378,7 @@ export const exampleDashboard: DashboardView = {
       visaName: exampleProcess.visaName,
       countryName: exampleProcess.countryName,
       status: "ACTIVE",
-      completedItems: processProgress.completed,
-      applicableItems: processProgress.applicable,
+      itemStatuses: processItems.map((item) => item.status),
       nextStep: findNextChecklistItem(processItems)?.title ?? null,
       updatedAt: "2026-11-14T00:00:00.000Z",
       href: previewLinks.process,
@@ -387,8 +389,14 @@ export const exampleDashboard: DashboardView = {
       visaName: "General Employment Permit",
       countryName: "Irlanda",
       status: "PAUSED",
-      completedItems: 1,
-      applicableItems: 6,
+      itemStatuses: [
+        "COMPLETED",
+        "PENDING",
+        "PENDING",
+        "PENDING",
+        "PENDING",
+        "PENDING",
+      ],
       nextStep: null,
       updatedAt: "2026-10-20T00:00:00.000Z",
       href: previewLinks.process,

@@ -49,6 +49,8 @@ Instalação manual a partir do registro oficial shadcn/ui, estilo new-york, com
 
 Estados (adicionados em 16/11/2026): `StatePanel` em `src/components/feedback` para vazio e erro (role=alert no tom de erro, nível de heading configurável) e `LoadingRegion` para agrupar Skeletons sob status com nome acessível. Prévias em `/preview/estados`.
 
+Progresso: `ItemStrip` (`src/features/checklists/components/item-strip.tsx`) é a régua de processo, um segmento por item colorido pelo status, com `role=img` e descrição textual. Preferir a régua a barras genéricas quando houver itens individuais. Telas privadas evitam cards repetidos, rótulos acima de títulos e setas em botões; ver a revisão em `exec-plans/ui-previews.md`.
+
 Layout: Container, PageSection, Header e Footer. Brand é composição interna. RootLayout permanece Server Component; Select, Dialog e Progress contêm suas fronteiras client. Páginas devem ter um único main com id=main-content e tabIndex=-1 para o skip link.
 
 ## Verificação desta fase

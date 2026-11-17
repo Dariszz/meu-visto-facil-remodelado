@@ -2,27 +2,31 @@ import { compatibilityLevels, type Compatibility } from "./types";
 
 export const compatibilityPresentation: Record<
   Compatibility,
-  { label: string; description: string; tone: string }
+  { label: string; description: string; text: string; rule: string }
 > = {
   HIGH: {
     label: "Alta compatibilidade",
     description: "Pode ser compatível com o seu perfil.",
-    tone: "bg-success-subtle text-success",
+    text: "text-success",
+    rule: "border-success",
   },
   MEDIUM: {
     label: "Compatibilidade média",
     description: "Pode fazer sentido, mas há pontos importantes a confirmar.",
-    tone: "bg-secondary text-secondary-foreground",
+    text: "text-primary",
+    rule: "border-primary/60",
   },
   LOW: {
     label: "Baixa compatibilidade",
     description: "Com as informações fornecidas, há pontos que dificultam.",
-    tone: "bg-warning-subtle text-warning",
+    text: "text-warning",
+    rule: "border-warning",
   },
   NOT_RECOMMENDED: {
     label: "Não indicado agora",
     description: "Com as informações fornecidas, há um impedimento relevante.",
-    tone: "bg-muted text-muted-foreground",
+    text: "text-muted-foreground",
+    rule: "border-input",
   },
 };
 

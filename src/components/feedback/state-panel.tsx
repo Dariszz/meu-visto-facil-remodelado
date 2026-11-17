@@ -26,29 +26,26 @@ export function StatePanel({
     <div
       role={tone === "error" ? "alert" : undefined}
       className={cn(
-        "flex flex-col items-center rounded-xl border border-dashed bg-card px-6 py-12 text-center sm:px-10",
-        tone === "error" && "border-destructive/40",
+        "rounded-lg border-l-4 border-primary/50 bg-card px-6 py-7 sm:px-8",
+        tone === "error" && "border-destructive",
         className,
       )}
     >
-      <span
-        aria-hidden="true"
-        className={cn(
-          "flex size-12 items-center justify-center rounded-full bg-secondary text-primary",
-          tone === "error" && "bg-destructive/10 text-destructive",
-        )}
-      >
-        <Icon className="size-6" strokeWidth={1.6} />
-      </span>
-      <Heading className="mt-5 text-lg font-semibold tracking-tight">
+      <Heading className="flex items-center gap-2.5 text-lg font-semibold tracking-tight text-balance">
+        <Icon
+          aria-hidden="true"
+          className={cn(
+            "size-5 shrink-0 text-primary",
+            tone === "error" && "text-destructive",
+          )}
+          strokeWidth={1.8}
+        />
         {title}
       </Heading>
-      <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
+      <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
         {description}
       </p>
-      {action && (
-        <div className="mt-6 flex flex-wrap justify-center gap-3">{action}</div>
-      )}
+      {action && <div className="mt-5 flex flex-wrap gap-3">{action}</div>}
     </div>
   );
 }

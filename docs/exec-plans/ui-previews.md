@@ -42,3 +42,15 @@ Nenhum dado real, endpoint, Server Action ou acesso a banco. Prévias não estã
 # Definition of Done
 
 Escopo entregue na branch `feature/telas-preview` para revisão do usuário. Sem iniciar a Fase 12.
+
+# Revisão de design — 16/11/2026
+
+O usuário achou o visual "com cara de IA". Revisão com as skills web-design-guidelines (diretrizes Vercel) e frontend-design.
+
+Padrões removidos: cards idênticos com a mesma sombra em todas as telas; rótulo colorido acima de cada título, às vezes com "·"; seta "→" em botões e links; blocos de número grande com rótulo pequeno no painel; ícone de brilhos; estados vazios centralizados com ícone em círculo; pílulas coloridas para todo status.
+
+Direção adotada, mantendo cores e tipografia do design system: o processo tratado como um dossiê. Elemento marcante único: `ItemStrip`, régua segmentada com um segmento por item do checklist, colorido pelo status (concluído, em andamento, pendente, não se aplica), agrupada por categoria no processo e repetida no painel e no progresso do questionário. O restante ficou contido: listas com divisórias no lugar de cards, situação como texto com ponto colorido, compatibilidade indicada por faixa lateral, resumo do painel em uma frase, painel lateral "Suas respostas até aqui" que monta o perfil durante o questionário.
+
+Diretrizes aplicadas: `text-balance` em títulos, `tabular-nums` em contagens, textos de carregamento com reticências, erro do questionário em região `aria-live="polite"`, filtro do checklist refletido em `?filtro=` (lido pela página no servidor), `touch-action: manipulation` e cor de toque definida globalmente. Não aplicado de propósito: Title Case em títulos e botões (convenção do inglês; em português o projeto usa caixa de frase).
+
+Verificação após a revisão: prettier, eslint, tsc, 313 testes e build passaram; capturas em 390 e 1440 px sem overflow horizontal.

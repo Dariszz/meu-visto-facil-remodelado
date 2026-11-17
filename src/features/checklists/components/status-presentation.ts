@@ -2,28 +2,26 @@ import type { ChecklistItemStatus, ProcessStatus } from "../types";
 
 export const itemStatusPresentation: Record<
   ChecklistItemStatus,
-  { label: string; tone: string }
+  { label: string; text: string }
 > = {
-  PENDING: { label: "Pendente", tone: "bg-muted text-muted-foreground" },
-  IN_PROGRESS: {
-    label: "Em andamento",
-    tone: "bg-warning-subtle text-warning",
-  },
-  COMPLETED: { label: "Concluído", tone: "bg-success-subtle text-success" },
-  NOT_APPLICABLE: {
-    label: "Não se aplica",
-    tone: "bg-muted text-muted-foreground line-through",
-  },
+  PENDING: { label: "Pendente", text: "text-muted-foreground" },
+  IN_PROGRESS: { label: "Em andamento", text: "text-warning" },
+  COMPLETED: { label: "Concluído", text: "text-success" },
+  NOT_APPLICABLE: { label: "Não se aplica", text: "text-muted-foreground" },
 };
 
 export const processStatusPresentation: Record<
   ProcessStatus,
-  { label: string; tone: string }
+  { label: string; text: string; dot: string }
 > = {
-  ACTIVE: { label: "Em andamento", tone: "bg-accent text-accent-foreground" },
-  PAUSED: { label: "Pausado", tone: "bg-warning-subtle text-warning" },
-  COMPLETED: { label: "Concluído", tone: "bg-success-subtle text-success" },
-  ARCHIVED: { label: "Arquivado", tone: "bg-muted text-muted-foreground" },
+  ACTIVE: { label: "Em andamento", text: "text-primary", dot: "bg-primary" },
+  PAUSED: { label: "Pausado", text: "text-warning", dot: "bg-warning" },
+  COMPLETED: { label: "Concluído", text: "text-success", dot: "bg-success" },
+  ARCHIVED: {
+    label: "Arquivado",
+    text: "text-muted-foreground",
+    dot: "bg-muted-foreground",
+  },
 };
 
 export function formatLongDate(value: string): string {

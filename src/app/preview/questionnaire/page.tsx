@@ -18,18 +18,15 @@ export default function QuestionnairePreviewPage() {
             { label: "Questionário" },
           ]}
         />
-        <div className="mx-auto max-w-2xl pb-10 text-center">
-          <p className="text-sm font-medium text-primary">
-            Seu perfil migratório · Irlanda
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Conte um pouco sobre seus planos
+        <header className="max-w-2xl pt-2 pb-10">
+          <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+            Seus planos para a Irlanda
           </h1>
           <p className="mt-4 leading-relaxed text-muted-foreground">
-            Leva poucos minutos. As próximas perguntas mudam conforme suas
-            respostas.
+            Algumas perguntas sobre objetivo, trabalho e formação. As próximas
+            mudam conforme as suas respostas.
           </p>
-        </div>
+        </header>
         <QuestionnaireFlow
           questions={exampleQuestions}
           resultHref={previewLinks.recommendations}

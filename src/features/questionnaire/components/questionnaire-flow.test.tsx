@@ -17,7 +17,7 @@ test("pergunta obrigatória sem resposta mostra erro e não avança", () => {
   const user = setup();
   expect(screen.getByText("Pergunta 1 de 7")).toBeInTheDocument();
   user.click(continueButton());
-  expect(screen.getByRole("alert")).toHaveTextContent(
+  expect(document.getElementById("objective-error")).toHaveTextContent(
     "Escolha uma opção para continuar.",
   );
   expect(

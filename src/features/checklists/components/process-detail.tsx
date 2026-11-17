@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { CalendarDays, Info } from "lucide-react";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Container } from "@/components/layout/container";
 import { cn } from "@/lib/cn";
 import type { ChecklistItemStatus, ProcessDetailView } from "../types";
+import type { ChecklistFilter } from "../filters";
 import { ChecklistWorkspace } from "./checklist-workspace";
 import {
   formatLongDate,
@@ -13,10 +13,12 @@ import {
 export function ProcessDetail({
   process,
   dashboardHref,
+  initialFilter,
   onStatusChange,
 }: {
   process: ProcessDetailView;
   dashboardHref: string;
+  initialFilter?: ChecklistFilter;
   // Deve ser uma Server Action: este componente roda no servidor.
   onStatusChange?: (itemId: string, status: ChecklistItemStatus) => void;
 }) {
@@ -30,59 +32,65 @@ export function ProcessDetail({
             { label: process.title },
           ]}
         />
-        <header className="border-b pb-8">
-          <div className="flex flex-wrap items-center gap-3">
-            <span
-              className={cn(
-                "rounded-md px-2.5 py-0.5 text-xs font-semibold",
-                status.tone,
-              )}
-            >
-              {status.label}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              {process.countryName}
-            </span>
-          </div>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+        <header className="pt-2 pb-8">
+          <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
             {process.title}
           </h1>
-          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            {process.visaHref ? (
-              <Link
-                href={process.visaHref}
-                className="inline-flex min-h-11 items-center font-medium text-primary underline underline-offset-4"
+          <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-3 text-sm">
+            <div>
+              <dt className="sr-only">Situação</dt>
+              <dd
+                className={cn(
+                  "flex items-center gap-2 font-medium",
+                  status.text,
+                )}
               >
-                {process.visaName}
-              </Link>
-            ) : (
-              <span className="inline-flex min-h-11 items-center">
-                {process.visaName}
-              </span>
-            )}
-            <span className="inline-flex min-h-11 items-center gap-2">
-              <CalendarDays aria-hidden="true" className="size-4" />
-              Iniciado em {formatLongDate(process.startedAt)}
-            </span>
-          </div>
+                <span
+                  aria-hidden="true"
+                  className={cn("size-2 rounded-full", status.dot)}
+                />
+                {status.label}
+              </dd>
+            </div>
+            <div>
+              <dt className="sr-only">Permissão</dt>
+              <dd>
+                {process.visaHref ? (
+                  <Link
+                    href={process.visaHref}
+                    className="text-primary underline underline-offset-4"
+                  >
+                    {process.visaName}
+                  </Link>
+                ) : (
+                  process.visaName
+                )}
+                <span className="text-muted-foreground">
+                  , {process.countryName}
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt className="sr-only">Início</dt>
+              <dd className="text-muted-foreground">
+                Iniciado em {formatLongDate(process.startedAt)}
+              </dd>
+            </div>
+          </dl>
         </header>
 
-        <div className="mt-8">
-          <ChecklistWorkspace
-            categories={process.categories}
-            sources={process.sources}
-            onStatusChange={onStatusChange}
-          />
-        </div>
+        <ChecklistWorkspace
+          categories={process.categories}
+          sources={process.sources}
+          initialFilter={initialFilter}
+          onStatusChange={onStatusChange}
+        />
 
-        <p className="mt-12 flex max-w-3xl gap-3 rounded-lg border bg-card p-4 text-sm leading-relaxed text-muted-foreground">
-          <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-          <span>
-            Checklist organizado a partir de fontes oficiais consultadas em{" "}
-            {formatLongDate(process.referenceDate)}. É informativo, não avalia
-            elegibilidade nem garante aprovação. Confirme as condições com as
-            autoridades oficiais antes de tomar decisões.
-          </span>
+        <p className="mt-14 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          Checklist organizado a partir de fontes oficiais consultadas em{" "}
+          {formatLongDate(process.referenceDate)}. É informativo: não avalia
+          elegibilidade nem garante aprovação. Confirme as condições com as
+          autoridades oficiais antes de decidir.
         </p>
       </Container>
     </main>

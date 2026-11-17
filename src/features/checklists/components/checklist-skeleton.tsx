@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function ChecklistSkeleton() {
   return (
-    <LoadingRegion label="Carregando checklist">
+    <LoadingRegion label="Carregando checklist…">
       <Skeleton className="h-9 w-72 max-w-full" />
       <div className="mt-8 space-y-6">
         {[0, 1, 2].map((key) => (

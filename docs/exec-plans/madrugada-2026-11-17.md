@@ -48,3 +48,17 @@ Antes de qualquer mudança, as três migrations existentes foram aplicadas no ba
 - **Rota `/recommendations`** autenticada: sem perfil → criar perfil; questionário incompleto → questionário; pronto → caminhos ordenados e resumo das respostas. Salvar o questionário agora leva às recomendações, e o painel mostra "Ver recomendações" quando o questionário está completo. "Iniciar processo" fica oculto até a Fase 19.
 - **Testes (Fase 18):** 14 cenários do motor (inclusive um que verifica que nenhum texto promete elegibilidade), serviço (2) e página (3). Suíte: 370 testes de unidade; build ok.
 
+
+## Portugal e Espanha — pré-cadastro
+
+- **Domínios com status.** Cada domínio do registro agora é `VERIFIED` (revisado por uma pessoa) ou `PENDING_REVIEW`. Só `VERIFIED` vira link; um teste garante que domínio pendente nunca vira link.
+- **Pendentes cadastrados com evidência:** aima.gov.pt e vistos.mne.gov.pt (Portugal), www.inclusion.gob.es e www.exteriores.gob.es (Espanha). A pesquisa usou só buscas na web, porque não dava para abrir páginas sem a sua aprovação. Por isso nada foi marcado como revisado.
+- **Seed:** Portugal e Espanha entram como `COMING_SOON` e `LINKS_ONLY`, com as páginas de entrada oficiais. Não aparecem em `/destinos` até mudarem para `ACTIVE`.
+- **Pesquisa para revisão:** `docs/research/portugal.md` e `docs/research/spain.md` listam órgãos, fluxo geral e tipos de visto a conferir. Ponto de atenção: o visto de procura de trabalho de Portugal pode ter mudado em 2025.
+- **Testes:** suíte com 371 testes de unidade e 9 de integração no banco local; build ok.
+
+## Estado final
+
+- Branch `feature/madrugada` no GitHub, sem merge no `main`.
+- Gate completo verde: prettier, eslint, tsc, vitest (371) e build. Integração (9) verde em PostgreSQL 18 local.
+- O que depende de você está em [PENDENCIAS.md](../PENDENCIAS.md), seções 2 a 4.

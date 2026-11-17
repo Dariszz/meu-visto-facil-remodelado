@@ -45,12 +45,20 @@ Detalhes em [AUTHENTICATION.md](AUTHENTICATION.md).
 - [ ] Testar `/profile` com duas contas diferentes
 - [ ] Registrar o resultado em [phase-10-authentication.md](exec-plans/phase-10-authentication.md)
 
-## 4. Decisões abertas
+## 4. Revisar a madrugada de 17/11/2026 (branch `feature/madrugada`)
+
+Resumo em [madrugada-2026-11-17.md](exec-plans/madrugada-2026-11-17.md). Nada foi juntado com o `main`.
+
+- [ ] Revisar a branch e decidir se junta com o `main`
+- [ ] Portugal e Espanha: abrir as páginas de evidência de [portugal.md](research/portugal.md) e [spain.md](research/spain.md), confirmar os domínios e trocar `PENDING_REVIEW` por `VERIFIED` em `src/features/sources/official-domains.ts`. Só depois mudar os países para `ACTIVE`
+- [ ] Revisar o conteúdo do General Employment Permit (hoje ele fica limitado a compatibilidade média nas recomendações)
+
+## 5. Decisões abertas
 
 - [ ] Manter ou remover `.agents/skills/` (skills do Codex). O `AGENTS.md` continua sendo o guia principal do projeto.
 - [x] Revisar as prévias visuais das próximas telas: aprovadas em 16/11/2026 e integradas ao `main` (ver `/preview`).
 
-## 5. Sem urgência (acompanhar)
+## 6. Sem urgência (acompanhar)
 
 - Deploy adiado por decisão do usuário até o produto estar construído.
 - Node 26 já é LTS; migrar depois que o restante estiver estável.

@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 import {
   findOfficialDomain,
+  isVerifiedOfficialHostname,
   officialDomains,
   officialDomainsForCountry,
 } from "./official-domains";
@@ -33,7 +34,20 @@ test("domínios por país", () => {
     "enterprise.gov.ie",
     "www.irishimmigration.ie",
   ]);
+  expect(officialDomainsForCountry("PT").map((d) => d.hostname)).toEqual([
+    "aima.gov.pt",
+    "vistos.mne.gov.pt",
+  ]);
   expect(officialDomainsForCountry("ZZ")).toEqual([]);
+});
+
+test("domínio pendente de revisão nunca vira link", () => {
+  expect(findOfficialDomain("aima.gov.pt")?.status).toBe("PENDING_REVIEW");
+  expect(isVerifiedOfficialHostname("aima.gov.pt")).toBe(false);
+  expect(
+    safeSourceLink("https://aima.gov.pt/pt/viver", "aima.gov.pt"),
+  ).toBeNull();
+  expect(isVerifiedOfficialHostname("enterprise.gov.ie")).toBe(true);
 });
 
 test("política de links segue o registro", () => {

@@ -118,6 +118,74 @@ export async function seedCatalog(tx: Prisma.TransactionClient) {
     }
   }
   await seedQuestions(tx, country.id);
+  await seedPendingDestinations(tx);
+}
+
+// Portugal e Espanha (17/11/2026): só links oficiais, ainda não publicados.
+// Ficam COMING_SOON até a revisão dos domínios em official-domains.ts; depois
+// basta mudar o status do país para ACTIVE.
+const pendingDestinations = [
+  {
+    id: "seed-country-pt",
+    code: "PT",
+    slug: "portugal",
+    name: "Portugal",
+    sources: [
+      {
+        title: "Viver em Portugal",
+        authority: "Agência para a Integração, Migrações e Asilo (AIMA)",
+        url: "https://aima.gov.pt/pt/viver",
+      },
+      {
+        title: "Vistos nacionais: tipos de visto",
+        authority: "Ministério dos Negócios Estrangeiros (MNE)",
+        url: "https://vistos.mne.gov.pt/pt/vistos-nacionais/informacao-geral/tipo-de-visto",
+      },
+    ],
+  },
+  {
+    id: "seed-country-es",
+    code: "ES",
+    slug: "spain",
+    name: "Espanha",
+    sources: [
+      {
+        title: "Migrações: viver na Espanha",
+        authority: "Secretaría de Estado de Migraciones",
+        url: "https://www.inclusion.gob.es/en/web/migraciones",
+      },
+    ],
+  },
+] as const;
+
+async function seedPendingDestinations(tx: Prisma.TransactionClient) {
+  for (const destination of pendingDestinations) {
+    const country = await tx.country.upsert({
+      where: { code: destination.code },
+      update: {},
+      create: {
+        id: destination.id,
+        code: destination.code,
+        slug: destination.slug,
+        name: destination.name,
+        status: "COMING_SOON",
+        coverageLevel: "LINKS_ONLY",
+      },
+    });
+    for (const source of destination.sources) {
+      await tx.officialSource.upsert({
+        where: { countryId_url: { countryId: country.id, url: source.url } },
+        update: {},
+        create: {
+          countryId: country.id,
+          title: source.title,
+          authority: source.authority,
+          url: source.url,
+          hostname: new URL(source.url).hostname,
+        },
+      });
+    }
+  }
 }
 
 // Questionário da Irlanda (Fase 13). Create-only, como o restante do seed.

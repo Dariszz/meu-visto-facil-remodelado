@@ -13,8 +13,14 @@ export type DomainEvidenceType =
   // Link a partir de fonte intergovernamental oficial (ex.: EU Immigration Portal).
   | "INTERGOVERNMENTAL_LINK";
 
+// VERIFIED: revisado por uma pessoa; pode virar link e ser consultado pelo
+// servidor. PENDING_REVIEW: evidência levantada, aguardando revisão humana;
+// nunca vira link nem é consultado.
+export type DomainReviewStatus = "VERIFIED" | "PENDING_REVIEW";
+
 export type OfficialDomain = {
   hostname: string;
+  status: DomainReviewStatus;
   countryCode: string;
   authority: string;
   // O que este domínio cobre, em linguagem do usuário.
@@ -33,6 +39,7 @@ export type OfficialDomain = {
 export const officialDomains: readonly OfficialDomain[] = [
   {
     hostname: "enterprise.gov.ie",
+    status: "VERIFIED",
     countryCode: "IE",
     authority: "Department of Enterprise, Tourism and Employment (DETE)",
     purpose: "Autorizações de trabalho (employment permits)",
@@ -46,6 +53,7 @@ export const officialDomains: readonly OfficialDomain[] = [
   },
   {
     hostname: "www.irishimmigration.ie",
+    status: "VERIFIED",
     countryCode: "IE",
     authority: "Immigration Service Delivery (ISD)",
     purpose: "Vistos de entrada e permissões de residência",
@@ -57,6 +65,67 @@ export const officialDomains: readonly OfficialDomain[] = [
     reviewedAt: "2026-11-17",
     reuseNote: "Conteúdo governamental irlandês; resumir e citar com link.",
   },
+  // Portugal e Espanha: pesquisa de 17/11/2026, aguardando revisão.
+  {
+    hostname: "aima.gov.pt",
+    status: "PENDING_REVIEW",
+    countryCode: "PT",
+    authority: "Agência para a Integração, Migrações e Asilo (AIMA)",
+    purpose: "Autorizações de residência e integração de migrantes",
+    evidence: {
+      type: "PARENT_PORTAL",
+      url: "https://www.gov.pt/noticias/agencia-para-a-integracao-migracoes-e-asilo-aima-inicia-funcoes",
+      note: "O portal gov.pt anuncia a AIMA como agência responsável por acolhimento, integração e asilo desde 29/10/2023. Domínio com sufixo gov.pt.",
+    },
+    reviewedAt: "2026-11-17",
+    reuseNote:
+      "Conferir aviso legal do site antes de reutilizar; resumir e citar com link.",
+  },
+  {
+    hostname: "vistos.mne.gov.pt",
+    status: "PENDING_REVIEW",
+    countryCode: "PT",
+    authority: "Ministério dos Negócios Estrangeiros (MNE)",
+    purpose: "Vistos nacionais e Schengen para entrar em Portugal",
+    evidence: {
+      type: "PARENT_PORTAL",
+      url: "https://acaosocial.cm-porto.pt/files/uploads/cms/02_EN_caderno_Regularizacao_VF.pdf",
+      note: "Guia de integração de migrantes da Câmara Municipal do Porto indica vistos.mne.gov.pt para tipos de visto e onde pedir. Subdomínio do MNE (mne.gov.pt).",
+    },
+    reviewedAt: "2026-11-17",
+    reuseNote:
+      "Conferir aviso legal do site antes de reutilizar; resumir e citar com link.",
+  },
+  {
+    hostname: "www.inclusion.gob.es",
+    status: "PENDING_REVIEW",
+    countryCode: "ES",
+    authority: "Secretaría de Estado de Migraciones (Ministerio de Inclusión)",
+    purpose: "Autorizações de residência e trabalho na Espanha",
+    evidence: {
+      type: "INTERGOVERNMENTAL_LINK",
+      url: "https://home-affairs.ec.europa.eu/policies/migration-and-asylum/eu-immigration-portal/who-does-what/spain_en",
+      note: "Página da Comissão Europeia sobre quem faz o quê na Espanha descreve a Secretaria de Estado de Migrações como órgão da política migratória.",
+    },
+    reviewedAt: "2026-11-17",
+    reuseNote:
+      "Conferir aviso legal do site antes de reutilizar; resumir e citar com link.",
+  },
+  {
+    hostname: "www.exteriores.gob.es",
+    status: "PENDING_REVIEW",
+    countryCode: "ES",
+    authority: "Ministerio de Asuntos Exteriores, Unión Europea y Cooperación",
+    purpose: "Vistos nacionais pedidos nos consulados da Espanha",
+    evidence: {
+      type: "PARENT_PORTAL",
+      url: "https://inclusion.gob.es/gl/web/migraciones/informacion-util/otra-informacion",
+      note: "A área de migrações do Ministerio de Inclusión aponta o Ministerio de Asuntos Exteriores para informação sobre vistos.",
+    },
+    reviewedAt: "2026-11-17",
+    reuseNote:
+      "Conferir aviso legal do site antes de reutilizar; resumir e citar com link.",
+  },
 ];
 
 const byHostname = new Map(
@@ -65,6 +134,11 @@ const byHostname = new Map(
 
 export function findOfficialDomain(hostname: string): OfficialDomain | null {
   return byHostname.get(hostname) ?? null;
+}
+
+// Só domínios revisados por uma pessoa entram na allowlist efetiva.
+export function isVerifiedOfficialHostname(hostname: string): boolean {
+  return findOfficialDomain(hostname)?.status === "VERIFIED";
 }
 
 export function officialDomainsForCountry(

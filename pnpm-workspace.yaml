@@ -4,3 +4,9 @@ allowBuilds:
   esbuild: true
   prisma: true
   unrs-resolver: true
+
+# Correções de segurança em dependências transitivas (pnpm audit, 16/11/2026).
+# Remover quando prisma e next trouxerem as versões corrigidas.
+overrides:
+  fast-uri: "^3.1.9"
+  source-map-js: "^1.2.2"

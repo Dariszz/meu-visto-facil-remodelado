@@ -44,7 +44,7 @@ test("trabalho abre Critical Skills e preserva General Employment indisponível"
   ).toHaveAttribute("href", "/ireland/visas/critical-skills-employment-permit");
   expect(
     screen.getByRole("button", {
-      name: "Ver detalhes de General Employment Permit — em breve",
+      name: "Detalhes de General Employment Permit em breve",
     }),
   ).toBeDisabled();
   expect(

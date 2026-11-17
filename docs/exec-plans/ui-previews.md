@@ -54,3 +54,16 @@ Direção adotada, mantendo cores e tipografia do design system: o processo trat
 Diretrizes aplicadas: `text-balance` em títulos, `tabular-nums` em contagens, textos de carregamento com reticências, erro do questionário em região `aria-live="polite"`, filtro do checklist refletido em `?filtro=` (lido pela página no servidor), `touch-action: manipulation` e cor de toque definida globalmente. Não aplicado de propósito: Title Case em títulos e botões (convenção do inglês; em português o projeto usa caixa de frase).
 
 Verificação após a revisão: prettier, eslint, tsc, 313 testes e build passaram; capturas em 390 e 1440 px sem overflow horizontal.
+
+# Extensão ao projeto inteiro — 16/11/2026
+
+Aprovada a nova direção, o usuário pediu a mesma correção em todas as telas antes do merge.
+
+- Página inicial reescrita: o destaque passou a ser uma amostra real do checklist de Critical Skills com a régua do processo, no lugar do card conceitual. Saíram os rótulos em caixa alta acima dos títulos, a frase colorida no título principal, a faixa de ícones, os ícones decorativos, as setas e o bloco de fundo colorido. Seções alternam texto e listas com divisórias; a numeração ficou só onde há sequência real (etapas e camadas de IA).
+- Irlanda e categorias: listas com divisórias no lugar de cards com ícones; sem selo acima do título; "Detalhes em breve" no lugar de "Ver detalhes — em breve"; links de volta sem seta.
+- Critical Skills: sem selo "Irlanda · Trabalho" (o caminho já está na navegação); requisitos e fontes em listas; quadros laterais e de permissões sem ícone decorativo; etapas numeradas em texto.
+- Autenticação: removido o rótulo em caixa alta "Sua conta"; o contêiner do formulário perdeu a sombra.
+- Design system: títulos sem selo, sem numeração "01 /" e sem caixa alta.
+- Rodapé e marca: sem travessão espaçado.
+
+Verificação: prettier, eslint, tsc, 313 testes e build passaram. Capturas em 390 e 1440 px da home, Irlanda, Trabalho, Critical Skills (com dados de teste em rota temporária, removida), login e design system, sem overflow horizontal.

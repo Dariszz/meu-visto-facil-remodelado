@@ -40,7 +40,7 @@ Detalhes em [AUTHENTICATION.md](AUTHENTICATION.md).
 ## 4. Decisões abertas
 
 - [ ] Manter ou remover `.agents/skills/` (skills do Codex). O `AGENTS.md` continua sendo o guia principal do projeto.
-- [ ] Revisar as prévias visuais das próximas telas (dashboard, questionário, recomendações e checklist) na branch `feature/telas-preview`, em `/preview`.
+- [x] Revisar as prévias visuais das próximas telas: aprovadas em 16/11/2026 e integradas ao `main` (ver `/preview`).
 
 ## 5. Sem urgência (acompanhar)
 

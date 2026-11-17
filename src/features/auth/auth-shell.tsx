@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export function AuthShell({
   title,
@@ -22,18 +21,17 @@ export function AuthShell({
       >
         Voltar ao início
       </Link>
-      <Card className="mt-6">
-        <CardHeader className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-            Sua conta
-          </p>
-          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+      <div className="mt-6 rounded-lg border bg-card">
+        <div className="space-y-3 p-6 sm:p-8">
+          <h1 className="text-3xl font-semibold tracking-tight text-balance">
+            {title}
+          </h1>
           <p className="text-sm leading-relaxed text-muted-foreground">
             {description}
           </p>
-        </CardHeader>
-        <CardContent>{children}</CardContent>
-      </Card>
+        </div>
+        <div className="px-6 pb-6 sm:px-8 sm:pb-8">{children}</div>
+      </div>
     </main>
   );
 }

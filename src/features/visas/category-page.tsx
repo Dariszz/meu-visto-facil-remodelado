@@ -1,11 +1,8 @@
 import Link from "next/link";
-import { ArrowLeft, BookOpen } from "lucide-react";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Container } from "@/components/layout/container";
 import { PageSection } from "@/components/layout/page-section";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 
 import type { Country, VisaCategory, VisaSummary } from "./types";
 
@@ -29,8 +26,7 @@ export function CategoryPage({
           ]}
         />
         <PageSection className="pt-4">
-          <Badge variant="secondary">Explore a Irlanda</Badge>
-          <h1 className="mt-5 text-display font-semibold">
+          <h1 className="max-w-3xl text-display font-semibold text-balance">
             {category.name} na {country.name}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
@@ -53,19 +49,24 @@ export function CategoryPage({
                 oficiais. A apresentação de General Employment ainda está em
                 preparação.
               </p>
-              <div className="mt-8 grid gap-6 lg:grid-cols-2">
+              <ul className="mt-8 divide-y border-y">
                 {summaries.map((visa) => (
-                  <Card key={visa.slug} className="flex flex-col p-6 sm:p-8">
-                    <p className="text-sm font-medium text-primary">
-                      {visa.type} · {category.name}
-                    </p>
-                    <h3 className="mt-4 text-2xl font-semibold tracking-tight">
-                      {visa.name}
-                    </h3>
-                    <p className="mt-4 leading-relaxed text-muted-foreground">
-                      {visa.shortDescription}
-                    </p>
-                    <div className="mt-auto pt-6">
+                  <li
+                    key={visa.slug}
+                    className="grid gap-x-10 gap-y-4 py-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+                  >
+                    <div>
+                      <h3 className="text-2xl font-semibold tracking-tight text-balance">
+                        {visa.name}
+                      </h3>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {visa.type}
+                      </p>
+                      <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
+                        {visa.shortDescription}
+                      </p>
+                    </div>
+                    <div>
                       {visa.detailsHref ? (
                         <Button asChild variant="outline">
                           <Link
@@ -79,23 +80,21 @@ export function CategoryPage({
                         <Button
                           disabled
                           variant="outline"
-                          aria-label={`Ver detalhes de ${visa.name} — em breve`}
+                          aria-label={`Detalhes de ${visa.name} em breve`}
                         >
-                          Ver detalhes — em breve
+                          Detalhes em breve
                         </Button>
                       )}
                     </div>
-                  </Card>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </>
           ) : (
-            <div className="mt-6 max-w-2xl rounded-xl bg-secondary p-6 sm:p-8">
-              <BookOpen aria-hidden="true" className="size-7 text-primary" />
-              <p className="mt-4 leading-relaxed">
-                Estamos preparando esta parte do catálogo. Quando houver
-                conteúdo revisado, você poderá conhecer as opções e consultar
-                suas referências aqui.
+            <div className="mt-6 max-w-2xl border-l-4 border-primary/50 bg-card px-6 py-5">
+              <p className="leading-relaxed">
+                Esta parte do catálogo está em preparação. Quando houver
+                conteúdo revisado, as opções e suas referências aparecem aqui.
               </p>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 Por enquanto, esta categoria apresenta apenas o tema. Nenhum
@@ -108,11 +107,12 @@ export function CategoryPage({
             de tomar decisões, confirme as condições aplicáveis com as
             autoridades oficiais.
           </p>
-          <Button asChild variant="ghost" className="mt-6">
-            <Link href="/ireland">
-              <ArrowLeft aria-hidden="true" /> Explorar outros objetivos
-            </Link>
-          </Button>
+          <Link
+            href="/ireland"
+            className="mt-6 inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
+          >
+            Explorar outros objetivos
+          </Link>
         </PageSection>
       </Container>
     </main>

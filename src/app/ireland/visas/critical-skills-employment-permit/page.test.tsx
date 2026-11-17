@@ -20,7 +20,10 @@ test("detalhes oferecem conteúdo, estrutura semântica e limites informativos",
   }
   expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
   expect(screen.getByRole("main")).toHaveAttribute("tabindex", "-1");
-  expect(screen.getByText("Irlanda · Trabalho")).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "Trabalho" })).toHaveAttribute(
+    "href",
+    "/ireland/work",
+  );
   expect(
     screen.getByText(/Oferta por pelo menos dois anos/),
   ).toBeInTheDocument();

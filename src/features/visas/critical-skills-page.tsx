@@ -1,11 +1,8 @@
 import Link from "next/link";
-import { ArrowLeft, BookOpen, Info } from "lucide-react";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Container } from "@/components/layout/container";
 import { PageSection } from "@/components/layout/page-section";
-import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { OfficialSourceItem } from "@/features/sources/official-source-item";
 import type { CriticalSkillsPresentation } from "./catalog-presentation";
 
@@ -54,10 +51,7 @@ export function CriticalSkillsPage({
         <PageSection className="pt-4">
           <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div>
-              <Badge variant="secondary">
-                {visa.countryName} · {visa.category}
-              </Badge>
-              <h1 className="mt-5 max-w-3xl text-display font-semibold">
+              <h1 className="max-w-3xl text-display font-semibold text-balance">
                 {visa.name}
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
@@ -76,21 +70,17 @@ export function CriticalSkillsPage({
                 </a>
               </div>
             </div>
-            <Card className="gap-0 bg-secondary p-6 sm:p-8">
-              <BookOpen aria-hidden="true" className="size-7 text-primary" />
-              <h2 className="mt-4 text-xl font-semibold">Antes de planejar</h2>
-              <p className="mt-3 leading-relaxed">
+            <aside className="border-t border-foreground/15 pt-4 lg:mt-3">
+              <h2 className="font-semibold">Antes de planejar</h2>
+              <p className="mt-2 text-sm leading-relaxed">
                 Use esta página como ponto de partida para entender o caminho e
                 preparar suas perguntas.
               </p>
-              <p className="mt-5 border-t border-border pt-5 text-sm leading-relaxed text-muted-foreground">
-                Consulta editorial às fontes:
-                <br />
-                datas indicadas em cada fonte.
-                <br />
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                As datas de consulta editorial estão indicadas em cada fonte.
                 Não é uma revisão jurídica.
               </p>
-            </Card>
+            </aside>
           </div>
         </PageSection>
         <PageSection aria-labelledby="publico" className="border-t">
@@ -137,29 +127,23 @@ export function CriticalSkillsPage({
               Requisitos em atualização. Consulte as fontes oficiais.
             </p>
           )}
-          <ul className="mt-8 grid gap-5 md:grid-cols-2">
+          <ul className="mt-8 grid gap-x-12 md:grid-cols-2">
             {visa.requirements.map((item) => (
-              <li key={item.title}>
-                <Card className="h-full gap-0 p-6 sm:p-8">
-                  <h3 className="text-xl font-semibold">{item.title}</h3>
-                  <p className="mt-3 leading-relaxed text-muted-foreground">
-                    {item.text}
-                  </p>
-                  <Reference sources={sources} sourceIds={item.sourceIds} />
-                </Card>
+              <li
+                key={item.title}
+                className="border-t border-foreground/15 py-6"
+              >
+                <h3 className="text-xl font-semibold">{item.title}</h3>
+                <p className="mt-3 leading-relaxed text-muted-foreground">
+                  {item.text}
+                </p>
+                <Reference sources={sources} sourceIds={item.sourceIds} />
               </li>
             ))}
           </ul>
         </PageSection>
-        <PageSection
-          aria-labelledby="permissoes"
-          className="rounded-xl bg-secondary px-6 sm:px-8"
-        >
-          <Info aria-hidden="true" className="size-7 text-primary" />
-          <h2
-            id="permissoes"
-            className="mt-4 text-2xl font-semibold tracking-tight"
-          >
+        <PageSection aria-labelledby="permissoes" className="border-t">
+          <h2 id="permissoes" className="text-2xl font-semibold tracking-tight">
             Trabalho, entrada e residência
           </h2>
           <p className="mt-3 text-muted-foreground">
@@ -167,7 +151,10 @@ export function CriticalSkillsPage({
           </p>
           <div className="mt-8 grid gap-8 lg:grid-cols-3">
             {visa.permissions.map((item) => (
-              <div key={item.title}>
+              <div
+                key={item.title}
+                className="border-l-4 border-primary/40 bg-card px-5 py-4"
+              >
                 <h3 className="text-lg font-semibold">{item.title}</h3>
                 <p className="mt-3 leading-relaxed text-muted-foreground">
                   {item.text}
@@ -177,7 +164,7 @@ export function CriticalSkillsPage({
             ))}
           </div>
         </PageSection>
-        <PageSection aria-labelledby="etapas">
+        <PageSection aria-labelledby="etapas" className="border-t">
           <h2 id="etapas" className="text-3xl font-semibold tracking-tight">
             Etapas gerais do caminho
           </h2>
@@ -186,9 +173,9 @@ export function CriticalSkillsPage({
               <li key={item.title} className="flex gap-4">
                 <span
                   aria-hidden="true"
-                  className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent font-semibold text-accent-foreground"
+                  className="pt-0.5 text-xl font-semibold text-primary tabular-nums"
                 >
-                  {index + 1}
+                  {index + 1}.
                 </span>
                 <div className="min-w-0">
                   <h3 className="text-xl font-semibold">{item.title}</h3>
@@ -222,7 +209,7 @@ export function CriticalSkillsPage({
           {Object.keys(sources).length === 0 && (
             <p className="mt-6">Fontes em atualização.</p>
           )}
-          <ul className="mt-8 divide-y rounded-xl border bg-card px-6 sm:px-8">
+          <ul className="mt-8 divide-y border-y">
             {Object.values(sources).map((source) => (
               <OfficialSourceItem key={source.id} source={source} />
             ))}
@@ -235,9 +222,8 @@ export function CriticalSkillsPage({
           </aside>
           <Link
             href="/ireland/work"
-            className={buttonVariants({ variant: "ghost", className: "mt-8" })}
+            className="mt-8 inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
           >
-            <ArrowLeft aria-hidden="true" />
             Voltar para trabalho na Irlanda
           </Link>
         </PageSection>

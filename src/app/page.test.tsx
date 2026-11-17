@@ -12,9 +12,11 @@ test("comunica a proposta e distingue a prévia das funcionalidades futuras", ()
     "Seu caminho para imigrar começa com informação clara.",
   );
   expect(screen.getByText(/Prévia conceitual/)).toBeInTheDocument();
-  const ireland = screen.getByRole("region", { name: "Irlanda." });
+  const ireland = screen.getByRole("region", {
+    name: "Irlanda, o primeiro destino",
+  });
   expect(
-    within(ireland).getByText("Exploração disponível"),
+    within(ireland).getByText("Apresentações iniciais"),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("region", { name: /Você merece saber/ }),

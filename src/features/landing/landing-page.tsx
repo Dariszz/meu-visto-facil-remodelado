@@ -1,82 +1,106 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  BookOpen,
-  Check,
-  Compass,
-  FileCheck2,
-  Fingerprint,
-  Layers3,
-  Route,
-  ShieldCheck,
-} from "lucide-react";
+import { Check } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { PageSection } from "@/components/layout/page-section";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { ItemStrip } from "@/features/checklists/components/item-strip";
+import type { ChecklistItemStatus } from "@/features/checklists/types";
 
 function ExploreLink() {
   return (
     <Button asChild size="lg">
-      <Link href="/ireland">
-        Explorar Irlanda <ArrowRight aria-hidden="true" />
-      </Link>
+      <Link href="/ireland">Explorar Irlanda</Link>
     </Button>
   );
 }
 
-function JourneyPreview() {
+// Amostra do produto no lugar de uma ilustração: um trecho do checklist de
+// Critical Skills, com títulos da consulta editorial de 10/09/2026.
+const sampleGroups: {
+  title: string;
+  statuses: ChecklistItemStatus[];
+}[] = [
+  {
+    title: "Requisitos",
+    statuses: ["COMPLETED", "IN_PROGRESS", "PENDING", "PENDING"],
+  },
+  { title: "Solicitação", statuses: ["PENDING"] },
+  { title: "Entrada", statuses: ["PENDING"] },
+  { title: "Chegada", statuses: ["PENDING"] },
+];
+
+const sampleItems = [
+  { title: "Conferir a oferta de emprego", status: "Concluído", done: true },
+  {
+    title: "Conferir ocupação e remuneração",
+    status: "Em andamento",
+    done: false,
+  },
+  {
+    title: "Reunir comprovantes de qualificação",
+    status: "Pendente",
+    done: false,
+  },
+] as const;
+
+function ChecklistSample() {
   return (
-    <figure className="relative mx-auto w-full max-w-lg rounded-3xl bg-secondary p-5 sm:p-8">
-      <div
-        aria-hidden="true"
-        className="mb-8 flex items-center justify-between text-primary"
-      >
-        <Compass className="size-9" strokeWidth={1.2} />
-        <span className="text-xs font-semibold tracking-[0.2em]">
-          UM NOVO CAPÍTULO
-        </span>
-      </div>
-      <Card className="relative p-6 sm:p-8">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
-            Seu ponto de partida
-          </span>
-          <span aria-hidden="true" className="text-2xl">
-            ↗
-          </span>
+    <figure className="w-full max-w-lg lg:justify-self-end">
+      <div className="rounded-lg border bg-card p-6 sm:p-8">
+        <p className="text-xl font-semibold tracking-tight">
+          Critical Skills Employment Permit
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Trabalho na Irlanda
+        </p>
+        <div className="mt-6 flex gap-2">
+          {sampleGroups.map((group) => (
+            <div
+              key={group.title}
+              className="min-w-0"
+              style={{ flexGrow: group.statuses.length, flexBasis: 0 }}
+            >
+              <ItemStrip
+                statuses={group.statuses}
+                label={`${group.title}: ${
+                  group.statuses.filter((s) => s === "COMPLETED").length
+                } de ${group.statuses.length} itens concluídos`}
+              />
+              <p
+                aria-hidden="true"
+                className="mt-1.5 hidden truncate text-xs text-muted-foreground sm:block"
+              >
+                {group.title}
+              </p>
+            </div>
+          ))}
         </div>
-        <p className="mt-3 text-3xl font-semibold tracking-tight">
-          Um plano, passo a passo.
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Da primeira pergunta ao próximo passo, tudo em perspectiva.
-        </p>
-        <ol className="mt-7 space-y-0">
-          {(
-            [
-              ["01", "Seu objetivo", "O que você quer construir?"],
-              ["02", "Caminhos possíveis", "Entenda o que precisa confirmar."],
-              ["03", "Próximos passos", "Organize sua jornada."],
-            ] as const
-          ).map(([number, title, text]) => (
-            <li key={number} className="flex gap-4 border-t py-4 last:pb-0">
-              <span className="pt-1 text-xs font-semibold text-primary">
-                {number}
+        <ul className="mt-6 divide-y border-t text-sm">
+          {sampleItems.map((item) => (
+            <li key={item.title} className="flex items-start gap-3 py-3">
+              <span
+                aria-hidden="true"
+                className={
+                  item.done
+                    ? "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-[3px] bg-primary text-primary-foreground"
+                    : "mt-0.5 size-4 shrink-0 rounded-[3px] border-2 border-input"
+                }
+              >
+                {item.done && <Check className="size-3" strokeWidth={3} />}
               </span>
-              <div>
-                <p className="font-medium">{title}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{text}</p>
-              </div>
+              <span className="min-w-0 flex-1">
+                <span className="block font-medium">{item.title}</span>
+                <span className="block text-muted-foreground">
+                  {item.status}. Fonte: DETE
+                </span>
+              </span>
             </li>
           ))}
-        </ol>
-      </Card>
-      <figcaption className="mt-5 flex items-center gap-2 text-xs leading-relaxed text-muted-foreground">
-        <Layers3 aria-hidden="true" className="size-4 shrink-0" />
-        Prévia conceitual. Funcionalidades em desenvolvimento.
+        </ul>
+      </div>
+      <figcaption className="mt-3 text-xs leading-relaxed text-muted-foreground">
+        Prévia conceitual do checklist, com progresso ilustrativo. O
+        acompanhamento de processos ainda está em desenvolvimento.
       </figcaption>
     </figure>
   );
@@ -85,255 +109,194 @@ function JourneyPreview() {
 const steps = [
   [
     "Conte seu objetivo",
-    "Trabalhar, estudar ou estar perto da família. Sua intenção será o ponto de partida.",
+    "Trabalhar, estudar ou morar com a família. Sua intenção define por onde começar.",
   ],
   [
-    "Conheça possibilidades",
-    "Entenda caminhos que podem fazer sentido para o seu perfil e o que precisa confirmar.",
+    "Veja caminhos possíveis",
+    "Entenda quais opções podem fazer sentido para o seu perfil e o que ainda precisa ser confirmado.",
   ],
   [
-    "Organize seu checklist",
-    "Reúna etapas, requisitos e referências em uma visão clara.",
+    "Organize o checklist",
+    "Requisitos e etapas reunidos em uma lista, cada item com a fonte oficial de onde veio.",
   ],
   [
-    "Acompanhe seu progresso",
-    "Veja o que já foi feito e mantenha o próximo passo à vista.",
+    "Acompanhe o progresso",
+    "Marque o que já foi feito e mantenha o próximo passo à vista.",
   ],
-];
+] as const;
 
 export function LandingPage() {
   return (
     <main id="main-content" tabIndex={-1}>
       <Container>
-        <PageSection className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+        <PageSection className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
           <div>
-            <Badge variant="secondary">Novos caminhos. Mais clareza.</Badge>
-            <h1 className="mt-6 text-display font-semibold">
-              Seu caminho para imigrar começa com{" "}
-              <span className="text-primary">informação clara.</span>
+            <h1 className="max-w-xl text-display font-semibold text-balance">
+              Seu caminho para imigrar começa com informação clara.
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Entenda possibilidades, organize requisitos e acompanhe etapas. O
-              Meu Visto Fácil está sendo preparado para conectar seu plano de
-              mudança a fontes oficiais e orientação personalizada.
+              Entenda possibilidades, organize requisitos e acompanhe cada etapa
+              da mudança, sempre com a fonte oficial ao lado. O primeiro destino
+              é a Irlanda.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               <ExploreLink />
-              <Button asChild size="lg" variant="outline">
-                <a href="#como-funciona">Como funciona</a>
-              </Button>
+              <a
+                href="#como-funciona"
+                className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
+              >
+                Como funciona
+              </a>
             </div>
-            <p className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
-              <span
-                aria-hidden="true"
-                className="size-2 rounded-full bg-primary"
-              />
-              Primeiro destino: Irlanda. Comece a explorar.
-            </p>
           </div>
-          <JourneyPreview />
+          <ChecklistSample />
         </PageSection>
       </Container>
+
       <div className="border-y bg-card">
-        <Container className="flex flex-wrap justify-between gap-x-8 gap-y-4 py-6 text-sm font-medium">
-          {(
-            [
-              [BookOpen, "Informação com origem"],
-              [Fingerprint, "Seu perfil como ponto de partida"],
-              [Route, "Uma etapa de cada vez"],
-            ] as const
-          ).map(([Icon, label]) => {
-            const Mark = Icon;
-            return (
-              <p key={label} className="flex items-center gap-3">
-                <Mark aria-hidden="true" className="size-5 text-primary" />
-                {label}
-              </p>
-            );
-          })}
-        </Container>
-      </div>
-      <Container>
-        <PageSection id="como-funciona" aria-labelledby="journey-title">
-          <p className="text-sm font-semibold text-primary">COMO FUNCIONA</p>
-          <div className="mt-3 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+        <Container>
+          <PageSection id="como-funciona" aria-labelledby="journey-title">
             <h2
               id="journey-title"
-              className="max-w-lg text-3xl font-semibold tracking-tight sm:text-4xl"
+              className="max-w-xl text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
             >
-              Uma mudança grande.
-              <br />
-              Passos mais claros.
+              Como funciona
             </h2>
-            <p className="max-w-sm leading-relaxed text-muted-foreground">
-              A experiência que estamos construindo para tirar seus planos do
-              campo das dúvidas.
+            <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground">
+              Quatro etapas, da primeira dúvida ao acompanhamento do processo.
             </p>
-          </div>
-          <ol className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map(([title, text], index) => (
-              <li key={title} className="border-t pt-5">
-                <span className="text-sm font-semibold text-primary">
-                  0{index + 1}
-                </span>
-                <h3 className="mt-5 text-lg font-semibold">{title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  {text}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </PageSection>
-        <PageSection
-          id="por-que-usar"
-          aria-labelledby="benefits-title"
-          className="border-t"
-        >
-          <div className="grid gap-10 md:grid-cols-2">
+            <ol className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+              {steps.map(([title, text], index) => (
+                <li key={title} className="border-t border-foreground/15 pt-5">
+                  <h3 className="text-lg font-semibold">
+                    <span className="mr-2 text-primary tabular-nums">
+                      {index + 1}.
+                    </span>
+                    {title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {text}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </PageSection>
+        </Container>
+      </div>
+
+      <Container>
+        <PageSection id="por-que-usar" aria-labelledby="benefits-title">
+          <div className="grid gap-x-16 gap-y-10 md:grid-cols-2">
             <div>
-              <p className="text-sm font-semibold text-primary">
-                MENOS INFORMAÇÃO SOLTA
-              </p>
               <h2
                 id="benefits-title"
-                className="mt-3 max-w-md text-3xl font-semibold tracking-tight sm:text-4xl"
+                className="max-w-md text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
               >
-                Mais contexto para decidir seu próximo passo.
+                Menos abas abertas, mais contexto para decidir.
               </h2>
               <p className="mt-5 max-w-md leading-relaxed text-muted-foreground">
                 Pesquisar uma mudança de país não deveria significar se perder
-                entre abas, termos difíceis e respostas sem referência.
+                entre termos difíceis e respostas sem referência.
               </p>
             </div>
-            <div className="space-y-7">
+            <dl className="divide-y border-y">
               {(
                 [
                   [
-                    Layers3,
-                    "Organização que faz sentido",
-                    "Possibilidades, requisitos e etapas conectados, para você enxergar a jornada inteira.",
+                    "Tudo conectado",
+                    "Possibilidades, requisitos e etapas ligados entre si, para você enxergar a jornada inteira.",
                   ],
                   [
-                    Fingerprint,
-                    "Um caminho com o seu contexto",
-                    "Personalização a partir do seu objetivo e das informações que você escolher compartilhar.",
+                    "Com o seu contexto",
+                    "As opções partem do seu objetivo e das informações que você escolher compartilhar.",
                   ],
                   [
-                    FileCheck2,
-                    "Clareza para continuar",
-                    "Checklists e acompanhamento planejados para deixar visível o que ainda precisa de atenção.",
+                    "O que falta, à vista",
+                    "Checklists e acompanhamento deixam claro o que ainda precisa de atenção.",
                   ],
-                ] as const
-              ).map(([Icon, title, text]) => {
-                const Mark = Icon;
-                return (
-                  <div key={title} className="flex gap-4">
-                    <Mark
-                      aria-hidden="true"
-                      className="mt-1 size-6 shrink-0 text-primary"
-                    />
-                    <div>
-                      <h3 className="text-lg font-semibold">{title}</h3>
-                      <p className="mt-2 leading-relaxed text-muted-foreground">
-                        {text}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </PageSection>
-      </Container>
-      <PageSection
-        id="fontes"
-        aria-labelledby="sources-title"
-        className="bg-primary text-primary-foreground"
-      >
-        <Container className="grid items-center gap-10 md:grid-cols-2">
-          <div>
-            <ShieldCheck
-              aria-hidden="true"
-              className="size-9"
-              strokeWidth={1.5}
-            />
-            <p className="mt-5 text-sm font-semibold">
-              CONFIANÇA COMEÇA NA ORIGEM
-            </p>
-            <h2
-              id="sources-title"
-              className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl"
-            >
-              Você merece saber de onde vem a informação.
-            </h2>
-            <p className="mt-5 leading-relaxed">
-              Nosso compromisso é associar informações críticas a fontes
-              oficiais. Assim, você poderá consultar a origem e confirmar os
-              detalhes com a autoridade responsável.
-            </p>
-          </div>
-          <div className="rounded-xl border border-white/30 p-6 sm:p-8">
-            <p className="text-sm font-semibold">
-              O que uma informação rastreável deve mostrar
-            </p>
-            <dl className="mt-6 space-y-5">
-              {(
-                [
-                  ["Origem", "Referência à publicação oficial."],
-                  ["Autoridade", "Órgão responsável pela informação."],
-                  ["Revisão", "Data da última revisão, quando disponível."],
                 ] as const
               ).map(([title, text]) => (
-                <div key={title} className="border-t border-white/25 pt-4">
+                <div key={title} className="py-5">
                   <dt className="font-semibold">{title}</dt>
-                  <dd className="mt-1 text-sm">{text}</dd>
+                  <dd className="mt-1.5 leading-relaxed text-muted-foreground">
+                    {text}
+                  </dd>
                 </div>
               ))}
             </dl>
-            <p className="mt-6 text-xs leading-relaxed">
-              Estrutura ilustrativa. O catálogo de fontes ainda está em
-              preparação; nenhuma revisão oficial é afirmada nesta prévia.
-            </p>
           </div>
-        </Container>
-      </PageSection>
-      <Container>
-        <PageSection id="irlanda" aria-labelledby="ireland-title">
-          <div className="grid overflow-hidden rounded-3xl border bg-card md:grid-cols-[0.8fr_1.2fr]">
-            <div className="flex min-h-64 flex-col justify-between bg-accent p-8 sm:p-10">
-              <span className="text-sm font-semibold text-accent-foreground">
-                NOSSO PRIMEIRO DESTINO
-              </span>
-              <div>
-                <span
-                  aria-hidden="true"
-                  className="mb-6 flex h-9 w-16 overflow-hidden rounded-sm border border-border"
-                >
-                  <span className="w-1/3 bg-success" />
-                  <span className="w-1/3 bg-card" />
-                  <span className="w-1/3 bg-[#ff883e]" />
-                </span>
-                <h2
-                  id="ireland-title"
-                  className="text-5xl font-semibold tracking-tight text-accent-foreground"
-                >
-                  Irlanda.
-                </h2>
-                <p className="mt-3 text-accent-foreground">
-                  O começo de novas possibilidades.
-                </p>
-              </div>
-            </div>
-            <div className="p-8 sm:p-10">
-              <Badge variant="secondary">Exploração disponível</Badge>
-              <h3 className="mt-5 text-2xl font-semibold tracking-tight">
-                Seu próximo capítulo pode começar aqui.
-              </h3>
-              <p className="mt-4 leading-relaxed text-muted-foreground">
-                A Irlanda é o primeiro destino disponível. Conheça a
-                apresentação dos caminhos, começando por trabalho.
+        </PageSection>
+
+        <PageSection
+          id="fontes"
+          aria-labelledby="sources-title"
+          className="border-t"
+        >
+          <div className="grid gap-x-16 gap-y-10 md:grid-cols-2">
+            <div>
+              <h2
+                id="sources-title"
+                className="max-w-md text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+              >
+                Você merece saber de onde vem a informação.
+              </h2>
+              <p className="mt-5 max-w-md leading-relaxed text-muted-foreground">
+                Informações críticas ficam associadas a fontes oficiais. Assim
+                você consulta a origem e confirma os detalhes com a autoridade
+                responsável.
               </p>
-              <ul className="mt-6 divide-y text-sm">
+            </div>
+            <div>
+              <dl className="border-l-4 border-primary/50 bg-card px-6 py-5 text-sm">
+                {(
+                  [
+                    ["Origem", "Critical Skills Employment Permit"],
+                    [
+                      "Autoridade",
+                      "Department of Enterprise, Tourism and Employment",
+                    ],
+                    ["Endereço", "enterprise.gov.ie"],
+                    ["Consulta editorial", "10 de setembro de 2026"],
+                  ] as const
+                ).map(([title, text]) => (
+                  <div
+                    key={title}
+                    className="grid gap-1 py-2 sm:grid-cols-[9rem_1fr]"
+                  >
+                    <dt className="text-muted-foreground">{title}</dt>
+                    <dd className="font-medium">{text}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                Exemplo de registro de fonte. O catálogo de fontes ainda está em
+                preparação; nenhuma revisão oficial é afirmada nesta prévia.
+              </p>
+            </div>
+          </div>
+        </PageSection>
+
+        <PageSection
+          id="irlanda"
+          aria-labelledby="ireland-title"
+          className="border-t"
+        >
+          <div className="grid gap-x-16 gap-y-8 md:grid-cols-2">
+            <div>
+              <h2
+                id="ireland-title"
+                className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+              >
+                Irlanda, o primeiro destino
+              </h2>
+              <p className="mt-5 max-w-md leading-relaxed text-muted-foreground">
+                A exploração está disponível, começando pelos caminhos de
+                trabalho. Estudo e família chegam depois que as fontes oficiais
+                forem revisadas.
+              </p>
+            </div>
+            <div>
+              <ul className="divide-y border-y text-sm">
                 {(
                   [
                     ["Trabalho", "Apresentações iniciais", "work"],
@@ -343,11 +306,11 @@ export function LandingPage() {
                 ).map(([title, state, slug]) => (
                   <li
                     key={title}
-                    className="flex flex-wrap justify-between gap-2 py-3"
+                    className="flex flex-wrap items-center justify-between gap-2 py-2"
                   >
                     <Link
                       href={`/ireland/${slug}`}
-                      className="inline-flex min-h-11 items-center rounded-md font-semibold text-primary hover:underline"
+                      className="inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline"
                     >
                       {title}
                     </Link>
@@ -355,59 +318,54 @@ export function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
                 O catálogo está em construção. Estas categorias não representam
                 uma avaliação de elegibilidade.
               </p>
             </div>
           </div>
         </PageSection>
+
         <PageSection
           id="personalizacao"
           aria-labelledby="ai-title"
           className="border-t"
         >
-          <div className="grid gap-10 md:grid-cols-2">
+          <div className="grid gap-x-16 gap-y-10 md:grid-cols-2">
             <div>
-              <p className="text-sm font-semibold text-primary">
-                TECNOLOGIA COM CRITÉRIO
-              </p>
               <h2
                 id="ai-title"
-                className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl"
+                className="max-w-md text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
               >
-                Personalizado para você.
-                <br />
-                Fundamentado em fontes.
+                Personalizado para você, fundamentado em fontes
               </h2>
-              <p className="mt-5 leading-relaxed text-muted-foreground">
+              <p className="mt-5 max-w-md leading-relaxed text-muted-foreground">
                 A IA terá um papel de apoio: explicar e adaptar a linguagem ao
                 seu contexto. Não será a autoridade sobre regras migratórias e
                 não terá liberdade para inventar URLs ou requisitos legais.
               </p>
             </div>
-            <ol className="space-y-4">
+            <ol className="divide-y border-y">
               {(
                 [
-                  ["Informações oficiais", "A base para entender requisitos."],
+                  [
+                    "Informações oficiais",
+                    "São a base para entender os requisitos.",
+                  ],
                   [
                     "Regras estruturadas",
                     "Identificam caminhos potencialmente relevantes.",
                   ],
                   [
                     "Explicações personalizadas",
-                    "IA ajuda a tornar o resultado mais compreensível.",
+                    "A IA ajuda a tornar o resultado mais compreensível.",
                   ],
                 ] as const
-              ).map(([title, text]) => (
-                <li
-                  key={title}
-                  className="flex gap-4 rounded-xl bg-secondary p-5"
-                >
-                  <Check
-                    aria-hidden="true"
-                    className="mt-1 size-5 shrink-0 text-primary"
-                  />
+              ).map(([title, text], index) => (
+                <li key={title} className="flex gap-4 py-5">
+                  <span className="font-semibold text-primary tabular-nums">
+                    {index + 1}.
+                  </span>
                   <div>
                     <h3 className="font-semibold">{title}</h3>
                     <p className="mt-1 text-sm text-muted-foreground">{text}</p>
@@ -417,53 +375,31 @@ export function LandingPage() {
             </ol>
           </div>
         </PageSection>
+
         <PageSection
           id="sobre"
           aria-labelledby="about-title"
           className="border-t"
         >
-          <div>
-            <p className="text-sm font-semibold text-primary">
-              SOBRE O MEU VISTO FÁCIL
-            </p>
+          <div className="grid gap-x-16 gap-y-8 md:grid-cols-2">
             <h2
               id="about-title"
-              className="mt-3 text-2xl font-semibold tracking-tight"
+              className="text-2xl font-semibold tracking-tight text-balance"
             >
-              Informação para planejar. Clareza para seguir.
+              Sobre o Meu Visto Fácil
             </h2>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
-              Estamos construindo uma plataforma para tornar a pesquisa sobre
-              imigração mais organizada, transparente e pessoal. A proposta é
-              ajudar você a compreender possibilidades, sem substituir a
-              orientação de profissionais ou as decisões das autoridades.
-            </p>
+            <div>
+              <p className="max-w-xl leading-relaxed text-muted-foreground">
+                Uma plataforma para tornar a pesquisa sobre imigração mais
+                organizada, transparente e pessoal. A proposta é ajudar você a
+                compreender possibilidades, sem substituir a orientação de
+                profissionais ou as decisões das autoridades.
+              </p>
+              <div className="mt-8">
+                <ExploreLink />
+              </div>
+            </div>
           </div>
-        </PageSection>
-        <PageSection
-          className="mb-10 rounded-3xl bg-secondary px-6 text-center sm:px-10"
-          aria-labelledby="start-title"
-        >
-          <h2
-            id="start-title"
-            className="text-3xl font-semibold tracking-tight sm:text-4xl"
-          >
-            Comece entendendo suas possibilidades.
-          </h2>
-          <p className="mx-auto mt-4 max-w-lg leading-relaxed text-muted-foreground">
-            Conheça o primeiro destino da nossa jornada e o que estamos
-            preparando para você.
-          </p>
-          <div className="mt-7">
-            <ExploreLink />
-          </div>
-          <a
-            href="#como-funciona"
-            className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-md text-sm font-medium text-primary"
-          >
-            Conheça a proposta{" "}
-            <ArrowUpRight aria-hidden="true" className="size-4" />
-          </a>
         </PageSection>
       </Container>
     </main>

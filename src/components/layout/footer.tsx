@@ -31,7 +31,7 @@ export function Footer() {
             garantimos elegibilidade ou aprovação. As informações podem mudar.
             Confirme os detalhes com as autoridades oficiais.
           </p>
-          <p>Meu Visto Fácil — clareza para o seu próximo passo.</p>
+          <p>Meu Visto Fácil: clareza para o seu próximo passo.</p>
         </div>
       </Container>
     </footer>

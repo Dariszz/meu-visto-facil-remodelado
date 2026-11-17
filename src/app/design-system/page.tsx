@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowUpRight, CheckCircle2, Info } from "lucide-react";
+import { CheckCircle2, Info } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { PageSection } from "@/components/layout/page-section";
 import { Button } from "@/components/ui/button";
@@ -35,14 +35,11 @@ export default function DesignSystemPage() {
     <main id="main-content" tabIndex={-1}>
       <Container>
         <PageSection aria-labelledby="foundation-title" className="pb-10">
-          <Badge variant="secondary">Design foundation · 01</Badge>
           <h1
             id="foundation-title"
-            className="mt-5 max-w-reading text-display font-semibold"
+            className="max-w-reading text-display font-semibold text-balance"
           >
-            Um caminho claro.
-            <br />
-            <span className="text-primary">Desde o primeiro passo.</span>
+            Design system
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
             A linguagem visual do Meu Visto Fácil: espaço para respirar,
@@ -56,9 +53,9 @@ export default function DesignSystemPage() {
         <PageSection aria-labelledby="palette-title" className="border-t py-8">
           <h2
             id="palette-title"
-            className="mb-5 text-sm font-semibold uppercase tracking-widest text-muted-foreground"
+            className="mb-5 text-xl font-semibold tracking-tight"
           >
-            01 / Identidade
+            Identidade
           </h2>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {[
@@ -80,9 +77,9 @@ export default function DesignSystemPage() {
         <PageSection aria-labelledby="components-title" className="pt-8">
           <h2
             id="components-title"
-            className="mb-5 text-sm font-semibold uppercase tracking-widest text-muted-foreground"
+            className="mb-5 text-xl font-semibold tracking-tight"
           >
-            02 / Componentes em contexto
+            Componentes em contexto
           </h2>
           <div className="grid items-start gap-6 lg:grid-cols-2">
             <Card>
@@ -96,9 +93,7 @@ export default function DesignSystemPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex flex-wrap gap-3">
-                  <Button>
-                    Continuar <ArrowUpRight aria-hidden="true" />
-                  </Button>
+                  <Button>Continuar</Button>
                   <Button variant="secondary">Secundário</Button>
                   <Button variant="outline">Contorno</Button>
                   <Button variant="ghost">Discreto</Button>

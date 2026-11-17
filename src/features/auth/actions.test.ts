@@ -59,7 +59,7 @@ test("rejeita dados inválidos antes de consultar o provider", async () => {
 test("login usa credenciais validadas e ignora redirect externo", async () => {
   await expect(
     loginAction(initial, form({ ...valid, next: "https://evil.example" })),
-  ).rejects.toThrow("REDIRECT:/login");
+  ).rejects.toThrow("REDIRECT:/dashboard");
   expect(operations.signIn).toHaveBeenCalledWith(valid.email, valid.password);
 });
 test("não expõe erro do provider nem senha", async () => {

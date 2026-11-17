@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { AuthForm } from "@/features/auth/auth-form";
 import { AuthShell } from "@/features/auth/auth-shell";
 import { getCurrentUser } from "@/lib/auth/get-current-user";
@@ -18,6 +19,9 @@ export default async function LoginPage() {
           {user.email}
         </p>
         <AuthForm mode="logout" />
+        <Button asChild className="mt-5 w-full">
+          <Link href="/dashboard">Ir para o painel</Link>
+        </Button>
         <p className="mt-5 text-center text-sm">
           <Link
             href="/profile"

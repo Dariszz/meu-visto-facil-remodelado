@@ -43,5 +43,5 @@ export async function createProfileAction(
     };
   }
   revalidatePath("/profile");
-  redirect("/profile");
+  redirect("/dashboard");
 }

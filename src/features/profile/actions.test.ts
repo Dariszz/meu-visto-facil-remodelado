@@ -25,7 +25,7 @@ test("projeta campos permitidos, ignora identidade e redirect enviados", async (
   data.set("authUserId", "other-user");
   data.set("next", "https://evil.example");
   await expect(createProfileAction(initial, data)).rejects.toThrow(
-    "REDIRECT:/profile",
+    "REDIRECT:/dashboard",
   );
   expect(createCurrentUserProfile).toHaveBeenCalledWith({
     displayName: "Maria",

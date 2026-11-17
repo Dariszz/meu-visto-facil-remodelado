@@ -18,10 +18,12 @@ import type {
   ProcessSummaryView,
 } from "../types";
 
+// Questionário e recomendações são opcionais até as fases 13 e 17 existirem
+// com dados reais; sem link, a tela não oferece o atalho.
 export type DashboardLinks = {
   explore: string;
-  questionnaire: string;
-  recommendations: string;
+  questionnaire?: string;
+  recommendations?: string;
 };
 
 function plural(count: number, one: string, many: string) {
@@ -72,7 +74,7 @@ export function DashboardView({
                 : "Você ainda não tem processos. Comece entendendo quais caminhos podem servir para você."}
             </p>
           </div>
-          {visible.length > 0 && (
+          {visible.length > 0 && links.recommendations && (
             <Button asChild variant="outline">
               <Link href={links.recommendations}>Ver recomendações</Link>
             </Button>
@@ -98,15 +100,24 @@ export function DashboardView({
               headingLevel={3}
               icon={FolderOpen}
               title="Nenhum processo salvo"
-              description="Responda ao questionário e escolha um caminho. O checklist e o progresso de cada etapa aparecem aqui."
+              description={
+                links.questionnaire
+                  ? "Responda ao questionário e escolha um caminho. O checklist e o progresso de cada etapa aparecem aqui."
+                  : "Quando você iniciar um processo, o checklist e o progresso de cada etapa aparecem aqui. Enquanto isso, explore os caminhos disponíveis."
+              }
               action={
                 <>
-                  <Button asChild>
-                    <Link href={links.questionnaire}>
-                      Responder questionário
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline">
+                  {links.questionnaire && (
+                    <Button asChild>
+                      <Link href={links.questionnaire}>
+                        Responder questionário
+                      </Link>
+                    </Button>
+                  )}
+                  <Button
+                    asChild
+                    variant={links.questionnaire ? "outline" : "default"}
+                  >
                     <Link href={links.explore}>Explorar Irlanda</Link>
                   </Button>
                 </>
@@ -116,26 +127,28 @@ export function DashboardView({
         </section>
 
         <div className="mt-12 grid gap-x-12 gap-y-8 md:grid-cols-2">
-          <section aria-labelledby="profile-title">
-            <h2 id="profile-title" className="font-semibold">
-              {data.hasCompletedQuestionnaire
-                ? "Seu perfil migratório"
-                : "Conte sobre seus planos"}
-            </h2>
-            <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-              {data.hasCompletedQuestionnaire
-                ? "Mudou algo nos seus planos? Atualize as respostas para rever os caminhos."
-                : "Algumas perguntas ajudam a mostrar caminhos que podem servir para você."}
-            </p>
-            <Link
-              href={links.questionnaire}
-              className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
-            >
-              {data.hasCompletedQuestionnaire
-                ? "Revisar respostas"
-                : "Começar questionário"}
-            </Link>
-          </section>
+          {links.questionnaire && (
+            <section aria-labelledby="profile-title">
+              <h2 id="profile-title" className="font-semibold">
+                {data.hasCompletedQuestionnaire
+                  ? "Seu perfil migratório"
+                  : "Conte sobre seus planos"}
+              </h2>
+              <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
+                {data.hasCompletedQuestionnaire
+                  ? "Mudou algo nos seus planos? Atualize as respostas para rever os caminhos."
+                  : "Algumas perguntas ajudam a mostrar caminhos que podem servir para você."}
+              </p>
+              <Link
+                href={links.questionnaire}
+                className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
+              >
+                {data.hasCompletedQuestionnaire
+                  ? "Revisar respostas"
+                  : "Começar questionário"}
+              </Link>
+            </section>
+          )}
           <section aria-labelledby="explore-title">
             <h2 id="explore-title" className="font-semibold">
               Explorar a Irlanda

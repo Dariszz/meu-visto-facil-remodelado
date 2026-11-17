@@ -40,6 +40,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/login",
+    "/dashboard",
     "/profile",
     "/register",
     "/forgot-password",

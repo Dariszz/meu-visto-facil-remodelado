@@ -67,7 +67,7 @@ export async function loginAction(
     return unavailable();
   }
   revalidatePath("/login");
-  redirect("/login");
+  redirect("/dashboard");
 }
 
 export async function registerAction(

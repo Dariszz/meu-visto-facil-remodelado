@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { requireUser } from "@/lib/auth/require-user";
 import {
   createUserProfileIfAbsent,
@@ -29,10 +30,13 @@ async function profileOperation<T>(operation: () => Promise<T>): Promise<T> {
   }
 }
 
-export async function getCurrentUserProfile(): Promise<UserProfile | null> {
-  const user = await requireUser();
-  return profileOperation(() => findUserProfileByAuthUserId(user.id));
-}
+// Memorizado por requisição pelo mesmo motivo de getCurrentUser.
+export const getCurrentUserProfile = cache(
+  async (): Promise<UserProfile | null> => {
+    const user = await requireUser();
+    return profileOperation(() => findUserProfileByAuthUserId(user.id));
+  },
+);
 
 export async function createCurrentUserProfile(
   input: unknown,

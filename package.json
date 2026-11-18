@@ -23,7 +23,7 @@
     "test:integration": "node --conditions=react-server --import tsx scripts/test-database.ts",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
-    "db:generate": "prisma generate",
+    "db:generate": "prisma generate --no-hints",
     "db:diff": "prisma migrate diff"
   },
   "dependencies": {

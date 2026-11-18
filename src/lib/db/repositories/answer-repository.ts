@@ -16,9 +16,10 @@ export async function findAnswers(
   });
 }
 
-// Substitui as respostas do questionário de um país: grava as enviadas e
-// remove as que deixaram de valer (perguntas ocultas ou limpas) dentro do
-// mesmo conjunto de perguntas. Respostas de outros países ficam intactas.
+// Substitui as respostas do questionário de um país: apaga as do conjunto de
+// perguntas e grava as enviadas, numa transação. São duas instruções no banco
+// em vez de uma por resposta, o que importa quando o banco está longe.
+// Respostas de outros países ficam intactas.
 export async function replaceAnswers(
   input: {
     userProfileId: string;
@@ -34,25 +35,17 @@ export async function replaceAnswers(
     await tx.profileAnswer.deleteMany({
       where: {
         userProfileId: input.userProfileId,
-        questionId: {
-          in: input.countryQuestionIds.filter(
-            (id) => !input.answers.some((answer) => answer.questionId === id),
-          ),
-        },
+        questionId: { in: [...input.countryQuestionIds] },
       },
     });
-    for (const answer of input.answers) {
-      await tx.profileAnswer.upsert({
-        where: {
-          userProfileId_questionId: {
-            userProfileId: input.userProfileId,
-            questionId: answer.questionId,
-          },
-        },
-        create: { userProfileId: input.userProfileId, ...answer },
-        update: { value: answer.value },
+    if (input.answers.length)
+      await tx.profileAnswer.createMany({
+        data: input.answers.map((answer) => ({
+          userProfileId: input.userProfileId,
+          questionId: answer.questionId,
+          value: answer.value,
+        })),
       });
-    }
   };
   if (db) return run(db);
   await getProfileDatabaseClient().$transaction(run);

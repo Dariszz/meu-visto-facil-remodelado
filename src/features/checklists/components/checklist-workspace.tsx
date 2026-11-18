@@ -105,7 +105,7 @@ export function ChecklistWorkspace({
               />
               <p
                 aria-hidden="true"
-                className="mt-2 hidden truncate text-xs text-muted-foreground sm:block"
+                className="mt-2 hidden text-xs leading-snug break-words hyphens-auto text-muted-foreground sm:block"
               >
                 {category.title}
               </p>

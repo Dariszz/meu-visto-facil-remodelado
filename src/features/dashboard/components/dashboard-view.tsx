@@ -183,7 +183,7 @@ function ProcessRow({ process }: { process: ProcessSummaryView }) {
         <h3 className="font-semibold leading-snug tracking-tight text-balance">
           <Link
             href={process.href}
-            className="hover:text-primary hover:underline hover:underline-offset-4"
+            className="inline-block py-0.5 hover:text-primary hover:underline hover:underline-offset-4"
           >
             {process.title}
           </Link>

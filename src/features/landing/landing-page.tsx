@@ -68,7 +68,7 @@ function ChecklistSample() {
               />
               <p
                 aria-hidden="true"
-                className="mt-1.5 hidden truncate text-xs text-muted-foreground sm:block"
+                className="mt-1.5 hidden text-xs leading-snug break-words hyphens-auto text-muted-foreground sm:block"
               >
                 {group.title}
               </p>

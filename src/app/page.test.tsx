@@ -2,7 +2,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { expect, test } from "vitest";
 import HomePage, { metadata } from "@/app/page";
-import { Header } from "@/components/layout/header";
+import { HeaderView } from "@/components/layout/header-view";
 import { Footer } from "@/components/layout/footer";
 
 test("comunica a proposta e distingue a prévia das funcionalidades futuras", () => {
@@ -31,7 +31,7 @@ test("comunica a proposta e distingue a prévia das funcionalidades futuras", ()
 test("oferece navegação e CTAs com destinos existentes, sem rotas futuras quebradas", () => {
   render(
     <>
-      <Header />
+      <HeaderView signedIn={false} />
       <HomePage />
       <Footer />
     </>,
@@ -77,4 +77,13 @@ test("define metadata básica da apresentação pública", () => {
     locale: "pt_BR",
     type: "website",
   });
+});
+
+test("cabeçalho leva ao painel quando há sessão", () => {
+  render(<HeaderView signedIn />);
+  expect(screen.getByRole("link", { name: "Meu painel" })).toHaveAttribute(
+    "href",
+    "/dashboard",
+  );
+  expect(screen.queryByRole("link", { name: "Entrar" })).toBeNull();
 });

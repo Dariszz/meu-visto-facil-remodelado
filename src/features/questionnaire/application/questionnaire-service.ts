@@ -60,15 +60,34 @@ async function guarded<T>(operation: () => Promise<T>): Promise<T> {
   }
 }
 
+// Perfil e perguntas não dependem um do outro: buscados em paralelo para
+// economizar uma ida ao banco. O erro do perfil (inclusive falta de sessão)
+// tem prioridade sobre o das perguntas.
+async function loadProfileAndQuestions(countrySlug: string) {
+  const [profile, records] = await Promise.allSettled([
+    getCurrentUserProfile(),
+    listActiveQuestions(countrySlug),
+  ]);
+  if (profile.status === "rejected") throw profile.reason;
+  return {
+    profile: profile.value,
+    records: () =>
+      records.status === "fulfilled"
+        ? Promise.resolve(records.value)
+        : Promise.reject(records.reason),
+  };
+}
+
 // Serviço de aplicação (ADR 0004): identidade sempre resolvida no servidor;
 // o navegador nunca informa de quem são as respostas.
 export async function getQuestionnaire(
   countrySlug: string,
 ): Promise<QuestionnaireState> {
-  const profile = await getCurrentUserProfile();
+  const loaded = await loadProfileAndQuestions(countrySlug);
+  const profile = loaded.profile;
   if (!profile) return { kind: "PROFILE_REQUIRED" };
   return guarded(async () => {
-    const records = await listActiveQuestions(countrySlug);
+    const records = await loaded.records();
     if (!records.length) return { kind: "UNAVAILABLE_FOR_COUNTRY" as const };
     const codeById = new Map(records.map((record) => [record.id, record.code]));
     const stored = await findAnswers(
@@ -97,10 +116,11 @@ export async function saveQuestionnaire(
   countrySlug: string,
   input: unknown,
 ): Promise<"SAVED" | "PROFILE_REQUIRED" | "UNAVAILABLE_FOR_COUNTRY"> {
-  const profile = await getCurrentUserProfile();
+  const loaded = await loadProfileAndQuestions(countrySlug);
+  const profile = loaded.profile;
   if (!profile) return "PROFILE_REQUIRED";
   return guarded(async () => {
-    const records = await listActiveQuestions(countrySlug);
+    const records = await loaded.records();
     if (!records.length) return "UNAVAILABLE_FOR_COUNTRY" as const;
     const answers = validateAnswers(records.map(toQuestionView), input);
     const idByCode = new Map(records.map((record) => [record.code, record.id]));

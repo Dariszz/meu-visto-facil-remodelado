@@ -144,7 +144,7 @@ export function AuthForm({ mode, confirmation }: AuthFormProps) {
           <p>
             <Link
               href="/forgot-password"
-              className="text-primary underline underline-offset-4"
+              className="inline-flex min-h-11 items-center text-primary underline underline-offset-4"
             >
               Esqueci minha senha
             </Link>
@@ -166,7 +166,7 @@ export function AuthForm({ mode, confirmation }: AuthFormProps) {
         <p className="text-center text-sm">
           <Link
             href="/login"
-            className="text-primary underline underline-offset-4"
+            className="inline-flex min-h-11 items-center text-primary underline underline-offset-4"
           >
             Voltar para entrar
           </Link>

@@ -172,6 +172,64 @@ export const officialDomains: readonly OfficialDomain[] = [
     reviewedAt: "2026-11-18",
     reuseNote: "Conteúdo governamental holandês; resumir e citar com link.",
   },
+  // Reino Unido: revisado em 18/11/2026.
+  {
+    hostname: "www.gov.uk",
+    status: "VERIFIED",
+    countryCode: "GB",
+    authority: "UK Visas and Immigration (Home Office)",
+    purpose: "Vistos de trabalho, estudo e família do Reino Unido",
+    evidence: {
+      type: "GOVERNMENT_REGISTRY",
+      url: "https://www.legislation.gov.uk/",
+      note: "gov.uk é o domínio reservado ao governo britânico (o mesmo do arquivo oficial de legislação); a UKVI publica as regras de vistos em www.gov.uk.",
+    },
+    reviewedAt: "2026-11-18",
+    reuseNote: "Open Government Licence; resumir e citar com link.",
+  },
+  // Canadá, Estados Unidos e Austrália: revisados em 18/11/2026.
+  {
+    hostname: "www.canada.ca",
+    status: "VERIFIED",
+    countryCode: "CA",
+    authority: "Immigration, Refugees and Citizenship Canada (IRCC)",
+    purpose: "Residência permanente, estudo e patrocínio familiar no Canadá",
+    evidence: {
+      type: "GOVERNMENT_REGISTRY",
+      url: "https://design.canada.ca/",
+      note: "O sistema de design do Governo do Canadá define Canada.ca como o site único do governo federal, onde o IRCC publica as regras de imigração.",
+    },
+    reviewedAt: "2026-11-18",
+    reuseNote: "Conteúdo do Governo do Canadá; resumir e citar com link.",
+  },
+  {
+    hostname: "www.uscis.gov",
+    status: "VERIFIED",
+    countryCode: "US",
+    authority: "U.S. Citizenship and Immigration Services (USCIS)",
+    purpose: "Petições de trabalho, estudantes e green card por família",
+    evidence: {
+      type: "GOVERNMENT_REGISTRY",
+      url: "https://get.gov/",
+      note: "Domínio .gov, restrito a órgãos do governo dos EUA e administrado pela CISA (get.gov).",
+    },
+    reviewedAt: "2026-11-18",
+    reuseNote: "Conteúdo do governo federal dos EUA; resumir e citar com link.",
+  },
+  {
+    hostname: "immi.homeaffairs.gov.au",
+    status: "VERIFIED",
+    countryCode: "AU",
+    authority: "Department of Home Affairs",
+    purpose: "Vistos de trabalho qualificado, estudo e parceiro na Austrália",
+    evidence: {
+      type: "PARENT_PORTAL",
+      url: "https://www.homeaffairs.gov.au/",
+      note: "O site do Department of Home Affairs direciona vistos e imigração para immi.homeaffairs.gov.au.",
+    },
+    reviewedAt: "2026-11-18",
+    reuseNote: "Conteúdo do governo australiano; resumir e citar com link.",
+  },
 ];
 
 const byHostname = new Map(

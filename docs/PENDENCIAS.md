@@ -16,21 +16,16 @@ Motivo: a verificação de 16/11/2026 rodou em Node 22, e o ambiente remoto não
 
 ## 2. Fechar a Fase 11 — perfil (banco)
 
-Detalhes em [USER-PROFILE.md](USER-PROFILE.md).
+Feito em 17/11/2026 pelo Claude, com o conector do Supabase, no projeto `meu-visto-facil-dev`:
 
-- [ ] Aplicar a migration `20261006000000_user_profile` no banco de desenvolvimento: `pnpm db:deploy` (com `DIRECT_URL` administrativa)
-- [ ] Criar a role `mvf_profile_writer` com o SQL do USER-PROFILE.md e definir uma senha forte fora do repositório
-- [ ] Adicionar `PROFILE_DATABASE_URL` ao `.env.local` (TLS `sslmode=verify-full` e `schema=catalog`)
-- [ ] Aplicar também as migrations novas de 17/11/2026 (`20261117000000_multicountry_foundation` e `20261117010000_profile_questionnaire`) com `pnpm db:deploy` e rodar `pnpm db:seed` (cria as perguntas da Irlanda; o seed não altera dados existentes)
-- [ ] Permissões das tabelas novas, no banco de desenvolvimento (ajuste os nomes se suas roles forem outras):
-
-  ```sql
-  GRANT SELECT ON TABLE "catalog"."ProfileQuestion", "catalog"."QuestionOption" TO mvf_catalog_reader;
-  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE "catalog"."ProfileAnswer" TO mvf_profile_writer;
-  ```
-
-- [ ] `pnpm test:integration` (aplica as migrations no banco de teste e roda a integração, incluindo perfil, destinos e questionário)
-- [ ] Registrar o resultado em [phase-11-user-profile.md](exec-plans/phase-11-user-profile.md) e no ROADMAP
+- [x] Migrations `20261006000000_user_profile`, `20261117000000_multicountry_foundation` e `20261117010000_profile_questionnaire` aplicadas e registradas em `_prisma_migrations` com o checksum dos arquivos (o `pnpm db:deploy` futuro as reconhece como aplicadas)
+- [x] Seed equivalente: perguntas da Irlanda (7 perguntas, 19 opções) e Portugal/Espanha como `COMING_SOON`
+- [x] Role `mvf_profile_writer` criada (NOINHERIT, sem privilégios administrativos) com senha aleatória de 40 caracteres; só o verificador SCRAM passou pelo Supabase
+- [x] Grants conferidos: perfil com SELECT/INSERT em `UserProfile` e CRUD em `ProfileAnswer`; leitor do catálogo com SELECT nas perguntas e sem acesso a perfil, respostas e `_prisma_migrations`; nenhum grant para `anon`/`authenticated`
+- [x] `.env.local` com `PROFILE_DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` e `APP_ORIGIN` (backup do anterior fora da pasta do projeto)
+- [x] Advisors de segurança do Supabase sem alertas
+- [ ] `pnpm test:integration` no projeto de teste: o projeto `meu-visto-facil-test` está pausado. A integração foi validada em PostgreSQL 18 local
+- [ ] Registrar o resultado final em [phase-11-user-profile.md](exec-plans/phase-11-user-profile.md) depois do teste manual do `/profile`
 
 ## 3. Fechar a Fase 10 — autenticação (Supabase hospedado)
 

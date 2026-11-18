@@ -1,0 +1,4 @@
+# Finais de linha LF em todos os arquivos de texto, inclusive no Windows.
+# O Prisma calcula o checksum das migrations sobre o conteúdo do arquivo:
+# CRLF faria migrations já aplicadas parecerem alteradas.
+* text=auto eol=lf

@@ -20,8 +20,14 @@ export default function PrivacyPage() {
     >
       <LegalSection title="Quem cuida dos seus dados">
         <p>
-          O Meu Visto Fácil é um projeto independente, em fase de testes. Para
-          qualquer assunto sobre os seus dados, escreva para <ContactLink />.
+          O Meu Visto Fácil é um aplicativo de teste criado por Pedro Paulo
+          Daris, que é o responsável pelos dados tratados aqui (controlador, nos
+          termos da LGPD). A ideia nasceu do Trabalho de Conclusão de Curso
+          (TCC) dele e, por enquanto, o projeto não tem fins financeiros.
+        </p>
+        <p>
+          Para qualquer assunto sobre os seus dados, escreva para{" "}
+          <ContactLink />.
         </p>
       </LegalSection>
 

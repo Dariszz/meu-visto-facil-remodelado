@@ -10,6 +10,9 @@ test("privacidade explica dados, prestadores e como excluir", () => {
     screen.getByRole("heading", { level: 1, name: "Política de privacidade" }),
   ).toBeInTheDocument();
   expect(screen.getByText(/Supabase:/)).toBeInTheDocument();
+  expect(screen.getByText(/criado por Pedro Paulo\s+Daris/)).toHaveTextContent(
+    "TCC",
+  );
   expect(
     screen.getByRole("link", { name: "excluir a sua conta" }),
   ).toHaveAttribute("href", "/profile");
@@ -24,4 +27,11 @@ test("termos deixam claro que não é aconselhamento jurídico", () => {
     screen.getByRole("heading", { level: 1, name: "Termos de uso" }),
   ).toBeInTheDocument();
   expect(screen.getByText(/Não é aconselhamento jurídico/)).toBeInTheDocument();
+  expect(
+    screen.getByText(/Não substitui nenhuma assessoria oficial/),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("heading", { name: "Sempre confira nos sites oficiais" }),
+  ).toBeInTheDocument();
+  expect(screen.getByText(/não tem fins financeiros/)).toBeInTheDocument();
 });

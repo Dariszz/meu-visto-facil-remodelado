@@ -20,15 +20,23 @@ export default function TermsPage() {
     >
       <LegalSection title="O que é o serviço">
         <p>
-          O Meu Visto Fácil organiza informações públicas de órgãos oficiais de
-          imigração para ajudar você a entender caminhos possíveis e acompanhar
-          as etapas de um processo. O serviço está em fase de testes e é
-          gratuito.
+          O Meu Visto Fácil é um aplicativo de teste criado por Pedro Paulo
+          Daris. A ideia nasceu do Trabalho de Conclusão de Curso (TCC) dele e,
+          por enquanto, o projeto não tem fins financeiros: o uso é gratuito.
+        </p>
+        <p>
+          Ele organiza informações públicas de órgãos oficiais de imigração para
+          ajudar você a entender caminhos possíveis e acompanhar as etapas de um
+          processo.
         </p>
       </LegalSection>
 
       <LegalSection title="O que o serviço não é">
         <ul>
+          <li>
+            Não substitui nenhuma assessoria oficial nem o atendimento dos
+            órgãos de imigração, consulados ou embaixadas.
+          </li>
           <li>
             Não é aconselhamento jurídico nem substitui um advogado ou consultor
             de imigração.
@@ -45,12 +53,14 @@ export default function TermsPage() {
         </ul>
       </LegalSection>
 
-      <LegalSection title="Informações oficiais">
+      <LegalSection title="Sempre confira nos sites oficiais">
         <p>
           Cada informação aponta para a fonte oficial de onde veio, com a data
-          da consulta. Regras de imigração mudam: antes de qualquer decisão ou
-          pagamento, confirme os detalhes na fonte oficial. Se houver diferença,
-          vale o que diz o órgão oficial.
+          da consulta, mas regras de imigração mudam com frequência e o app pode
+          estar desatualizado. Antes de qualquer decisão, pedido ou pagamento,
+          confira os requisitos, prazos e valores diretamente nos sites oficiais
+          do governo do país de destino. Se houver diferença, vale sempre o que
+          diz o órgão oficial.
         </p>
       </LegalSection>
 
@@ -78,10 +88,11 @@ export default function TermsPage() {
 
       <LegalSection title="Limitação de responsabilidade">
         <p>
-          O serviço é oferecido como está, durante a fase de testes. Fazemos o
-          possível para manter as informações corretas e atualizadas, mas não
-          respondemos por decisões tomadas apenas com base no Meu Visto Fácil,
-          por indisponibilidades ou por mudanças nas regras oficiais.
+          O serviço é oferecido como está, sem cobrança, durante a fase de
+          testes. Fazemos o possível para manter as informações corretas e
+          atualizadas, mas não respondemos por decisões tomadas apenas com base
+          no Meu Visto Fácil, por indisponibilidades ou por mudanças nas regras
+          oficiais.
         </p>
       </LegalSection>
 

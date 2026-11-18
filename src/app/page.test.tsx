@@ -72,7 +72,7 @@ test("oferece navegação e CTAs com destinos existentes, sem rotas futuras queb
     "/termos",
   );
   expect(screen.getByRole("contentinfo")).toHaveTextContent(
-    "Não oferecemos aconselhamento jurídico",
+    "não substitui assessoria oficial",
   );
   expect(screen.getByRole("main")).toHaveAttribute("tabindex", "-1");
 });

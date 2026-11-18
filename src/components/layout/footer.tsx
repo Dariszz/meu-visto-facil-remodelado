@@ -34,9 +34,10 @@ export function Footer() {
         </div>
         <div className="mt-6 flex flex-col justify-between gap-4 border-t pt-6 text-xs leading-relaxed text-muted-foreground">
           <p className="max-w-3xl">
-            Orientação informativa. Não oferecemos aconselhamento jurídico nem
-            garantimos elegibilidade ou aprovação. As informações podem mudar.
-            Confirme os detalhes com as autoridades oficiais.
+            Aplicativo de teste, sem fins financeiros. Orientação informativa:
+            não substitui assessoria oficial, não oferecemos aconselhamento
+            jurídico nem garantimos elegibilidade ou aprovação. As informações
+            podem mudar; confirme sempre nos sites oficiais do governo.
           </p>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <p>Meu Visto Fácil: clareza para o seu próximo passo.</p>

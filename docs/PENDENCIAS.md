@@ -61,7 +61,8 @@ GRANT SELECT ON TABLE "catalog"."Visa", "catalog"."Country" TO mvf_profile_write
 - [x] Supabase dev: `GRANT DELETE ON TABLE "catalog"."UserProfile" TO mvf_profile_writer;`
 - [x] Chave secreta dedicada `meu_visto_facil_app` criada no painel e gravada como `SUPABASE_SECRET_KEY` no `.env.local`. Repetir na Vercel (só no servidor)
 - [x] Testado no site real (18/11/2026): conta descartável `+mvf2` criada, confirmada pelo e-mail, perfil criado, confirmação errada recusada, exclusão concluída; perfil e acesso sumiram do banco e a sessão foi encerrada
-- [ ] Revisar o texto da privacidade e dos termos. Não foi escrito por advogado. A LGPD pede que o controlador seja identificado: hoje aparece só o projeto e o e-mail de contato
+- [x] Controlador identificado (Pedro Paulo Daris), app de teste nascido do TCC, sem fins financeiros, e aviso de que não substitui assessoria oficial
+- [ ] Revisão do texto por alguém da área jurídica antes de abrir para o público geral
 
 ## 4. Revisar a madrugada de 17/11/2026 (branch `feature/madrugada`)
 

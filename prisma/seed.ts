@@ -15,7 +15,10 @@ async function main() {
     readDatabaseUrl(process.env.DIRECT_URL, "DIRECT_URL"),
   );
   try {
-    await client.$transaction(seedCatalog, { timeout: 30_000 });
+    await client.$transaction(seedCatalog, {
+      maxWait: 30_000,
+      timeout: 600_000,
+    });
   } finally {
     await client.$disconnect();
   }

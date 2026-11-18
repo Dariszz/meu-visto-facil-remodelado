@@ -185,56 +185,8 @@ export async function seedCatalog(tx: Prisma.TransactionClient) {
   }
   await seedQuestions(tx, country.id);
   await seedCountryContent(tx, irelandContent, { keepCountryStatus: true });
-  await seedPendingDestinations(tx);
   for (const content of destinationContents)
     await seedCountryContent(tx, content);
-}
-
-// Destinos ainda sem conteúdo revisado: só links oficiais, COMING_SOON.
-const pendingDestinations = [
-  {
-    id: "seed-country-es",
-    code: "ES",
-    slug: "spain",
-    name: "Espanha",
-    sources: [
-      {
-        title: "Migrações: viver na Espanha",
-        authority: "Secretaría de Estado de Migraciones",
-        url: "https://www.inclusion.gob.es/en/web/migraciones",
-      },
-    ],
-  },
-] as const;
-
-async function seedPendingDestinations(tx: Prisma.TransactionClient) {
-  for (const destination of pendingDestinations) {
-    const country = await tx.country.upsert({
-      where: { code: destination.code },
-      update: {},
-      create: {
-        id: destination.id,
-        code: destination.code,
-        slug: destination.slug,
-        name: destination.name,
-        status: "COMING_SOON",
-        coverageLevel: "LINKS_ONLY",
-      },
-    });
-    for (const source of destination.sources) {
-      await tx.officialSource.upsert({
-        where: { countryId_url: { countryId: country.id, url: source.url } },
-        update: {},
-        create: {
-          countryId: country.id,
-          title: source.title,
-          authority: source.authority,
-          url: source.url,
-          hostname: new URL(source.url).hostname,
-        },
-      });
-    }
-  }
 }
 
 // Questionário da Irlanda (Fase 13). Create-only, como o restante do seed.

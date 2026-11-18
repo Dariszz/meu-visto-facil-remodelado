@@ -45,8 +45,8 @@ test("real PostgreSQL catalog: seed, relations, constraints and conservative del
           ]);
           const [countries, categories, visaRows, requirements, sources] =
             first;
-          // Fixture, Irlanda, Espanha (só links) e os destinos com conteúdo.
-          assert.equal(countries.length, 3 + destinationContents.length);
+          // Fixture, Irlanda e os destinos com conteúdo.
+          assert.equal(countries.length, 2 + destinationContents.length);
           assert.equal(
             categories.length,
             new Set(["work", ...visas.map((visa) => visa.category)]).size,

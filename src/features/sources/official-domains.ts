@@ -110,10 +110,10 @@ export const officialDomains: readonly OfficialDomain[] = [
     reviewedAt: "2026-11-18",
     reuseNote: "Texto legal oficial; citar com link.",
   },
-  // Espanha: pesquisa de 17/11/2026, aguardando revisão.
+  // Espanha: revisado em 18/11/2026.
   {
     hostname: "www.inclusion.gob.es",
-    status: "PENDING_REVIEW",
+    status: "VERIFIED",
     countryCode: "ES",
     authority: "Secretaría de Estado de Migraciones (Ministerio de Inclusión)",
     purpose: "Autorizações de residência e trabalho na Espanha",
@@ -122,13 +122,13 @@ export const officialDomains: readonly OfficialDomain[] = [
       url: "https://home-affairs.ec.europa.eu/policies/migration-and-asylum/eu-immigration-portal/who-does-what/spain_en",
       note: "Página da Comissão Europeia sobre quem faz o quê na Espanha descreve a Secretaria de Estado de Migrações como órgão da política migratória.",
     },
-    reviewedAt: "2026-11-17",
+    reviewedAt: "2026-11-18",
     reuseNote:
       "Conferir aviso legal do site antes de reutilizar; resumir e citar com link.",
   },
   {
     hostname: "www.exteriores.gob.es",
-    status: "PENDING_REVIEW",
+    status: "VERIFIED",
     countryCode: "ES",
     authority: "Ministerio de Asuntos Exteriores, Unión Europea y Cooperación",
     purpose: "Vistos nacionais pedidos nos consulados da Espanha",
@@ -137,7 +137,7 @@ export const officialDomains: readonly OfficialDomain[] = [
       url: "https://inclusion.gob.es/gl/web/migraciones/informacion-util/otra-informacion",
       note: "A área de migrações do Ministerio de Inclusión aponta o Ministerio de Asuntos Exteriores para informação sobre vistos.",
     },
-    reviewedAt: "2026-11-17",
+    reviewedAt: "2026-11-18",
     reuseNote:
       "Conferir aviso legal do site antes de reutilizar; resumir e citar com link.",
   },

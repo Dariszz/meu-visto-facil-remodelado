@@ -29,16 +29,17 @@ Feito em 17/11/2026 pelo Claude, com o conector do Supabase, no projeto `meu-vis
 
 ## 3. Fechar a Fase 10 — autenticação (Supabase hospedado)
 
-Detalhes em [AUTHENTICATION.md](AUTHENTICATION.md).
+Feito em 17/11/2026 pelo Claude, no painel do Supabase e no navegador do app:
 
-- [ ] No painel do Supabase: habilitar o provider Email, **Confirm email** e senha mínima de 8 caracteres
-- [ ] Site URL = `http://localhost:3000`; adicionar o redirect `http://localhost:3000/auth/confirm`
-- [ ] Ajustar os templates **Confirm signup** e **Reset password** com os links do AUTHENTICATION.md
-- [ ] Conferir a entrega de e-mails (SMTP) e os limites de autenticação
-- [ ] `.env.local`: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` (nunca `service_role`), `APP_ORIGIN=http://localhost:3000`
-- [ ] Executar o roteiro manual de 6 passos do AUTHENTICATION.md (cadastro, confirmação, login, recuperação, token reutilizado, cookies)
-- [ ] Testar `/profile` com duas contas diferentes
-- [ ] Registrar o resultado em [phase-10-authentication.md](exec-plans/phase-10-authentication.md)
+- [x] Provider Email com **Confirm email** (já estava ligado) e senha mínima de 8 caracteres
+- [x] Site URL `http://localhost:3000` e redirect `http://localhost:3000/auth/confirm`
+- [x] SMTP próprio com o Gmail (senha de app criada pelo Pedro). O Supabase só permite editar templates com SMTP próprio
+- [x] Templates **Confirm signup** e **Reset password** em português, com `token_hash` e `type`
+- [x] Roteiro manual com uma conta de teste (`pedropaulodaris+mvf1@gmail.com`): cadastro, confirmação pelo e-mail, sessão, logout, painel redireciona para login sem sessão, login, perfil criado com a role nova, questionário salvo (6 respostas), recomendações, recuperação de senha e link reutilizado rejeitado
+- [ ] Testar `/profile` com uma segunda conta (isolamento entre pessoas já coberto pela integração local)
+- [ ] Antes de produção: domínio próprio para e-mail (o Gmail serve só para desenvolvimento) e origem HTTPS
+
+**Ambiente Windows:** o `pnpm.exe` do gerenciador "nvm" (pasta `AppData\Local\Author Software\nvm`) não reconhece o Node 24 neste projeto. Até resolver, use `npx.cmd pnpm@11.19.0 <comando>`. O `prisma generate` também instalou skills do Prisma em `.agents/skills/` (não versionadas).
 
 ## 4. Revisar a madrugada de 17/11/2026 (branch `feature/madrugada`)
 

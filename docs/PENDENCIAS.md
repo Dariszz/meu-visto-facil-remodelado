@@ -52,7 +52,7 @@ GRANT SELECT, INSERT ON TABLE "catalog"."ProcessSnapshot", "catalog"."ChecklistI
 GRANT SELECT ON TABLE "catalog"."Visa", "catalog"."Country" TO mvf_profile_writer;
 ```
 
-- [ ] No PC: `pnpm db:generate` e reiniciar o `pnpm dev` (o schema mudou)
+- [x] No PC: `pnpm db:generate` e reiniciar o `pnpm dev` (o schema mudou)
 
 ## 4. Revisar a madrugada de 17/11/2026 (branch `feature/madrugada`)
 

@@ -17,9 +17,9 @@ Implementadas em 18/11/2026 na branch `feature/processos`.
 
 - 393 testes de unidade, 11 de integração em PostgreSQL 18 local, lint, typecheck e build.
 - Supabase dev: migration aplicada e registrada, etapas inseridas, grants conferidos.
+- Site real (18/11/2026, conta de teste): iniciar processo pelas recomendações, checklist com 7 itens e 3 fontes, concluir e marcar em andamento persistindo após recarregar, painel com progresso e próximo passo, recomendação trocando para "Abrir processo" e id inexistente respondendo 404.
 
 ## Pendências
 
-- O cliente Prisma no PC precisa ser gerado de novo (`pnpm db:generate`).
 - Não dá para gerar a migration com o Prisma no ambiente remoto (sem schema engine). A SQL foi escrita à mão no padrão das anteriores e validada aplicando em PostgreSQL. Para conferir no PC: `pnpm prisma migrate diff --from-migrations prisma/migrations --to-schema prisma/schema.prisma --shadow-database-url <banco vazio>`.
 - Itens pessoais (criados pela pessoa) e arquivar/pausar processo ficam para depois.

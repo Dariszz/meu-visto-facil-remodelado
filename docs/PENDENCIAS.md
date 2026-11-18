@@ -33,7 +33,7 @@ Feito em 17/11/2026 pelo Claude, no painel do Supabase e no navegador do app:
 
 - [x] Provider Email com **Confirm email** (já estava ligado) e senha mínima de 8 caracteres
 - [x] Site URL `http://localhost:3000` e redirect `http://localhost:3000/auth/confirm`
-- [x] SMTP próprio com o Gmail (senha de app criada pelo Pedro). O Supabase só permite editar templates com SMTP próprio
+- [x] SMTP próprio com o Gmail `meuvistofacil.oficial@gmail.com` (senha de app criada pelo Pedro). O Supabase só permite editar templates com SMTP próprio. Por ser conta nova, os e-mails podem cair no spam: avisar quem for testar
 - [x] Templates **Confirm signup** e **Reset password** em português, com `token_hash` e `type`
 - [x] Roteiro manual com uma conta de teste (`pedropaulodaris+mvf1@gmail.com`): cadastro, confirmação pelo e-mail, sessão, logout, painel redireciona para login sem sessão, login, perfil criado com a role nova, questionário salvo (6 respostas), recomendações, recuperação de senha e link reutilizado rejeitado
 - [ ] Testar `/profile` com uma segunda conta (isolamento entre pessoas já coberto pela integração local)

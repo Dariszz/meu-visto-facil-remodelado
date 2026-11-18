@@ -59,6 +59,9 @@ export function DashboardView({
   const visible = data.processes.filter(
     (process) => process.status !== "ARCHIVED",
   );
+  // Com o questionário completo, o próximo passo é escolher nas recomendações.
+  const askQuestionnaire =
+    Boolean(links.questionnaire) && !data.hasCompletedQuestionnaire;
 
   return (
     <main id="main-content" tabIndex={-1}>
@@ -102,22 +105,28 @@ export function DashboardView({
               icon={FolderOpen}
               title="Nenhum processo salvo"
               description={
-                links.questionnaire
+                askQuestionnaire
                   ? "Responda ao questionário e escolha um caminho. O checklist e o progresso de cada etapa aparecem aqui."
-                  : "Quando você iniciar um processo, o checklist e o progresso de cada etapa aparecem aqui. Enquanto isso, explore os caminhos disponíveis."
+                  : data.hasCompletedQuestionnaire
+                    ? "Suas respostas estão salvas. Quando você iniciar um processo a partir das recomendações, o checklist e o progresso de cada etapa aparecem aqui."
+                    : "Quando você iniciar um processo, o checklist e o progresso de cada etapa aparecem aqui. Enquanto isso, explore os caminhos disponíveis."
               }
               action={
                 <>
-                  {links.questionnaire && (
+                  {askQuestionnaire && (
                     <Button asChild>
-                      <Link href={links.questionnaire}>
+                      <Link href={links.questionnaire!}>
                         Responder questionário
                       </Link>
                     </Button>
                   )}
                   <Button
                     asChild
-                    variant={links.questionnaire ? "outline" : "default"}
+                    variant={
+                      askQuestionnaire || data.hasCompletedQuestionnaire
+                        ? "outline"
+                        : "default"
+                    }
                   >
                     <Link href={links.explore}>Explorar Irlanda</Link>
                   </Button>

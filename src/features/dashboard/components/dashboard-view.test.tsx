@@ -84,3 +84,19 @@ test("nome ausente usa saudação neutra", () => {
     screen.getByRole("heading", { level: 1, name: "Olá!" }),
   ).toBeInTheDocument();
 });
+
+test("sem processos e com questionário completo, não pede para responder de novo", () => {
+  render(
+    <DashboardView
+      data={{ ...emptyDashboard, hasCompletedQuestionnaire: true }}
+      links={links}
+    />,
+  );
+  expect(screen.getByText(/Suas respostas estão salvas/)).toBeInTheDocument();
+  expect(
+    screen.queryByRole("link", { name: "Responder questionário" }),
+  ).toBeNull();
+  expect(
+    screen.getByRole("link", { name: "Ver recomendações" }),
+  ).toHaveAttribute("href", "/recomendacoes");
+});

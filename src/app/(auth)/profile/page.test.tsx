@@ -54,6 +54,9 @@ test.each(["Pessoa", null])(
     expect(
       screen.getByRole("link", { name: "Explorar a Irlanda" }),
     ).toHaveAttribute("href", "/ireland");
+    expect(
+      screen.getByRole("link", { name: "Ir para o painel" }),
+    ).toHaveAttribute("href", "/dashboard");
   },
 );
 

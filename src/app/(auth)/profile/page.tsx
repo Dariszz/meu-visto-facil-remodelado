@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { AuthShell } from "@/features/auth/auth-shell";
@@ -60,12 +61,17 @@ export default async function ProfilePage() {
           </dd>
         </div>
       </dl>
-      <Link
-        href="/ireland"
-        className="mt-6 inline-block text-sm text-primary underline underline-offset-4"
-      >
-        Explorar a Irlanda
-      </Link>
+      <div className="mt-6 flex flex-col gap-3">
+        <Button asChild>
+          <Link href="/dashboard">Ir para o painel</Link>
+        </Button>
+        <Link
+          href="/ireland"
+          className="inline-flex min-h-11 items-center justify-center text-sm text-primary underline underline-offset-4"
+        >
+          Explorar a Irlanda
+        </Link>
+      </div>
     </AuthShell>
   );
 }

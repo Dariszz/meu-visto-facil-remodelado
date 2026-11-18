@@ -39,7 +39,7 @@ Feito em 17/11/2026 pelo Claude, no painel do Supabase e no navegador do app:
 - [ ] Testar `/profile` com uma segunda conta (isolamento entre pessoas já coberto pela integração local)
 - [ ] Antes de produção: domínio próprio para e-mail (o Gmail serve só para desenvolvimento) e origem HTTPS
 
-**Ambiente Windows:** o `pnpm.exe` do gerenciador "nvm" (pasta `AppData\Local\Author Software\nvm`) não reconhece o Node 24 neste projeto. Até resolver, use `npx.cmd pnpm@11.19.0 <comando>`. O `prisma generate` também instalou skills do Prisma em `.agents/skills/` (não versionadas).
+**Ambiente Windows:** o NVM for Windows 2 só reconhece versões instaladas por ele. Resolvido em 17/11/2026 com `nvm install 24`; dentro do projeto, `node --version` mostra v24 e `pnpm --version` mostra 11.19.0. O `db:generate` usa `--no-hints` para o Prisma não oferecer instalar skills.
 
 ## 4. Revisar a madrugada de 17/11/2026 (branch `feature/madrugada`)
 

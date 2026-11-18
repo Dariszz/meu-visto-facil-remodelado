@@ -54,6 +54,18 @@ GRANT SELECT ON TABLE "catalog"."Visa", "catalog"."Country" TO mvf_profile_write
 
 - [x] No PC: `pnpm db:generate` e reiniciar o `pnpm dev` (o schema mudou)
 
+## 3d. Conteúdo por país (18/11/2026)
+
+Branch `feature/conteudo-paises`. Conteúdo revisado a partir só de páginas oficiais, consultadas em 18/11/2026, em `prisma/seed-data/countries/`:
+
+- Irlanda: General Employment Permit, Estudante (Stamp 2) e Reunião familiar (já aplicados no `meu-visto-facil-dev`)
+- Portugal (6), Espanha (5), Alemanha (5), Holanda (3), Reino Unido (4), Canadá (3), EUA (3) e Austrália (3)
+- Página genérica `/destinos/<país>/<visto>` com criação de checklist direto
+
+- [ ] No PC: `pnpm db:seed` para levar ao `meu-visto-facil-dev` os países novos (o seed só escreve o que mudou e não mexe no que já foi publicado da Critical Skills)
+- [ ] Itália: as listas de requisitos oficiais estão em PDF nos consulados (ambbrasilia.esteri.it); falta ler os PDFs para publicar
+- [ ] Revisar os textos periodicamente: Portugal mudou a Lei de Estrangeiros em 10/2025 e 09/2026; regras de H-1B nos EUA estavam em disputa judicial
+
 ## 3c. Privacidade, termos e exclusão de conta (18/11/2026)
 
 - [x] Páginas `/privacidade` e `/termos`, links no rodapé e aviso no cadastro

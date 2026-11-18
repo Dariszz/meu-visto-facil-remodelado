@@ -141,6 +141,37 @@ export const officialDomains: readonly OfficialDomain[] = [
     reuseNote:
       "Conferir aviso legal do site antes de reutilizar; resumir e citar com link.",
   },
+  // Alemanha: revisado em 18/11/2026.
+  {
+    hostname: "brasil.diplo.de",
+    status: "VERIFIED",
+    countryCode: "DE",
+    authority: "Representações da Alemanha no Brasil (Auswärtiges Amt)",
+    purpose:
+      "Vistos nacionais para trabalho, estudo e família pedidos no Brasil",
+    evidence: {
+      type: "PARENT_PORTAL",
+      url: "https://www.auswaertiges-amt.de/de",
+      note: "O site do Ministério Federal das Relações Exteriores alemão usa o domínio diplo.de para as representações no exterior (Konsulatfinder).",
+    },
+    reviewedAt: "2026-11-18",
+    reuseNote: "Conteúdo governamental alemão; resumir e citar com link.",
+  },
+  // Holanda: revisado em 18/11/2026.
+  {
+    hostname: "ind.nl",
+    status: "VERIFIED",
+    countryCode: "NL",
+    authority: "Immigration and Naturalisation Service (IND)",
+    purpose: "Autorizações de residência para trabalho, estudo e família",
+    evidence: {
+      type: "PARENT_PORTAL",
+      url: "https://www.government.nl/faq/do-i-need-a-residence-permit-if-i-want-to-stay-in-the-netherlands-for-a-long-period-of-time",
+      note: "O portal do governo holandês (government.nl) indica o IND para pedidos de autorização de residência.",
+    },
+    reviewedAt: "2026-11-18",
+    reuseNote: "Conteúdo governamental holandês; resumir e citar com link.",
+  },
 ];
 
 const byHostname = new Map(

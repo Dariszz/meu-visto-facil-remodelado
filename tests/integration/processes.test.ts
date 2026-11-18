@@ -14,6 +14,7 @@ import {
   listProcessesForProfile,
   updateItemStatusForProfile,
 } from "../../src/lib/db/repositories/process-repository";
+import { deleteUserProfileByAuthUserId } from "../../src/lib/db/repositories/user-profile-repository";
 import { findPublicVisa } from "../../src/lib/db/repositories/visa-repository";
 import {
   buildBaseChecklist,
@@ -236,7 +237,13 @@ test("processes: checklist from reviewed requirements, ownership isolation and c
           await tx.visaRequirement.delete({ where: { id: draft.id } });
 
           // Excluir o perfil apaga processo, snapshot, checklist e itens.
-          await tx.userProfile.delete({ where: { id: alice.id } });
+          assert.equal(
+            await deleteUserProfileByAuthUserId(
+              "00000000-0000-4000-8000-00000000a001",
+              tx,
+            ),
+            1,
+          );
           assert.equal(
             await tx.immigrationProcess.count({ where: { id: created.id } }),
             0,

@@ -117,3 +117,14 @@ test("logout é uma submissão explícita sem credenciais no formulário", () =>
   expect(screen.queryByLabelText("Senha")).not.toBeInTheDocument();
   expect(actions.logoutAction).not.toHaveBeenCalled();
 });
+
+test("cadastro mostra concordância com termos e privacidade", () => {
+  render(<AuthForm mode="register" />);
+  expect(screen.getByRole("link", { name: "Termos de uso" })).toHaveAttribute(
+    "href",
+    "/termos",
+  );
+  expect(
+    screen.getByRole("link", { name: "Política de privacidade" }),
+  ).toHaveAttribute("href", "/privacidade");
+});

@@ -45,3 +45,14 @@ export async function createUserProfileIfAbsent(
     select: profileSelect,
   });
 }
+
+// Apaga o perfil e, por cascade, respostas, processos, snapshots e checklists.
+export async function deleteUserProfileByAuthUserId(
+  authUserId: string,
+  db?: Prisma.TransactionClient,
+): Promise<number> {
+  const { count } = await (
+    db ?? getProfileDatabaseClient()
+  ).userProfile.deleteMany({ where: { authUserId } });
+  return count;
+}

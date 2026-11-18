@@ -18,12 +18,18 @@ export function Footer() {
             >
               Sobre
             </Link>
-            <span className="text-muted-foreground">
-              Privacidade <span className="text-xs">(em breve)</span>
-            </span>
-            <span className="text-muted-foreground">
-              Termos <span className="text-xs">(em breve)</span>
-            </span>
+            <Link
+              href="/privacidade"
+              className="inline-flex min-h-11 items-center rounded-md text-primary"
+            >
+              Privacidade
+            </Link>
+            <Link
+              href="/termos"
+              className="inline-flex min-h-11 items-center rounded-md text-primary"
+            >
+              Termos
+            </Link>
           </nav>
         </div>
         <div className="mt-6 flex flex-col justify-between gap-4 border-t pt-6 text-xs leading-relaxed text-muted-foreground">

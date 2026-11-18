@@ -50,6 +50,8 @@ test("oferece navegação e CTAs com destinos existentes, sem rotas futuras queb
         "/ireland/work",
         "/ireland/study",
         "/ireland/family",
+        "/privacidade",
+        "/termos",
       ].includes(href) || /^\/?#.+/.test(href),
     ).toBe(true);
     if (href.includes("#"))
@@ -61,9 +63,14 @@ test("oferece navegação e CTAs com destinos existentes, sem rotas futuras queb
   })) {
     expect(link).toHaveAttribute("href", "/ireland");
   }
-  expect(
-    screen.queryByRole("link", { name: /Privacidade|Termos|Login/ }),
-  ).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "Privacidade" })).toHaveAttribute(
+    "href",
+    "/privacidade",
+  );
+  expect(screen.getByRole("link", { name: "Termos" })).toHaveAttribute(
+    "href",
+    "/termos",
+  );
   expect(screen.getByRole("contentinfo")).toHaveTextContent(
     "Não oferecemos aconselhamento jurídico",
   );

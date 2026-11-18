@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 import { AuthShell } from "@/features/auth/auth-shell";
+import { deleteAccountAction } from "@/features/account/actions";
+import { DeleteAccountForm } from "@/features/account/delete-account-form";
 import { ProfileForm } from "@/features/profile/profile-form";
 import { getCurrentUserProfile } from "@/features/profile/service";
 import { AuthenticationError } from "@/lib/auth/require-user";
@@ -72,6 +74,7 @@ export default async function ProfilePage() {
           Explorar a Irlanda
         </Link>
       </div>
+      <DeleteAccountForm action={deleteAccountAction} />
     </AuthShell>
   );
 }

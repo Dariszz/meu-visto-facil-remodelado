@@ -160,6 +160,25 @@ export function AuthForm({ mode, confirmation }: AuthFormProps) {
           </p>
         </div>
       )}
+      {mode === "register" && (
+        <p className="text-center text-xs leading-relaxed text-muted-foreground">
+          Ao criar a conta, você concorda com os{" "}
+          <Link
+            href="/termos"
+            className="text-primary underline underline-offset-4"
+          >
+            Termos de uso
+          </Link>{" "}
+          e com a{" "}
+          <Link
+            href="/privacidade"
+            className="text-primary underline underline-offset-4"
+          >
+            Política de privacidade
+          </Link>
+          .
+        </p>
+      )}
       {["register", "forgot-password", "reset-password", "confirm"].includes(
         mode,
       ) && (

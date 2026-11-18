@@ -17,6 +17,10 @@ vi.mock("next/navigation", () => ({ redirect }));
 vi.mock("@/features/profile/profile-form", () => ({
   ProfileForm: () => <form aria-label="Criar perfil" />,
 }));
+vi.mock("@/features/account/actions", () => ({ deleteAccountAction: vi.fn() }));
+vi.mock("@/features/account/delete-account-form", () => ({
+  DeleteAccountForm: () => <section aria-label="Excluir conta" />,
+}));
 beforeEach(() => vi.clearAllMocks());
 
 test("redireciona para login quando a sessão não está autenticada", async () => {
@@ -57,6 +61,9 @@ test.each(["Pessoa", null])(
     expect(
       screen.getByRole("link", { name: "Ir para o painel" }),
     ).toHaveAttribute("href", "/dashboard");
+    expect(
+      screen.getByRole("region", { name: "Excluir conta" }),
+    ).toBeInTheDocument();
   },
 );
 

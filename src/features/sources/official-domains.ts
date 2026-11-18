@@ -65,10 +65,10 @@ export const officialDomains: readonly OfficialDomain[] = [
     reviewedAt: "2026-11-17",
     reuseNote: "Conteúdo governamental irlandês; resumir e citar com link.",
   },
-  // Portugal e Espanha: pesquisa de 17/11/2026, aguardando revisão.
+  // Portugal: revisado em 18/11/2026.
   {
     hostname: "aima.gov.pt",
-    status: "PENDING_REVIEW",
+    status: "VERIFIED",
     countryCode: "PT",
     authority: "Agência para a Integração, Migrações e Asilo (AIMA)",
     purpose: "Autorizações de residência e integração de migrantes",
@@ -77,13 +77,13 @@ export const officialDomains: readonly OfficialDomain[] = [
       url: "https://www.gov.pt/noticias/agencia-para-a-integracao-migracoes-e-asilo-aima-inicia-funcoes",
       note: "O portal gov.pt anuncia a AIMA como agência responsável por acolhimento, integração e asilo desde 29/10/2023. Domínio com sufixo gov.pt.",
     },
-    reviewedAt: "2026-11-17",
+    reviewedAt: "2026-11-18",
     reuseNote:
       "Conferir aviso legal do site antes de reutilizar; resumir e citar com link.",
   },
   {
     hostname: "vistos.mne.gov.pt",
-    status: "PENDING_REVIEW",
+    status: "VERIFIED",
     countryCode: "PT",
     authority: "Ministério dos Negócios Estrangeiros (MNE)",
     purpose: "Vistos nacionais e Schengen para entrar em Portugal",
@@ -92,10 +92,25 @@ export const officialDomains: readonly OfficialDomain[] = [
       url: "https://acaosocial.cm-porto.pt/files/uploads/cms/02_EN_caderno_Regularizacao_VF.pdf",
       note: "Guia de integração de migrantes da Câmara Municipal do Porto indica vistos.mne.gov.pt para tipos de visto e onde pedir. Subdomínio do MNE (mne.gov.pt).",
     },
-    reviewedAt: "2026-11-17",
+    reviewedAt: "2026-11-18",
     reuseNote:
       "Conferir aviso legal do site antes de reutilizar; resumir e citar com link.",
   },
+  {
+    hostname: "diariodarepublica.pt",
+    status: "VERIFIED",
+    countryCode: "PT",
+    authority: "Diário da República (Imprensa Nacional-Casa da Moeda)",
+    purpose: "Texto oficial e consolidado das leis portuguesas",
+    evidence: {
+      type: "PARENT_PORTAL",
+      url: "https://vistos.mne.gov.pt/pt/vistos-nacionais/legislacao-nacional",
+      note: "A página de legislação do portal de vistos do MNE aponta para diariodarepublica.pt como texto da Lei de Estrangeiros e alterações.",
+    },
+    reviewedAt: "2026-11-18",
+    reuseNote: "Texto legal oficial; citar com link.",
+  },
+  // Espanha: pesquisa de 17/11/2026, aguardando revisão.
   {
     hostname: "www.inclusion.gob.es",
     status: "PENDING_REVIEW",

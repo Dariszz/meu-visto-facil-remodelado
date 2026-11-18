@@ -5,6 +5,7 @@ import {
   criticalSkillsSources,
 } from "./seed-data/critical-skills";
 import { seedCountryContent } from "./seed-countries";
+import { destinationContents } from "./seed-data/countries";
 import { irelandContent } from "./seed-data/countries/ireland";
 import { irelandQuestions } from "../src/features/questionnaire/data/ireland-questions";
 
@@ -185,30 +186,12 @@ export async function seedCatalog(tx: Prisma.TransactionClient) {
   await seedQuestions(tx, country.id);
   await seedCountryContent(tx, irelandContent, { keepCountryStatus: true });
   await seedPendingDestinations(tx);
+  for (const content of destinationContents)
+    await seedCountryContent(tx, content);
 }
 
-// Portugal e Espanha (17/11/2026): só links oficiais, ainda não publicados.
-// Ficam COMING_SOON até a revisão dos domínios em official-domains.ts; depois
-// basta mudar o status do país para ACTIVE.
+// Destinos ainda sem conteúdo revisado: só links oficiais, COMING_SOON.
 const pendingDestinations = [
-  {
-    id: "seed-country-pt",
-    code: "PT",
-    slug: "portugal",
-    name: "Portugal",
-    sources: [
-      {
-        title: "Viver em Portugal",
-        authority: "Agência para a Integração, Migrações e Asilo (AIMA)",
-        url: "https://aima.gov.pt/pt/viver",
-      },
-      {
-        title: "Vistos nacionais: tipos de visto",
-        authority: "Ministério dos Negócios Estrangeiros (MNE)",
-        url: "https://vistos.mne.gov.pt/pt/vistos-nacionais/informacao-geral/tipo-de-visto",
-      },
-    ],
-  },
   {
     id: "seed-country-es",
     code: "ES",

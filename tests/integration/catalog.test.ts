@@ -3,6 +3,8 @@ import test from "node:test";
 import { createDatabaseClient } from "../../src/lib/db/create-client";
 import { readTestDatabaseUrl } from "../../src/lib/db/environment";
 import { seedCatalog } from "../../prisma/seed-catalog";
+import { destinationContents } from "../../prisma/seed-data/countries";
+import { irelandContent } from "../../prisma/seed-data/countries/ireland";
 import type { Prisma } from "../../src/lib/db/generated/client";
 
 test("real PostgreSQL catalog: seed, relations, constraints and conservative deletion", async () => {
@@ -33,14 +35,29 @@ test("real PostgreSQL catalog: seed, relations, constraints and conservative del
           });
           await seedCatalog(tx);
           const first = await snapshot(tx);
-          assert.deepEqual(
-            first.map((rows) => rows.length),
-            // Países: fixture, Irlanda, Portugal e Espanha; categorias: trabalho,
-            // estudo e família; vistos: Critical Skills, General Employment,
-            // estudante e reunião familiar (7 + 9 + 8 + 5 requisitos); fontes:
-            // 3 da Critical Skills, 7 novas da Irlanda e 3 de PT/ES.
-            [4, 3, 4, 29, 13, 13, 29],
+          // Conteúdo por país: um visto por caminho, um requisito por item e
+          // uma fonte primária por requisito.
+          const contents = [irelandContent, ...destinationContents];
+          const visas = contents.flatMap((content) => content.visas);
+          const items = visas.flatMap((visa) => [
+            ...visa.requirements,
+            ...visa.steps,
+          ]);
+          const [countries, categories, visaRows, requirements, sources] =
+            first;
+          // Fixture, Irlanda, Espanha (só links) e os destinos com conteúdo.
+          assert.equal(countries.length, 3 + destinationContents.length);
+          assert.equal(
+            categories.length,
+            new Set(["work", ...visas.map((visa) => visa.category)]).size,
           );
+          assert.equal(visaRows.length, 1 + visas.length);
+          // Critical Skills: 4 condições e 3 etapas.
+          assert.equal(requirements.length, 7 + items.length);
+          assert.equal(first[6].length, 7 + items.length);
+          for (const content of contents)
+            for (const source of Object.values(content.sources))
+              assert.ok(sources.some((row) => row.url === source.url));
           await seedCatalog(tx);
           assert.deepEqual(await snapshot(tx), first);
           // Conteúdo revisado por país entra publicado, com etapas e uma fonte

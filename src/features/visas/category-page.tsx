@@ -46,8 +46,7 @@ export function CategoryPage({
             <>
               <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
                 Explore os caminhos publicados, com requisitos e fontes
-                oficiais. A apresentação de General Employment ainda está em
-                preparação.
+                oficiais.
               </p>
               <ul className="mt-8 divide-y border-y">
                 {summaries.map((visa) => (

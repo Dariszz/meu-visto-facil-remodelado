@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import {
   startProcess,
+  startProcessForVisa,
   updateChecklistItemStatus,
 } from "./application/process-service";
 import { processHref } from "./presentation";
@@ -47,6 +48,39 @@ export async function startIrelandProcessAction(
       status: "error",
       message:
         "Este caminho ainda não tem checklist revisado ou não se aplica às suas respostas.",
+    };
+  redirect(processHref(result.processId));
+}
+
+// Página do visto: o navegador informa país e visto; o servidor confere se o
+// visto está publicado e revisado antes de criar qualquer coisa.
+export async function startProcessFromVisaAction(
+  _state: StartProcessState,
+  form: FormData,
+): Promise<StartProcessState> {
+  const country = visaSlug.safeParse(form.get("countrySlug"));
+  const visa = visaSlug.safeParse(form.get("visaSlug"));
+  if (!country.success || !visa.success)
+    return {
+      status: "error",
+      message: "Este visto não pode virar checklist agora.",
+    };
+  let result: Awaited<ReturnType<typeof startProcessForVisa>>;
+  try {
+    result = await startProcessForVisa(country.data, visa.data);
+  } catch (error) {
+    if (isAuthError(error)) redirect("/login");
+    return {
+      status: "error",
+      message:
+        "Não foi possível criar o checklist agora. Tente novamente em instantes.",
+    };
+  }
+  if (result.kind === "PROFILE_REQUIRED") redirect("/profile");
+  if (result.kind !== "STARTED")
+    return {
+      status: "error",
+      message: "Este visto ainda não tem checklist revisado.",
     };
   redirect(processHref(result.processId));
 }

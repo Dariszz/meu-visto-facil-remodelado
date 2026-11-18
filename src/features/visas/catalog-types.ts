@@ -18,15 +18,20 @@ export type CatalogSource = {
   lastVerifiedAt: string | null;
   lastSuccessfulVerificationAt: string | null;
 };
+export type CatalogRequirement = {
+  code: string;
+  title: string;
+  text: string;
+  sources: { sourceId: string; relationType: "PRIMARY" | "SUPPORTING" }[];
+};
 export type CatalogVisa = CatalogVisaSummary & {
   country: Country;
   description: string | null;
-  requirements: {
-    code: string;
-    title: string;
-    text: string;
-    sources: { sourceId: string; relationType: "PRIMARY" | "SUPPORTING" }[];
-  }[];
+  officialName: string | null;
+  authorityName: string | null;
+  requirements: CatalogRequirement[];
+  // Etapas (requisitos do tipo ACTION), na ordem do caminho.
+  steps: CatalogRequirement[];
   sources: {
     sourceId: string;
     relationType: "OVERVIEW" | "APPLICATION" | "FEES" | "OFFICIAL_GUIDE";

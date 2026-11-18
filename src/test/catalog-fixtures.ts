@@ -13,6 +13,8 @@ export const catalogVisaFixture: CatalogVisa = {
   name: criticalSkills.name,
   shortDescription: criticalSkills.description,
   description: criticalSkills.description,
+  officialName: null,
+  authorityName: null,
   category: { slug: "work", name: "Trabalho" },
   country: { code: "IE", slug: "ireland", name: "Irlanda" },
   requirements: criticalSkills.requirements.map((item, index) => ({
@@ -21,6 +23,7 @@ export const catalogVisaFixture: CatalogVisa = {
     text: item.text,
     sources: [{ sourceId: "seed-source-ie-permit", relationType: "PRIMARY" }],
   })),
+  steps: [],
   sources: Object.keys(criticalSkillsSources).map((key) => ({
     sourceId: `seed-source-ie-${key}`,
     relationType: key === "permit" ? "OVERVIEW" : "OFFICIAL_GUIDE",

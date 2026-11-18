@@ -7,19 +7,19 @@ export const irelandCategories = {
     slug: "work",
     name: "Trabalho",
     description:
-      "Comece a explorar os caminhos de trabalho que estamos organizando para a Irlanda.",
+      "Autorizações de trabalho ligadas a uma oferta de emprego na Irlanda.",
   },
   study: {
     slug: "study",
     name: "Estudo",
     description:
-      "Um ponto de partida para quem deseja incluir os estudos nos planos para a Irlanda.",
+      "Permissão para estudar em tempo integral, com regras de cursos, recursos e trabalho limitado.",
   },
   family: {
     slug: "family",
     name: "Família",
     description:
-      "Um espaço para explorar, no futuro, caminhos relacionados a estar perto da família na Irlanda.",
+      "Reunião com cônjuge, parceiro ou pais que já vivem legalmente na Irlanda.",
   },
 } satisfies Record<VisaCategory["slug"], VisaCategory>;
 

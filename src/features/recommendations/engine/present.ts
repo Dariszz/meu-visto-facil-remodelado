@@ -10,8 +10,7 @@ const dete = {
   authority: "Department of Enterprise, Tourism and Employment (DETE)",
 };
 
-// Metadados de apresentação por visto. Critical Skills tem conteúdo revisado
-// e página própria; General Employment ainda não.
+// Metadados de apresentação por visto; os dois caminhos têm conteúdo revisado.
 const visaMeta: Record<
   string,
   Pick<
@@ -37,7 +36,7 @@ const visaMeta: Record<
     visaName: "General Employment Permit",
     categoryName: "Trabalho",
     summary:
-      "Permissão de trabalho para uma gama mais ampla de ocupações, também vinculada a oferta de emprego. Conteúdo detalhado em revisão.",
+      "Permissão de trabalho para uma gama mais ampla de ocupações, também vinculada a oferta de emprego e, em geral, a um teste de mercado de trabalho.",
     sources: [
       {
         id: "dete-general-employment",
@@ -45,7 +44,7 @@ const visaMeta: Record<
         ...dete,
       },
     ],
-    detailsHref: null,
+    detailsHref: "/destinos/ireland/general-employment-permit",
   },
 };
 

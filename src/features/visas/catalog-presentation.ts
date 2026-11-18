@@ -1,3 +1,4 @@
+import { visaPageHref } from "./visa-routes";
 import type {
   CatalogSource,
   CatalogVisa,
@@ -34,11 +35,7 @@ export function presentVisaSummary(
     shortDescription: visa.shortDescription,
     type:
       categorySlug === "work" ? "Permissão de trabalho" : "Caminho migratório",
-    // Only this detail route has been implemented and editorially prepared.
-    detailsHref:
-      visa.slug === "critical-skills-employment-permit"
-        ? `/ireland/visas/${visa.slug}`
-        : undefined,
+    detailsHref: visaPageHref("ireland", visa.slug),
   };
 }
 

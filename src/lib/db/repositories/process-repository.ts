@@ -1,6 +1,6 @@
 import "server-only";
 import type { BaseChecklistItem } from "@/features/processes/checklist/build-base-checklist";
-import type { Prisma } from "../generated/client";
+import { Prisma } from "../generated/client";
 import { getProfileDatabaseClient } from "../profile-client";
 
 // Processos são dados pessoais: sempre pela credencial de perfil e sempre
@@ -59,7 +59,7 @@ export type NewProcess = {
     profile: Prisma.InputJsonValue;
     visa: Prisma.InputJsonValue;
     requirements: Prisma.InputJsonValue;
-    recommendation: Prisma.InputJsonValue;
+    recommendation: Prisma.InputJsonValue | typeof Prisma.JsonNull;
   };
   checklist: {
     generatorVersion: string;

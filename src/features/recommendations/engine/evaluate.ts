@@ -132,11 +132,12 @@ function evaluateGeneralEmployment(
   evaluation.missingCriteria.push(
     "Se a ocupação não está na lista oficial de ocupações inelegíveis.",
     "Se o empregador atende às condições oficiais.",
-    "Os requisitos detalhados, ainda em revisão pela plataforma.",
+    "Se a vaga passou pelo teste de mercado de trabalho, quando exigido.",
   );
   return {
     visaSlug: "general-employment-permit",
-    // Conteúdo ainda não revisado: nunca passa de compatibilidade média.
+    // O teste de mercado e a lista de inelegíveis não entram no questionário:
+    // nunca passa de compatibilidade média.
     compatibility: compatibilityOf(evaluation, "MEDIUM"),
     matchedCriteria: evaluation.matchedCriteria,
     missingCriteria: evaluation.missingCriteria,

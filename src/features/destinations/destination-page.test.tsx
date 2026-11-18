@@ -101,3 +101,32 @@ test("destino com páginas próprias leva aos caminhos revisados", () => {
   ).toHaveAttribute("href", "/ireland");
   expect(screen.getByText(/ainda estão em revisão/)).toBeInTheDocument();
 });
+
+test("lista os caminhos revisados agrupados por categoria", () => {
+  render(
+    <DestinationPage
+      destination={{
+        code: "IE",
+        slug: "ireland",
+        name: "Irlanda",
+        coverageLevel: "PARTIAL",
+        sources: [source()],
+      }}
+      visas={[
+        {
+          slug: "student-stamp-2",
+          name: "Estudante (Stamp 2)",
+          shortDescription: "Estudo em tempo integral.",
+          category: "Estudo",
+          href: "/destinos/ireland/student-stamp-2",
+        },
+      ]}
+    />,
+  );
+  expect(
+    screen.getByRole("heading", { name: "Caminhos revisados" }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("link", { name: "Ver requisitos de Estudante (Stamp 2)" }),
+  ).toHaveAttribute("href", "/destinos/ireland/student-stamp-2");
+});

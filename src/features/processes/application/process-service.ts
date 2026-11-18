@@ -5,6 +5,8 @@ import type { ChecklistItemStatus } from "@/features/checklists/types";
 import type { ProcessDetailView } from "@/features/checklists/types";
 import type { ProcessSummaryView } from "@/features/dashboard/types";
 import { getCurrentUserProfile } from "@/features/profile/service";
+import type { ImmigrationProfile } from "@/features/questionnaire/immigration-profile";
+import { Prisma } from "@/lib/db/generated/client";
 import { getQuestionnaire } from "@/features/questionnaire/application/questionnaire-service";
 import {
   evaluateIrelandWorkPaths,
@@ -25,6 +27,16 @@ import {
   CHECKLIST_GENERATOR_VERSION,
 } from "../checklist/build-base-checklist";
 import { presentProcessDetail, presentProcessSummary } from "../presentation";
+
+const emptyProfile: ImmigrationProfile = {
+  objective: null,
+  passportRegion: null,
+  hasEmploymentOffer: null,
+  offerDuration: null,
+  occupationArea: null,
+  educationLevel: null,
+  familyInCountry: null,
+};
 
 export class ProcessUnavailableError extends Error {
   readonly code = "PROCESS_UNAVAILABLE";
@@ -66,6 +78,53 @@ export type StartProcessResult =
   | { kind: "NOT_AVAILABLE" }
   | { kind: "STARTED"; processId: string; created: boolean };
 
+type VisaForProcess = NonNullable<
+  Awaited<ReturnType<typeof findVisaForChecklist>>
+>;
+
+// Cria processo, snapshot e checklist a partir de um visto já validado.
+async function createFromVisa(input: {
+  userProfileId: string;
+  visa: VisaForProcess;
+  profile: ImmigrationProfile | null;
+  ruleEngineVersion: string;
+  recommendation: Prisma.InputJsonValue | null;
+}): Promise<StartProcessResult> {
+  const { visa } = input;
+  const items = buildBaseChecklist(
+    visa.requirements,
+    input.profile ?? emptyProfile,
+  );
+  if (!items.length) return { kind: "NOT_AVAILABLE" };
+  const result = await createProcessWithChecklist({
+    userProfileId: input.userProfileId,
+    visaId: visa.id,
+    title: `Minha mudança: ${visa.name}`,
+    snapshot: {
+      ruleEngineVersion: input.ruleEngineVersion,
+      profile: input.profile ?? {},
+      visa: {
+        id: visa.id,
+        slug: visa.slug,
+        name: visa.name,
+        countryCode: visa.country.code,
+        lastReviewedAt: visa.lastReviewedAt?.toISOString() ?? null,
+      },
+      requirements: visa.requirements.map((requirement) => ({
+        ...requirement,
+        sourceIds: [...requirement.sourceIds],
+      })),
+      recommendation: input.recommendation ?? Prisma.JsonNull,
+    },
+    checklist: {
+      generatorVersion: CHECKLIST_GENERATOR_VERSION,
+      referenceDate: visa.lastReviewedAt,
+      items,
+    },
+  });
+  return { kind: "STARTED", processId: result.id, created: result.created };
+}
+
 // Fase 19: o navegador só informa qual visto. Perfil, respostas,
 // compatibilidade e requisitos são recalculados no servidor.
 export async function startProcess(
@@ -87,44 +146,41 @@ export async function startProcess(
       return { kind: "NOT_AVAILABLE" as const };
     const visa = await findVisaForChecklist(countrySlug, visaSlug);
     if (!visa) return { kind: "NOT_AVAILABLE" as const };
-    const items = buildBaseChecklist(visa.requirements, questionnaire.profile);
-    if (!items.length) return { kind: "NOT_AVAILABLE" as const };
-    const result = await createProcessWithChecklist({
+    return createFromVisa({
       userProfileId: profile.id,
-      visaId: visa.id,
-      title: `Minha mudança: ${visa.name}`,
-      snapshot: {
-        ruleEngineVersion: RULE_ENGINE_VERSION,
-        profile: questionnaire.profile,
-        visa: {
-          id: visa.id,
-          slug: visa.slug,
-          name: visa.name,
-          countryCode: visa.country.code,
-          lastReviewedAt: visa.lastReviewedAt?.toISOString() ?? null,
-        },
-        requirements: visa.requirements.map((requirement) => ({
-          ...requirement,
-          sourceIds: [...requirement.sourceIds],
-        })),
-        recommendation: {
-          compatibility: recommendation.compatibility,
-          matchedCriteria: recommendation.matchedCriteria,
-          missingCriteria: recommendation.missingCriteria,
-          blockers: recommendation.blockers,
-        },
-      },
-      checklist: {
-        generatorVersion: CHECKLIST_GENERATOR_VERSION,
-        referenceDate: visa.lastReviewedAt,
-        items,
+      visa,
+      profile: questionnaire.profile,
+      ruleEngineVersion: RULE_ENGINE_VERSION,
+      recommendation: {
+        compatibility: recommendation.compatibility,
+        matchedCriteria: recommendation.matchedCriteria,
+        missingCriteria: recommendation.missingCriteria,
+        blockers: recommendation.blockers,
       },
     });
-    return {
-      kind: "STARTED" as const,
-      processId: result.id,
-      created: result.created,
-    };
+  });
+}
+
+// Checklist escolhido direto na página do visto, sem passar pelas
+// recomendações. A pessoa decide o caminho; não há compatibilidade calculada.
+export const DIRECT_START_VERSION = "direct-v1";
+
+export async function startProcessForVisa(
+  countrySlug: string,
+  visaSlug: string,
+): Promise<StartProcessResult> {
+  const profile = await getCurrentUserProfile();
+  if (!profile) return { kind: "PROFILE_REQUIRED" };
+  return guarded(async () => {
+    const visa = await findVisaForChecklist(countrySlug, visaSlug);
+    if (!visa) return { kind: "NOT_AVAILABLE" as const };
+    return createFromVisa({
+      userProfileId: profile.id,
+      visa,
+      profile: null,
+      ruleEngineVersion: DIRECT_START_VERSION,
+      recommendation: null,
+    });
   });
 }
 

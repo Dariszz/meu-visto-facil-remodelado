@@ -5,13 +5,16 @@ import { Button } from "@/components/ui/button";
 import { OfficialSourceItem } from "@/features/sources/official-source-item";
 import { cn } from "@/lib/cn";
 import { coveragePresentation, dedicatedRouteFor } from "./presentation";
-import type { DestinationDetail } from "./types";
+import type { DestinationDetail, DestinationVisa } from "./types";
 
 export function DestinationPage({
   destination,
+  visas = [],
 }: {
   destination: DestinationDetail;
+  visas?: readonly DestinationVisa[];
 }) {
+  const categories = [...new Set(visas.map((visa) => visa.category))];
   const coverage = coveragePresentation[destination.coverageLevel];
   const dedicatedRoute = dedicatedRouteFor(destination.slug);
   return (
@@ -50,6 +53,53 @@ export function DestinationPage({
             </Button>
           )}
         </header>
+
+        {visas.length > 0 && (
+          <section aria-labelledby="visas-title" className="mt-14">
+            <h2
+              id="visas-title"
+              className="border-b border-foreground/15 pb-3 text-xl font-semibold tracking-tight"
+            >
+              Caminhos revisados
+            </h2>
+            {categories.map((category) => (
+              <div key={category} className="mt-8">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  {category}
+                </h3>
+                <ul className="mt-2 divide-y border-y">
+                  {visas
+                    .filter((visa) => visa.category === category)
+                    .map((visa) => (
+                      <li
+                        key={visa.slug}
+                        className="grid gap-x-10 gap-y-2 py-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+                      >
+                        <div>
+                          <Link
+                            href={visa.href}
+                            className="text-lg font-semibold text-balance hover:text-primary hover:underline hover:underline-offset-4"
+                          >
+                            {visa.name}
+                          </Link>
+                          <p className="mt-1 max-w-2xl leading-relaxed text-muted-foreground">
+                            {visa.shortDescription}
+                          </p>
+                        </div>
+                        <Link
+                          href={visa.href}
+                          aria-label={`Ver requisitos de ${visa.name}`}
+                          className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
+                        >
+                          Ver requisitos
+                        </Link>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        )}
 
         <section aria-labelledby="sources-title" className="mt-14 max-w-3xl">
           <h2

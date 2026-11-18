@@ -12,3 +12,11 @@ export type DestinationSummary = {
 export type DestinationDetail = DestinationSummary & {
   sources: CatalogSource[];
 };
+
+export type DestinationVisa = {
+  slug: string;
+  name: string;
+  shortDescription: string;
+  category: string;
+  href: string;
+};

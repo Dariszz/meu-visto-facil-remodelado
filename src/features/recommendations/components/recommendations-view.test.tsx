@@ -46,7 +46,9 @@ test("caminhos aparecem do mais ao menos compatível", () => {
       name: "Ver detalhes de Critical Skills Employment Permit",
     }),
   ).toBeInTheDocument();
-  expect(screen.getByText(/Estudo e Família ainda não/)).toBeInTheDocument();
+  expect(
+    screen.getByText(/Estudo e Família não entram nesta análise/),
+  ).toBeInTheDocument();
   const profile = screen.getByRole("complementary", { name: "Seu perfil" });
   expect(within(profile).getByText("Tecnologia")).toBeInTheDocument();
 });

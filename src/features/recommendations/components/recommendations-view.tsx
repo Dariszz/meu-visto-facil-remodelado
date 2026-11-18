@@ -93,13 +93,19 @@ export function RecommendationsView({
                 className="mt-12 max-w-2xl border-t pt-6"
               >
                 <h2 id="pending-title" className="font-semibold">
-                  Outros caminhos em preparação
+                  Outros caminhos na Irlanda
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {pendingCategories.join(" e ")} ainda não fazem parte da
-                  análise. As fontes oficiais estão em revisão antes de entrarem
-                  aqui.
+                  {pendingCategories.join(" e ")} não entram nesta análise, que
+                  considera só caminhos de trabalho. Você ainda pode ver os
+                  requisitos e criar um checklist pela página de cada caminho.
                 </p>
+                <Link
+                  href="/destinos/ireland"
+                  className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
+                >
+                  Ver caminhos da Irlanda
+                </Link>
               </section>
             )}
           </div>

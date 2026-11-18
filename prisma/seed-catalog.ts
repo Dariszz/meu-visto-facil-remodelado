@@ -4,6 +4,8 @@ import {
   criticalSkills,
   criticalSkillsSources,
 } from "./seed-data/critical-skills";
+import { seedCountryContent } from "./seed-countries";
+import { irelandContent } from "./seed-data/countries/ireland";
 import { irelandQuestions } from "../src/features/questionnaire/data/ireland-questions";
 
 const requirementCodes = [
@@ -181,6 +183,7 @@ export async function seedCatalog(tx: Prisma.TransactionClient) {
     }
   }
   await seedQuestions(tx, country.id);
+  await seedCountryContent(tx, irelandContent, { keepCountryStatus: true });
   await seedPendingDestinations(tx);
 }
 

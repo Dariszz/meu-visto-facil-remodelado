@@ -8,6 +8,8 @@ export function StartProcessForm({
   action,
   visaSlug,
   visaName,
+  countrySlug,
+  label = "Iniciar processo",
 }: {
   action: (
     state: StartProcessState,
@@ -15,6 +17,8 @@ export function StartProcessForm({
   ) => Promise<StartProcessState>;
   visaSlug: string;
   visaName: string;
+  countrySlug?: string;
+  label?: string;
 }) {
   const [state, formAction, pending] = useActionState(action, {
     status: "idle",
@@ -22,12 +26,15 @@ export function StartProcessForm({
   return (
     <form action={formAction} className="contents">
       <input type="hidden" name="visaSlug" value={visaSlug} />
+      {countrySlug && (
+        <input type="hidden" name="countrySlug" value={countrySlug} />
+      )}
       <Button
         type="submit"
         disabled={pending}
-        aria-label={`Iniciar processo de ${visaName}`}
+        aria-label={`${label} de ${visaName}`}
       >
-        {pending ? "Criando processo…" : "Iniciar processo"}
+        {pending ? "Criando…" : label}
       </Button>
       {state.status === "error" && (
         <p role="alert" className="w-full text-sm text-destructive">

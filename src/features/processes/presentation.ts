@@ -4,6 +4,7 @@ import type {
   ProcessDetailView,
 } from "@/features/checklists/types";
 import type { ProcessSummaryView } from "@/features/dashboard/types";
+import { visaPageHref } from "@/features/visas/visa-routes";
 import {
   checklistStages,
   type ChecklistStage,
@@ -47,12 +48,6 @@ const stageTitles: Record<ChecklistStage, string> = {
   AFTER_ARRIVAL: "Após a chegada",
 };
 
-// Páginas públicas que existem hoje para um visto.
-const visaPages: Record<string, string> = {
-  "ireland/critical-skills-employment-permit":
-    "/ireland/visas/critical-skills-employment-permit",
-};
-
 export function processHref(id: string) {
   return `/processes/${id}`;
 }
@@ -87,8 +82,7 @@ export function presentProcessDetail(
     id: record.id,
     title: record.title,
     visaName: record.visa.name,
-    visaHref:
-      visaPages[`${record.visa.country.slug}/${record.visa.slug}`] ?? null,
+    visaHref: visaPageHref(record.visa.country.slug, record.visa.slug),
     countryName: record.visa.country.name,
     status: record.status,
     startedAt: record.createdAt.toISOString(),

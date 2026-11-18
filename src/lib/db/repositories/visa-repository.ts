@@ -15,6 +15,30 @@ const summarySelect = {
   category: { select: { slug: true, name: true } },
 } satisfies Prisma.VisaSelect;
 
+// Todos os vistos publicados de um destino, para a página do país.
+export async function listPublicVisasForCountry(
+  countrySlug: string,
+  db?: Prisma.TransactionClient,
+): Promise<CatalogVisaSummary[]> {
+  if (!catalogSlug.safeParse(countrySlug).success) return [];
+  return publicQuery(() =>
+    (db ?? getDatabaseClient()).visa.findMany({
+      where: {
+        status: "ACTIVE",
+        reviewStatus: "REVIEWED",
+        country: { slug: countrySlug, status: "ACTIVE" },
+      },
+      select: summarySelect,
+      orderBy: [
+        { category: { slug: "asc" } },
+        { name: "asc" },
+        { slug: "asc" },
+      ],
+      take: 100,
+    }),
+  );
+}
+
 export async function listPublicVisas(
   countrySlug: string,
   categorySlug: string,
@@ -63,20 +87,20 @@ export async function findPublicVisa(
       select: {
         ...summarySelect,
         description: true,
+        officialName: true,
+        authorityName: true,
         country: { select: { code: true, slug: true, name: true } },
         requirements: {
-          // Só conteúdo revisado chega à página pública (ADR 0001). As etapas
-          // (ACTION) aparecem no checklist; a página já as mostra em "Etapas".
-          where: {
-            reviewStatus: "REVIEWED",
-            requirementType: { not: "ACTION" },
-          },
+          // Só conteúdo revisado chega à página pública (ADR 0001). Condições
+          // viram "Principais requisitos"; ações (ACTION) viram "Etapas".
+          where: { reviewStatus: "REVIEWED" },
           orderBy: [{ sortOrder: "asc" }, { code: "asc" }],
           take: 201,
           select: {
             code: true,
             title: true,
             description: true,
+            requirementType: true,
             sources: {
               where: { source: sourceWhere },
               orderBy: { sourceId: "asc" },
@@ -102,12 +126,22 @@ export async function findPublicVisa(
     ) {
       throw new Error("CATALOG_DETAIL_LIMIT_EXCEEDED");
     }
-    return {
-      ...visa,
-      requirements: visa.requirements.map(({ description, ...item }) => ({
+    const items = visa.requirements.map(
+      ({ description, requirementType, ...item }) => ({
         ...item,
         text: description,
-      })),
-    };
+        isStep: requirementType === "ACTION",
+      }),
+    );
+    const pick = (step: boolean) =>
+      items
+        .filter((item) => item.isStep === step)
+        .map((item) => ({
+          code: item.code,
+          title: item.title,
+          text: item.text,
+          sources: item.sources,
+        }));
+    return { ...visa, requirements: pick(false), steps: pick(true) };
   });
 }

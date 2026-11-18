@@ -48,6 +48,9 @@ test("processes: checklist from reviewed requirements, ownership isolation and c
           await publishDevelopmentCatalog(tx);
           assert.deepEqual(await listChecklistReadyVisaSlugs("ireland", tx), [
             slug,
+            "general-employment-permit",
+            "join-family",
+            "student-stamp-2",
           ]);
 
           // Requisito não revisado nunca entra no checklist.

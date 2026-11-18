@@ -35,12 +35,29 @@ test("real PostgreSQL catalog: seed, relations, constraints and conservative del
           const first = await snapshot(tx);
           assert.deepEqual(
             first.map((rows) => rows.length),
-            // Países: fixture, Irlanda, Portugal e Espanha; fontes: 3 da Irlanda e 3 de PT/ES;
-            // requisitos: 4 condições e 3 etapas da Critical Skills.
-            [4, 1, 1, 7, 6, 3, 7],
+            // Países: fixture, Irlanda, Portugal e Espanha; categorias: trabalho,
+            // estudo e família; vistos: Critical Skills, General Employment,
+            // estudante e reunião familiar (7 + 9 + 8 + 5 requisitos); fontes:
+            // 3 da Critical Skills, 7 novas da Irlanda e 3 de PT/ES.
+            [4, 3, 4, 29, 13, 13, 29],
           );
           await seedCatalog(tx);
           assert.deepEqual(await snapshot(tx), first);
+          // Conteúdo revisado por país entra publicado, com etapas e uma fonte
+          // oficial por item.
+          const general = await tx.visa.findUniqueOrThrow({
+            where: { id: "seed-visa-ie-general-employment-permit" },
+            include: { requirements: { include: { sources: true } } },
+          });
+          assert.equal(general.status, "ACTIVE");
+          assert.equal(general.reviewStatus, "REVIEWED");
+          assert.deepEqual(
+            general.requirements.map((item) => item.requirementType).sort(),
+            [...Array(5).fill("CONDITION"), ...Array(4).fill("ACTION")].sort(),
+          );
+          assert.ok(
+            general.requirements.every((item) => item.sources.length === 1),
+          );
           const visa = await tx.visa.findUniqueOrThrow({
             where: { id: "seed-visa-ie-critical-skills" },
             include: {

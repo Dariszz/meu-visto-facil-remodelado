@@ -8,7 +8,25 @@ const { getQuestionnaire } = vi.hoisted(() => ({ getQuestionnaire: vi.fn() }));
 vi.mock("@/features/questionnaire/application/questionnaire-service", () => ({
   getQuestionnaire,
 }));
-beforeEach(() => vi.clearAllMocks());
+const { listChecklistReadyVisaSlugs, listMyOpenProcessesByVisa } = vi.hoisted(
+  () => ({
+    listChecklistReadyVisaSlugs: vi.fn(),
+    listMyOpenProcessesByVisa: vi.fn(),
+  }),
+);
+vi.mock("@/lib/db/repositories/checklist-catalog-repository", () => ({
+  listChecklistReadyVisaSlugs,
+}));
+vi.mock("@/features/processes/application/process-service", () => ({
+  listMyOpenProcessesByVisa,
+}));
+beforeEach(() => {
+  vi.clearAllMocks();
+  listChecklistReadyVisaSlugs.mockResolvedValue([
+    "critical-skills-employment-permit",
+  ]);
+  listMyOpenProcessesByVisa.mockResolvedValue(new Map());
+});
 
 const answers = {
   objective: "work",
@@ -47,12 +65,51 @@ test("questionário completo gera caminhos e o resumo das respostas", async () =
     ["critical-skills-employment-permit", "HIGH"],
     ["general-employment-permit", "MEDIUM"],
   ]);
-  expect(result.recommendations.every((r) => r.startProcessHref === null)).toBe(
-    true,
-  );
+  // Só o visto com checklist revisado pode virar processo.
+  expect(result.recommendations.map((r) => r.process)).toEqual([
+    { kind: "START" },
+    null,
+  ]);
   expect(result.profileFacts).toContainEqual({
     label: "Área",
     value: "Tecnologia",
   });
   expect(result.pendingCategories).toEqual(["Estudo", "Família"]);
+});
+
+test("com processo aberto, oferece abrir em vez de iniciar outro", async () => {
+  getQuestionnaire.mockResolvedValue({
+    kind: "READY",
+    complete: true,
+    questions: irelandQuestions,
+    answers,
+    profile: normalizeProfile(answers),
+  });
+  listMyOpenProcessesByVisa.mockResolvedValue(
+    new Map([["critical-skills-employment-permit", "p-1"]]),
+  );
+  const result = await getRecommendations();
+  if (result.kind !== "READY") throw new Error("expected READY");
+  expect(result.recommendations[0].process).toEqual({
+    kind: "OPEN",
+    href: "/processes/p-1",
+  });
+});
+
+test("não recomendado nunca oferece iniciar processo", async () => {
+  const eea = { ...answers, region: "eea" };
+  getQuestionnaire.mockResolvedValue({
+    kind: "READY",
+    complete: true,
+    questions: irelandQuestions,
+    answers: eea,
+    profile: normalizeProfile(eea),
+  });
+  const result = await getRecommendations();
+  if (result.kind !== "READY") throw new Error("expected READY");
+  expect(
+    result.recommendations.find(
+      (r) => r.visaSlug === "critical-skills-employment-permit",
+    )?.process,
+  ).toBeNull();
 });

@@ -65,8 +65,12 @@ export async function findPublicVisa(
         description: true,
         country: { select: { code: true, slug: true, name: true } },
         requirements: {
-          // Só conteúdo revisado chega à página pública (ADR 0001).
-          where: { reviewStatus: "REVIEWED" },
+          // Só conteúdo revisado chega à página pública (ADR 0001). As etapas
+          // (ACTION) aparecem no checklist; a página já as mostra em "Etapas".
+          where: {
+            reviewStatus: "REVIEWED",
+            requirementType: { not: "ACTION" },
+          },
           orderBy: [{ sortOrder: "asc" }, { code: "asc" }],
           take: 201,
           select: {

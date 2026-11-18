@@ -29,10 +29,15 @@ export function ChecklistWorkspace({
   categories: readonly ChecklistCategoryView[];
   sources: readonly ChecklistSourceRef[];
   initialFilter?: ChecklistFilter;
-  // Ponto de integração da Fase 23: persistir a mudança no servidor.
-  onStatusChange?: (itemId: string, status: ChecklistItemStatus) => void;
+  // Fase 23: persiste a mudança no servidor. Se devolver false, a tela
+  // desfaz a mudança e avisa.
+  onStatusChange?: (
+    itemId: string,
+    status: ChecklistItemStatus,
+  ) => void | boolean | Promise<void | boolean>;
 }) {
   const [categories, setCategories] = useState(initialCategories);
+  const [saveError, setSaveError] = useState(false);
   const [filter, setFilter] = useState<ChecklistFilter>(initialFilter);
   const filterName = useId();
 
@@ -44,7 +49,7 @@ export function ChecklistWorkspace({
   const nextItem = findNextChecklistItem(allItems);
   const sourcesById = new Map(sources.map((source) => [source.id, source]));
 
-  function setStatus(itemId: string, status: ChecklistItemStatus) {
+  function applyStatus(itemId: string, status: ChecklistItemStatus) {
     setCategories((current) =>
       current.map((category) => ({
         ...category,
@@ -53,7 +58,22 @@ export function ChecklistWorkspace({
         ),
       })),
     );
-    onStatusChange?.(itemId, status);
+  }
+
+  async function setStatus(itemId: string, status: ChecklistItemStatus) {
+    const previous = allItems.find((item) => item.id === itemId)?.status;
+    setSaveError(false);
+    applyStatus(itemId, status);
+    let saved: void | boolean = true;
+    try {
+      saved = await onStatusChange?.(itemId, status);
+    } catch {
+      saved = false;
+    }
+    if (saved === false && previous) {
+      applyStatus(itemId, previous);
+      setSaveError(true);
+    }
   }
 
   function changeFilter(value: ChecklistFilter) {
@@ -68,6 +88,15 @@ export function ChecklistWorkspace({
 
   return (
     <div>
+      {saveError && (
+        <p
+          role="alert"
+          className="mb-6 rounded-md border border-destructive/40 px-4 py-3 text-sm text-destructive"
+        >
+          Não foi possível salvar a última mudança. O item voltou ao estado
+          anterior; tente novamente.
+        </p>
+      )}
       <section aria-label="Progresso do processo" className="border-b pb-8">
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
           <p className="text-lg tabular-nums" aria-live="polite">

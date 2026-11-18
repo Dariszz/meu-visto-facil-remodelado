@@ -10,7 +10,14 @@ import {
   compatibilityPresentation,
   sortByCompatibility,
 } from "../compatibility";
+import { StartProcessForm } from "@/features/processes/components/start-process-form";
+import type { StartProcessState } from "@/features/processes/actions";
 import type { ProfileFact, RecommendationView } from "../types";
+
+type StartAction = (
+  state: StartProcessState,
+  form: FormData,
+) => Promise<StartProcessState>;
 
 export function RecommendationsView({
   countryName,
@@ -18,6 +25,7 @@ export function RecommendationsView({
   recommendations,
   pendingCategories,
   links,
+  startAction,
 }: {
   countryName: string;
   profileFacts: readonly ProfileFact[];
@@ -25,6 +33,8 @@ export function RecommendationsView({
   // Categorias ainda sem regras revisadas, apresentadas como "em preparação".
   pendingCategories: readonly string[];
   links: { dashboard: string; questionnaire: string; explore: string };
+  // Server Action que cria o processo; sem ela, "Iniciar" não aparece.
+  startAction?: StartAction;
 }) {
   const sorted = sortByCompatibility(recommendations);
   return (
@@ -51,7 +61,10 @@ export function RecommendationsView({
               <ol className="mt-10 space-y-8">
                 {sorted.map((recommendation) => (
                   <li key={recommendation.visaSlug}>
-                    <RecommendationItem recommendation={recommendation} />
+                    <RecommendationItem
+                      recommendation={recommendation}
+                      startAction={startAction}
+                    />
                   </li>
                 ))}
               </ol>
@@ -153,8 +166,10 @@ function CriteriaList({
 
 function RecommendationItem({
   recommendation,
+  startAction,
 }: {
   recommendation: RecommendationView;
+  startAction?: StartAction;
 }) {
   const level = compatibilityPresentation[recommendation.compatibility];
   return (
@@ -216,15 +231,22 @@ function RecommendationItem({
       )}
 
       <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
-        {recommendation.startProcessHref && (
+        {recommendation.process?.kind === "OPEN" && (
           <Button asChild>
             <Link
-              href={recommendation.startProcessHref}
-              aria-label={`Iniciar processo de ${recommendation.visaName}`}
+              href={recommendation.process.href}
+              aria-label={`Abrir processo de ${recommendation.visaName}`}
             >
-              Iniciar processo
+              Abrir processo
             </Link>
           </Button>
+        )}
+        {recommendation.process?.kind === "START" && startAction && (
+          <StartProcessForm
+            action={startAction}
+            visaSlug={recommendation.visaSlug}
+            visaName={recommendation.visaName}
+          />
         )}
         {recommendation.detailsHref ? (
           <Link

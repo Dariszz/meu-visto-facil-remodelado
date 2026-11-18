@@ -41,6 +41,19 @@ Feito em 17/11/2026 pelo Claude, no painel do Supabase e no navegador do app:
 
 **Ambiente Windows:** o NVM for Windows 2 só reconhece versões instaladas por ele. Resolvido em 17/11/2026 com `nvm install 24`; dentro do projeto, `node --version` mostra v24 e `pnpm --version` mostra 11.19.0. O `db:generate` usa `--no-hints` para o Prisma não oferecer instalar skills.
 
+## 3b. Processos e checklist (18/11/2026)
+
+Aplicado pelo Claude no `meu-visto-facil-dev`: migration `20261118000000_processes_checklists` (registrada com checksum), as 3 etapas da Critical Skills como requisitos de ação e os grants abaixo. Para outro ambiente (teste, produção), repetir:
+
+```sql
+GRANT SELECT, INSERT, UPDATE ON TABLE "catalog"."ImmigrationProcess", "catalog"."Checklist", "catalog"."ChecklistItem" TO mvf_profile_writer;
+GRANT SELECT, INSERT ON TABLE "catalog"."ProcessSnapshot", "catalog"."ChecklistItemSource" TO mvf_profile_writer;
+-- O processo mostra nome do visto e do país: leitura de dados públicos.
+GRANT SELECT ON TABLE "catalog"."Visa", "catalog"."Country" TO mvf_profile_writer;
+```
+
+- [ ] No PC: `pnpm db:generate` e reiniciar o `pnpm dev` (o schema mudou)
+
 ## 4. Revisar a madrugada de 17/11/2026 (branch `feature/madrugada`)
 
 Resumo em [madrugada-2026-11-17.md](exec-plans/madrugada-2026-11-17.md). Nada foi juntado com o `main`.

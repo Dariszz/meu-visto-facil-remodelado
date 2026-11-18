@@ -43,6 +43,7 @@ export const config = {
     "/dashboard",
     "/questionnaire",
     "/recommendations",
+    "/processes/:path*",
     "/profile",
     "/register",
     "/forgot-password",

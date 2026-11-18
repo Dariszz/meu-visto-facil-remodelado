@@ -35,8 +35,9 @@ test("real PostgreSQL catalog: seed, relations, constraints and conservative del
           const first = await snapshot(tx);
           assert.deepEqual(
             first.map((rows) => rows.length),
-            // Países: fixture, Irlanda, Portugal e Espanha; fontes: 3 da Irlanda e 3 de PT/ES.
-            [4, 1, 1, 4, 6, 3, 4],
+            // Países: fixture, Irlanda, Portugal e Espanha; fontes: 3 da Irlanda e 3 de PT/ES;
+            // requisitos: 4 condições e 3 etapas da Critical Skills.
+            [4, 1, 1, 7, 6, 3, 7],
           );
           await seedCatalog(tx);
           assert.deepEqual(await snapshot(tx), first);

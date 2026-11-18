@@ -19,6 +19,12 @@ export async function publishDevelopmentCatalog(tx: Prisma.TransactionClient) {
       sources: { include: { source: true } },
     },
   });
+  const conditions =
+    visa?.requirements.filter((item) => item.requirementType === "CONDITION") ??
+    [];
+  const steps =
+    visa?.requirements.filter((item) => item.requirementType === "ACTION") ??
+    [];
   const approvedSummary =
     "Entenda os principais requisitos, as etapas gerais e as fontes oficiais deste caminho de trabalho na Irlanda.";
   if (
@@ -35,9 +41,20 @@ export async function publishDevelopmentCatalog(tx: Prisma.TransactionClient) {
     ![criticalSkills.description, approvedSummary].includes(
       visa.shortDescription,
     ) ||
-    visa.requirements.length !== 4 ||
+    visa.requirements.length !== 7 ||
+    conditions.length !== 4 ||
     visa.sources.length !== 3 ||
-    visa.requirements.some(
+    // Etapas: mesmo texto das etapas aprovadas, cada uma com a sua fonte.
+    steps.some(
+      (item, index) =>
+        item.description !== criticalSkills.steps[index + 1]?.text ||
+        !item.isMandatory ||
+        item.sources.length !== 1 ||
+        item.sources[0].sourceId !==
+          `seed-source-ie-${criticalSkills.steps[index + 1]?.source}` ||
+        item.sources[0].relationType !== "PRIMARY",
+    ) ||
+    conditions.some(
       (item, index) =>
         item.title !== criticalSkills.requirements[index].title ||
         item.description !== criticalSkills.requirements[index].text ||

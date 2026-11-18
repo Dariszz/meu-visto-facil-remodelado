@@ -86,7 +86,7 @@ const criticalSkillsRecommendation: RecommendationView = {
   blockers: [],
   sources: [sources.permit],
   detailsHref: previewLinks.criticalSkills,
-  startProcessHref: previewLinks.process,
+  process: { kind: "OPEN", href: previewLinks.process },
 };
 
 export const exampleRecommendations: readonly RecommendationView[] = [
@@ -107,7 +107,7 @@ export const exampleRecommendations: readonly RecommendationView[] = [
     blockers: [],
     sources: [],
     detailsHref: null,
-    startProcessHref: null,
+    process: null,
   },
   criticalSkillsRecommendation,
 ];
@@ -123,7 +123,7 @@ export const exampleRecommendationsNoOffer: readonly RecommendationView[] = [
     blockers: [
       "Este caminho depende de uma oferta de emprego de empregador na Irlanda, e você informou que ainda não tem uma.",
     ],
-    startProcessHref: null,
+    process: null,
   },
 ];
 

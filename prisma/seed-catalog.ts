@@ -13,6 +13,32 @@ const requirementCodes = [
   "employer-conditions",
 ] as const;
 
+// Etapas do caminho (Fase 21): mesmo texto das etapas aprovadas na Fase 5,
+// agora também como requisitos de ação para compor o checklist.
+const stepRequirements = [
+  {
+    code: "submit-application",
+    step: 1,
+    title: "Preparar e enviar a solicitação",
+    category: "APPLICATION",
+    importance: "CRITICAL",
+  },
+  {
+    code: "entry-visa-check",
+    step: 2,
+    title: "Verificar a necessidade de visto de entrada",
+    category: "ENTRY",
+    importance: "HIGH",
+  },
+  {
+    code: "register-residence",
+    step: 3,
+    title: "Registrar a permissão de residência",
+    category: "AFTER_ARRIVAL",
+    importance: "HIGH",
+  },
+] as const;
+
 // Create-only upserts preserve subsequent editorial edits and verification metadata.
 export async function seedCatalog(tx: Prisma.TransactionClient) {
   const country = await tx.country.upsert({
@@ -99,6 +125,43 @@ export async function seedCatalog(tx: Prisma.TransactionClient) {
           // Conteúdo pesquisado em 10/09/2026 e aprovado nas Fases 5 a 7.
           reviewStatus: "REVIEWED",
           sortOrder: index,
+        },
+      });
+      await tx.requirementSource.upsert({
+        where: {
+          requirementId_sourceId: {
+            requirementId: requirement.id,
+            sourceId: record.id,
+          },
+        },
+        update: {},
+        create: {
+          requirementId: requirement.id,
+          sourceId: record.id,
+          relationType: "PRIMARY",
+        },
+      });
+    }
+    for (const step of stepRequirements) {
+      const editorial = criticalSkills.steps[step.step];
+      if (!editorial) throw new Error("SEED_MAPPING_INVALID");
+      if (editorial.source !== key) continue;
+      const requirement = await tx.visaRequirement.upsert({
+        where: { visaId_code: { visaId: visa.id, code: step.code } },
+        update: {},
+        create: {
+          id: `seed-requirement-ie-${step.code}`,
+          visaId: visa.id,
+          code: step.code,
+          title: step.title,
+          description: editorial.text,
+          category: step.category,
+          requirementType: "ACTION",
+          importance: step.importance,
+          isMandatory: true,
+          sourceControlled: true,
+          reviewStatus: "REVIEWED",
+          sortOrder: requirementCodes.length + step.step,
         },
       });
       await tx.requirementSource.upsert({

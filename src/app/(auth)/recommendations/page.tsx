@@ -10,6 +10,7 @@ import {
   type RecommendationsResult,
 } from "@/features/recommendations/application/get-recommendations";
 import { RecommendationsView } from "@/features/recommendations/components/recommendations-view";
+import { startIrelandProcessAction } from "@/features/processes/actions";
 import { AuthenticationError } from "@/lib/auth/require-user";
 
 export const metadata: Metadata = {
@@ -48,6 +49,7 @@ export default async function RecommendationsPage() {
       profileFacts={result.profileFacts}
       recommendations={result.recommendations}
       pendingCategories={result.pendingCategories}
+      startAction={startIrelandProcessAction}
       links={{
         dashboard: "/dashboard",
         questionnaire: "/questionnaire",

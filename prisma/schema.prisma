@@ -16,6 +16,7 @@ model UserProfile {
   createdAt       DateTime        @default(now()) @db.Timestamptz(3)
   updatedAt       DateTime        @updatedAt @db.Timestamptz(3)
   answers         ProfileAnswer[]
+  processes       ImmigrationProcess[]
 
   @@schema("catalog")
 }
@@ -69,6 +70,8 @@ enum RequirementCategory {
   APPLICATION
   AFTER_ARRIVAL
   OTHER
+  // Etapa de entrada no país (visto de entrada, condições de viagem).
+  ENTRY
   @@schema("catalog")
 }
 enum RequirementType {
@@ -145,6 +148,7 @@ model Visa {
   category         VisaCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   requirements     VisaRequirement[]
   sources          VisaSource[]
+  processes        ImmigrationProcess[]
   @@unique([countryId, slug])
   @@index([countryId, status, categoryId])
   @@index([categoryId])
@@ -171,6 +175,7 @@ model VisaRequirement {
   updatedAt       DateTime @updatedAt @db.Timestamptz(3)
   visa            Visa @relation(fields: [visaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   sources         RequirementSource[]
+  checklistItems  ChecklistItem[]
   @@unique([visaId, code])
   @@index([visaId, sortOrder])
   @@schema("catalog")
@@ -195,6 +200,7 @@ model OfficialSource {
   country                      Country @relation(fields: [countryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   requirements                 RequirementSource[]
   visas                        VisaSource[]
+  checklistItems               ChecklistItemSource[]
   @@unique([countryId, url])
   @@index([hostname])
   @@schema("catalog")
@@ -299,3 +305,120 @@ model ProfileAnswer {
   @@schema("catalog")
 }
 
+
+// Processos e checklists (Fases 19 a 24). Dados pessoais: pertencem ao
+// UserProfile, acessados só pela credencial de perfil e sem grants públicos.
+enum ProcessStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ARCHIVED
+
+  @@schema("catalog")
+}
+
+enum ChecklistItemStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  NOT_APPLICABLE
+
+  @@schema("catalog")
+}
+
+enum ChecklistStage {
+  REQUIREMENTS
+  APPLICATION
+  ENTRY
+  AFTER_ARRIVAL
+
+  @@schema("catalog")
+}
+
+model ImmigrationProcess {
+  id            String           @id @default(uuid()) @db.Uuid
+  userProfileId String           @db.Uuid
+  visaId        String
+  title         String           @db.VarChar(120)
+  status        ProcessStatus    @default(ACTIVE)
+  createdAt     DateTime         @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime         @updatedAt @db.Timestamptz(3)
+  userProfile   UserProfile      @relation(fields: [userProfileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  visa          Visa             @relation(fields: [visaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  snapshot      ProcessSnapshot?
+  checklist     Checklist?
+
+  @@index([userProfileId, status, updatedAt])
+  @@index([visaId])
+  @@schema("catalog")
+}
+
+// Contexto congelado no momento da criação: perfil normalizado, visto,
+// requisitos revisados e versão das regras. Não muda depois.
+model ProcessSnapshot {
+  id                String             @id @default(uuid()) @db.Uuid
+  processId         String             @unique @db.Uuid
+  ruleEngineVersion String             @db.VarChar(40)
+  promptVersion     String?            @db.VarChar(40)
+  profile           Json
+  visa              Json
+  requirements      Json
+  recommendation    Json?
+  createdAt         DateTime           @default(now()) @db.Timestamptz(3)
+  process           ImmigrationProcess @relation(fields: [processId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@schema("catalog")
+}
+
+model Checklist {
+  id               String             @id @default(uuid()) @db.Uuid
+  processId        String             @unique @db.Uuid
+  generatorVersion String             @db.VarChar(40)
+  // Data da revisão editorial do conteúdo usado para gerar o checklist.
+  referenceDate    DateTime?          @db.Timestamptz(3)
+  createdAt        DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime           @updatedAt @db.Timestamptz(3)
+  process          ImmigrationProcess @relation(fields: [processId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  items            ChecklistItem[]
+
+  @@schema("catalog")
+}
+
+model ChecklistItem {
+  id            String                @id @default(uuid()) @db.Uuid
+  checklistId   String                @db.Uuid
+  // Requisito de origem; nulo para itens pessoais ou requisito removido.
+  requirementId String?
+  code          String                @db.VarChar(80)
+  stage         ChecklistStage
+  title         String
+  description   String
+  status        ChecklistItemStatus   @default(PENDING)
+  priority      RequirementImportance @default(NORMAL)
+  isMandatory   Boolean               @default(false)
+  isOfficial    Boolean               @default(true)
+  sortOrder     Int                   @default(0)
+  completedAt   DateTime?             @db.Timestamptz(3)
+  createdAt     DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime              @updatedAt @db.Timestamptz(3)
+  checklist     Checklist             @relation(fields: [checklistId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  requirement   VisaRequirement?      @relation(fields: [requirementId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  sources       ChecklistItemSource[]
+
+  @@unique([checklistId, code])
+  @@index([checklistId, stage, sortOrder])
+  @@index([requirementId])
+  @@schema("catalog")
+}
+
+model ChecklistItemSource {
+  itemId    String         @db.Uuid
+  sourceId  String
+  createdAt DateTime       @default(now()) @db.Timestamptz(3)
+  item      ChecklistItem  @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  source    OfficialSource @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@id([itemId, sourceId])
+  @@index([sourceId])
+  @@schema("catalog")
+}

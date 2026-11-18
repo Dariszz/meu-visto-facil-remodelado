@@ -756,6 +756,8 @@ A recommendation engine deve ser confiável independentemente da IA.
 
 # 24. Fase 19 — Immigration Process
 
+**Fases 19 a 24 implementadas em 18/11/2026** ([registro](exec-plans/phase-19-24-processes.md)): iniciar processo pelas recomendações (país e perfil resolvidos no servidor), snapshot imutável, checklist base gerado só de requisitos revisados, `/processes/[id]`, progresso persistido com reversão em caso de erro, painel com processos reais e testes de isolamento entre usuários.
+
 ## Objetivo
 
 Permitir que usuário selecione uma opção e inicie processo.

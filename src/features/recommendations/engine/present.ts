@@ -51,6 +51,7 @@ const visaMeta: Record<
 
 export function presentRecommendation(
   result: RecommendationResult,
+  process: RecommendationView["process"] = null,
 ): RecommendationView {
   const meta = visaMeta[result.visaSlug];
   if (!meta) throw new Error("RECOMMENDATION_VISA_UNKNOWN");
@@ -61,8 +62,11 @@ export function presentRecommendation(
     matchedCriteria: result.matchedCriteria,
     missingCriteria: result.missingCriteria,
     blockers: result.blockers,
-    // Processos chegam na Fase 19.
-    startProcessHref: null,
+    // Não recomendado nunca oferece iniciar processo.
+    process:
+      result.compatibility === "NOT_RECOMMENDED" && process?.kind === "START"
+        ? null
+        : process,
   };
 }
 

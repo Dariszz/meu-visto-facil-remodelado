@@ -113,3 +113,16 @@ test("processo mostra cabeçalho, situação, link do visto e aviso", () => {
   );
   expect(screen.getByText(/não avalia elegibilidade/)).toBeInTheDocument();
 });
+
+test("falha ao salvar desfaz a mudança e avisa", async () => {
+  setup(vi.fn().mockResolvedValue(false));
+  const checkbox = screen.getByRole("checkbox", {
+    name: "Reunir comprovantes de qualificação e experiência",
+  });
+  fireEvent.click(checkbox);
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Não foi possível salvar a última mudança",
+  );
+  expect(checkbox).not.toBeChecked();
+  expect(summary()).toHaveTextContent("2 de 8 itens concluídos");
+});

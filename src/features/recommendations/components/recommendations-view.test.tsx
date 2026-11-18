@@ -35,7 +35,7 @@ test("caminhos aparecem do mais ao menos compatível", () => {
   expect(screen.getByText("Alta compatibilidade")).toBeInTheDocument();
   expect(
     screen.getByRole("link", {
-      name: "Iniciar processo de Critical Skills Employment Permit",
+      name: "Abrir processo de Critical Skills Employment Permit",
     }),
   ).toBeInTheDocument();
   expect(
@@ -68,6 +68,37 @@ test("impedimento aparece destacado e sem opção de iniciar processo", () => {
   expect(
     screen.queryByRole("link", { name: /Iniciar processo/ }),
   ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: /Iniciar processo/ }),
+  ).not.toBeInTheDocument();
+});
+
+test("caminho pronto oferece criar o processo pelo servidor", () => {
+  const start = async () => ({ status: "idle" as const });
+  render(
+    <RecommendationsView
+      countryName="Irlanda"
+      profileFacts={exampleProfileFacts}
+      recommendations={[
+        {
+          ...exampleRecommendations.find(
+            (r) => r.visaSlug === "critical-skills-employment-permit",
+          )!,
+          process: { kind: "START" },
+        },
+      ]}
+      pendingCategories={[]}
+      links={links}
+      startAction={start}
+    />,
+  );
+  const button = screen.getByRole("button", {
+    name: "Iniciar processo de Critical Skills Employment Permit",
+  });
+  const form = button.closest("form")!;
+  expect(
+    form.querySelector('input[name="visaSlug"]')?.getAttribute("value"),
+  ).toBe("critical-skills-employment-permit");
 });
 
 test("sem resultados mostra estado vazio com saídas", () => {

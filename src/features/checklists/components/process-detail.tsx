@@ -20,7 +20,10 @@ export function ProcessDetail({
   dashboardHref: string;
   initialFilter?: ChecklistFilter;
   // Deve ser uma Server Action: este componente roda no servidor.
-  onStatusChange?: (itemId: string, status: ChecklistItemStatus) => void;
+  onStatusChange?: (
+    itemId: string,
+    status: ChecklistItemStatus,
+  ) => Promise<boolean | void>;
 }) {
   const status = processStatusPresentation[process.status];
   return (

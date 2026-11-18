@@ -26,8 +26,12 @@ export type RecommendationView = {
   blockers: readonly string[];
   sources: readonly RecommendationSourceRef[];
   detailsHref: string | null;
-  // Na Fase 19 deverá virar uma ação de servidor que cria o processo.
-  startProcessHref: string | null;
+  // START: o visto já tem checklist revisado e pode virar processo.
+  // OPEN: a pessoa já tem um processo aberto para este visto.
+  process: RecommendationProcessAction | null;
 };
+
+export type RecommendationProcessAction =
+  { kind: "START" } | { kind: "OPEN"; href: string };
 
 export type ProfileFact = { label: string; value: string };

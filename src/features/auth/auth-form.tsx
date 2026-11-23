@@ -30,9 +30,11 @@ const modes = {
 type AuthFormProps = {
   mode: keyof typeof modes;
   confirmation?: { token_hash: string; type: "signup" | "recovery" };
+  // Caminho interno para voltar depois do login (validado no servidor).
+  next?: string;
 };
 
-export function AuthForm({ mode, confirmation }: AuthFormProps) {
+export function AuthForm({ mode, confirmation, next }: AuthFormProps) {
   const [state, action, pending] = useActionState<AuthActionState, FormData>(
     modes[mode].action,
     { status: "idle" },
@@ -75,6 +77,9 @@ export function AuthForm({ mode, confirmation }: AuthFormProps) {
   ];
   return (
     <form action={action} className="space-y-5" aria-busy={pending}>
+      {mode === "login" && next && (
+        <input type="hidden" name="next" value={next} />
+      )}
       {confirmation && (
         <>
           <input

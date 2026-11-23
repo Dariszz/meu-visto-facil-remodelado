@@ -43,7 +43,10 @@ test("mostra requisitos, etapas, autoridade e fontes oficiais", () => {
   expect(screen.getByText("Registrar a permissão")).toBeInTheDocument();
   expect(
     screen.getByRole("link", { name: "Entrar para criar meu checklist" }),
-  ).toHaveAttribute("href", "/login");
+  ).toHaveAttribute(
+    "href",
+    `/login?next=${encodeURIComponent(`/destinos/${visa.country.slug}/${visa.slug}`)}`,
+  );
 });
 
 test("com sessão, oferece criar o checklist", () => {

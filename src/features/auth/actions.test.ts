@@ -62,6 +62,14 @@ test("login usa credenciais validadas e ignora redirect externo", async () => {
   ).rejects.toThrow("REDIRECT:/dashboard");
   expect(operations.signIn).toHaveBeenCalledWith(valid.email, valid.password);
 });
+test("login volta para o caminho interno pedido", async () => {
+  await expect(
+    loginAction(initial, form({ ...valid, next: "/destinos/italy/estudo" })),
+  ).rejects.toThrow("REDIRECT:/destinos/italy/estudo");
+  await expect(
+    loginAction(initial, form({ ...valid, next: "//evil.example" })),
+  ).rejects.toThrow("REDIRECT:/dashboard");
+});
 test("não expõe erro do provider nem senha", async () => {
   vi.mocked(operations.signIn).mockRejectedValue(new Error("private-token"));
   const result = await loginAction(initial, form(valid));

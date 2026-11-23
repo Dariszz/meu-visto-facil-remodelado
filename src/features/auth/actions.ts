@@ -19,6 +19,7 @@ import {
   registerSchema,
 } from "./validation";
 import type { AuthActionState } from "./types";
+import { safeRedirectPath } from "@/lib/auth/safe-redirect";
 
 function invalid(error: ZodError): AuthActionState {
   const fieldErrors: NonNullable<AuthActionState["fieldErrors"]> = {};
@@ -67,7 +68,7 @@ export async function loginAction(
     return unavailable();
   }
   revalidatePath("/login");
-  redirect("/dashboard");
+  redirect(safeRedirectPath(form.get("next")));
 }
 
 export async function registerAction(

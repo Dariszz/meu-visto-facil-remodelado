@@ -24,13 +24,13 @@ beforeEach(() => {
 
 test("login com sessão verificada apresenta a identidade e logout", async () => {
   currentUser.mockResolvedValue({ id: "user-id", email: "pessoa@example.com" });
-  render(await LoginPage());
+  render(await LoginPage({ searchParams: Promise.resolve({}) }));
   expect(screen.getByText("pessoa@example.com")).toBeInTheDocument();
   expect(screen.getByTestId("auth-mode")).toHaveTextContent("logout");
 });
 test("login sem sessão apresenta formulário", async () => {
   currentUser.mockResolvedValue(null);
-  render(await LoginPage());
+  render(await LoginPage({ searchParams: Promise.resolve({}) }));
   expect(screen.getByTestId("auth-mode")).toHaveTextContent("login");
 });
 test("nova senha requer sessão validada no servidor", async () => {

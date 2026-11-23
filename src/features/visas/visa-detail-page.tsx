@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { loginHref } from "@/lib/auth/safe-redirect";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Container } from "@/components/layout/container";
 import { PageSection } from "@/components/layout/page-section";
@@ -94,7 +95,12 @@ export function VisaDetailPage({
                     label="Criar meu checklist"
                   />
                 ) : (
-                  <Link href="/login" className={buttonVariants()}>
+                  <Link
+                    href={loginHref(
+                      `/destinos/${visa.country.slug}/${visa.slug}`,
+                    )}
+                    className={buttonVariants()}
+                  >
                     Entrar para criar meu checklist
                   </Link>
                 )}

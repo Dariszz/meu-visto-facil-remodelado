@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { statusNoticeKey } from "./notices";
 import {
   addPersonalItem,
   deletePersonalItem,
@@ -171,9 +172,12 @@ export async function setProcessStatusAction(
   } catch (error) {
     if (isAuthError(error)) redirect("/login");
   }
-  if (ok && status === "ARCHIVED") {
-    revalidatePath("/dashboard");
-    redirect("/dashboard");
-  }
+  revalidatePath("/dashboard");
+  if (ok && status === "ARCHIVED") redirect("/dashboard?aviso=arquivado");
   revalidatePath(processHref(processId));
+  const key =
+    ok && typeof status === "string" && Object.hasOwn(statusNoticeKey, status)
+      ? statusNoticeKey[status as keyof typeof statusNoticeKey]
+      : "erro";
+  redirect(`${processHref(processId)}?aviso=${key}`);
 }

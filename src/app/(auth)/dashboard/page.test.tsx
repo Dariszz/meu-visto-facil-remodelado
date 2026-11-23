@@ -66,3 +66,16 @@ test("falha de banco mostra erro com nova tentativa, sem detalhes técnicos", as
     screen.getByRole("link", { name: "Tentar novamente" }),
   ).toHaveAttribute("href", "/dashboard");
 });
+
+test("depois de arquivar, mostra o aviso de confirmação", async () => {
+  getDashboard.mockResolvedValue({
+    kind: "READY",
+    view: { displayName: null, processes: [], hasCompletedQuestionnaire: true },
+  });
+  render(
+    await DashboardPage({
+      searchParams: Promise.resolve({ aviso: "arquivado" }),
+    }),
+  );
+  expect(screen.getByRole("status")).toHaveTextContent("Processo arquivado.");
+});

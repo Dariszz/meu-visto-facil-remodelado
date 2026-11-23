@@ -10,11 +10,17 @@ import {
   type DashboardResult,
 } from "@/features/dashboard/application/get-dashboard";
 import { DashboardView } from "@/features/dashboard/components/dashboard-view";
+import { dashboardNotice } from "@/features/processes/notices";
 import { AuthenticationError } from "@/lib/auth/require-user";
 
 export const metadata: Metadata = { title: "Painel | Meu Visto Fácil" };
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+} = {}) {
+  const { aviso } = (await searchParams) ?? {};
   let result: DashboardResult;
   try {
     result = await getDashboard();
@@ -47,6 +53,7 @@ export default async function DashboardPage() {
         questionnaire: "/questionnaire",
         recommendations: "/recommendations",
       }}
+      notice={dashboardNotice(aviso)}
     />
   );
 }

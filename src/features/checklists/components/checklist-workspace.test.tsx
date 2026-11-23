@@ -197,3 +197,33 @@ test("processo pausado oferece retomar", () => {
     screen.queryByRole("button", { name: "Pausar" }),
   ).not.toBeInTheDocument();
 });
+
+test("aviso de sucesso aparece no processo e pode ser fechado", () => {
+  render(
+    <ProcessDetail
+      process={exampleProcess}
+      dashboardHref="/painel"
+      notice={{ tone: "success", message: "Processo pausado." }}
+    />,
+  );
+  expect(screen.getByRole("status")).toHaveTextContent("Processo pausado.");
+  expect(screen.getByRole("link", { name: "Fechar aviso" })).toHaveAttribute(
+    "href",
+    `/processes/${exampleProcess.id}`,
+  );
+});
+
+test("remover item pessoal confirma com um aviso", async () => {
+  render(
+    <ChecklistWorkspace
+      categories={exampleProcess.categories}
+      sources={exampleProcess.sources}
+      onStatusChange={vi.fn()}
+      onDeletePersonal={vi.fn().mockResolvedValue(true)}
+    />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Remover item pessoal" }));
+  expect(
+    await screen.findByText("Item pessoal removido do checklist."),
+  ).toBeInTheDocument();
+});

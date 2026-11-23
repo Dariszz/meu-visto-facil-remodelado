@@ -41,6 +41,7 @@ export function ChecklistWorkspace({
 }) {
   const [categories, setCategories] = useState(initialCategories);
   const [saveError, setSaveError] = useState(false);
+  const [removedNotice, setRemovedNotice] = useState(false);
   const [filter, setFilter] = useState<ChecklistFilter>(initialFilter);
   const filterName = useId();
 
@@ -82,6 +83,7 @@ export function ChecklistWorkspace({
   async function removePersonal(itemId: string) {
     const snapshot = categories;
     setSaveError(false);
+    setRemovedNotice(false);
     setCategories((current) =>
       current.map((category) => ({
         ...category,
@@ -97,7 +99,7 @@ export function ChecklistWorkspace({
     if (!removed) {
       setCategories(snapshot);
       setSaveError(true);
-    }
+    } else setRemovedNotice(true);
   }
 
   function changeFilter(value: ChecklistFilter) {
@@ -119,6 +121,14 @@ export function ChecklistWorkspace({
         >
           Não foi possível salvar a última mudança. O item voltou ao estado
           anterior; tente novamente.
+        </p>
+      )}
+      {removedNotice && (
+        <p
+          role="status"
+          className="mb-6 rounded-md border border-success/30 bg-success-subtle px-4 py-3 text-sm text-success"
+        >
+          Item pessoal removido do checklist.
         </p>
       )}
       <section aria-label="Progresso do processo" className="border-b pb-8">

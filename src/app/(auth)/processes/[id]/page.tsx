@@ -17,6 +17,7 @@ import {
   getProcessDetail,
   type ProcessDetailResult,
 } from "@/features/processes/application/process-service";
+import { processNotice } from "@/features/processes/notices";
 import { AuthenticationError } from "@/lib/auth/require-user";
 
 export const metadata: Metadata = { title: "Processo | Meu Visto Fácil" };
@@ -28,7 +29,7 @@ export default async function ProcessPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const [{ id }, { filtro }] = await Promise.all([params, searchParams]);
+  const [{ id }, { filtro, aviso }] = await Promise.all([params, searchParams]);
   let result: ProcessDetailResult;
   try {
     result = await getProcessDetail(id);
@@ -69,6 +70,7 @@ export default async function ProcessPage({
       onDeletePersonal={deletePersonalItemAction.bind(null, result.process.id)}
       addPersonalItem={addPersonalItemAction.bind(null, result.process.id)}
       setStatus={setProcessStatusAction.bind(null, result.process.id)}
+      notice={processNotice(aviso)}
     />
   );
 }

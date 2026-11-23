@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FolderOpen } from "lucide-react";
+import { ActionNotice, type Notice } from "@/components/feedback/action-notice";
 import { Container } from "@/components/layout/container";
 import { StatePanel } from "@/components/feedback/state-panel";
 import { Button } from "@/components/ui/button";
@@ -52,9 +53,11 @@ function summarize(processes: readonly ProcessSummaryView[]) {
 export function DashboardView({
   data,
   links,
+  notice,
 }: {
   data: DashboardData;
   links: DashboardLinks;
+  notice?: Notice;
 }) {
   const visible = data.processes.filter(
     (process) => process.status !== "ARCHIVED",
@@ -66,6 +69,13 @@ export function DashboardView({
   return (
     <main id="main-content" tabIndex={-1}>
       <Container className="py-10 sm:py-14">
+        {notice && (
+          <ActionNotice
+            notice={notice}
+            dismissHref="/dashboard"
+            className="mb-8"
+          />
+        )}
         <header className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">

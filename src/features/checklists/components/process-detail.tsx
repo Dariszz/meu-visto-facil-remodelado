@@ -4,6 +4,7 @@ import { Container } from "@/components/layout/container";
 import { cn } from "@/lib/cn";
 import type { ChecklistItemStatus, ProcessDetailView } from "../types";
 import type { ChecklistFilter } from "../filters";
+import { ActionNotice, type Notice } from "@/components/feedback/action-notice";
 import { ChecklistWorkspace } from "./checklist-workspace";
 import {
   PersonalItemForm,
@@ -22,6 +23,7 @@ export function ProcessDetail({
   onDeletePersonal,
   addPersonalItem,
   setStatus,
+  notice,
 }: {
   process: ProcessDetailView;
   dashboardHref: string;
@@ -38,6 +40,7 @@ export function ProcessDetail({
   ) => Promise<PersonalItemFormState>;
   // Server Action que recebe o campo "status" do formulário.
   setStatus?: (form: FormData) => Promise<void>;
+  notice?: Notice;
 }) {
   const status = processStatusPresentation[process.status];
   return (
@@ -95,6 +98,14 @@ export function ProcessDetail({
             </div>
           </dl>
         </header>
+
+        {notice && (
+          <ActionNotice
+            notice={notice}
+            dismissHref={`/processes/${process.id}`}
+            className="mb-6"
+          />
+        )}
 
         {setStatus && (
           <ProcessStatusControls status={process.status} action={setStatus} />

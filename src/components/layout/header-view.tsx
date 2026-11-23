@@ -39,7 +39,7 @@ export function HeaderView({ signedIn }: { signedIn: boolean }) {
           </Link>
         </div>
         <Button asChild className="hidden sm:inline-flex">
-          <Link href="/ireland">Explorar Irlanda</Link>
+          <Link href="/destinos">Explorar destinos</Link>
         </Button>
       </Container>
     </header>

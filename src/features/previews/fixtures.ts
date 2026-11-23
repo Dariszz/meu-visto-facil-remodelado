@@ -127,8 +127,6 @@ export const exampleRecommendationsNoOffer: readonly RecommendationView[] = [
   },
 ];
 
-export const pendingCategories = ["Estudo", "Família"] as const;
-
 export const exampleProcess: ProcessDetailView = {
   id: "exemplo",
   title: "Minha mudança com Critical Skills",

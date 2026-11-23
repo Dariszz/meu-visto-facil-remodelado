@@ -1,4 +1,5 @@
 import type { QuestionView } from "../types";
+import { familyQuestions, studyQuestions } from "./destination-questions";
 
 // Perguntas do perfil migratório para a Irlanda. Fonte única para o seed do
 // banco e para as prévias. Os códigos são contrato com normalizeProfile().
@@ -103,6 +104,7 @@ export const irelandQuestions: readonly QuestionView[] = [
       { value: "postgraduate", label: "Pós-graduação, mestrado ou doutorado" },
     ],
   },
+  ...studyQuestions("na Irlanda"),
   {
     code: "family_in_country",
     shortLabel: "Familiares na Irlanda",
@@ -111,4 +113,5 @@ export const irelandQuestions: readonly QuestionView[] = [
     required: true,
     showIf: { questionCode: "objective", equalsAnyOf: ["family", "exploring"] },
   },
+  ...familyQuestions("na Irlanda").slice(1),
 ];

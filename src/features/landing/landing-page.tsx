@@ -5,11 +5,12 @@ import { PageSection } from "@/components/layout/page-section";
 import { Button } from "@/components/ui/button";
 import { ItemStrip } from "@/features/checklists/components/item-strip";
 import type { ChecklistItemStatus } from "@/features/checklists/types";
+import { recommendationDestinations } from "@/features/destinations/registry";
 
 function ExploreLink() {
   return (
     <Button asChild size="lg">
-      <Link href="/ireland">Explorar Irlanda</Link>
+      <Link href="/destinos">Explorar destinos</Link>
     </Button>
   );
 }
@@ -99,8 +100,7 @@ function ChecklistSample() {
         </ul>
       </div>
       <figcaption className="mt-3 text-xs leading-relaxed text-muted-foreground">
-        Prévia conceitual do checklist, com progresso ilustrativo. O
-        acompanhamento de processos ainda está em desenvolvimento.
+        Exemplo ilustrativo de um checklist em andamento.
       </figcaption>
     </figure>
   );
@@ -136,8 +136,8 @@ export function LandingPage() {
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               Entenda possibilidades, organize requisitos e acompanhe cada etapa
-              da mudança, sempre com a fonte oficial ao lado. O primeiro destino
-              é a Irlanda.
+              da mudança, sempre com a fonte oficial ao lado. São dez destinos,
+              da Irlanda à Austrália.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               <ExploreLink />
@@ -269,58 +269,49 @@ export function LandingPage() {
                 ))}
               </dl>
               <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-                Exemplo de registro de fonte. O catálogo de fontes ainda está em
-                preparação; nenhuma revisão oficial é afirmada nesta prévia.
+                Exemplo de registro de fonte. Cada requisito do catálogo aponta
+                para a página oficial de onde veio.
               </p>
             </div>
           </div>
         </PageSection>
 
         <PageSection
-          id="irlanda"
-          aria-labelledby="ireland-title"
+          id="destinos"
+          aria-labelledby="destinations-title"
           className="border-t"
         >
           <div className="grid gap-x-16 gap-y-8 md:grid-cols-2">
             <div>
               <h2
-                id="ireland-title"
+                id="destinations-title"
                 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
               >
-                Irlanda, o primeiro destino
+                Dez destinos, com caminhos revisados
               </h2>
               <p className="mt-5 max-w-md leading-relaxed text-muted-foreground">
-                A exploração está disponível, começando pelos caminhos de
-                trabalho. Estudo e família chegam depois que as fontes oficiais
-                forem revisadas.
+                Trabalho, estudo e família em todos eles e, em alguns, trabalho
+                remoto e renda própria. Cada país tem perguntas e regras
+                próprias, porque os vistos mudam de um lugar para outro.
               </p>
             </div>
             <div>
-              <ul className="divide-y border-y text-sm">
-                {(
-                  [
-                    ["Trabalho", "Apresentações iniciais", "work"],
-                    ["Estudo", "Detalhes em breve", "study"],
-                    ["Família", "Detalhes em breve", "family"],
-                  ] as const
-                ).map(([title, state, slug]) => (
-                  <li
-                    key={title}
-                    className="flex flex-wrap items-center justify-between gap-2 py-2"
-                  >
-                    <Link
-                      href={`/ireland/${slug}`}
-                      className="inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline"
-                    >
-                      {title}
-                    </Link>
-                    <span className="text-muted-foreground">{state}</span>
-                  </li>
-                ))}
+              <ul className="grid grid-cols-2 border-t text-sm">
+                {Object.entries(recommendationDestinations).map(
+                  ([slug, destination]) => (
+                    <li key={slug} className="border-b">
+                      <Link
+                        href={`/destinos/${slug}`}
+                        className="inline-flex min-h-11 items-center font-semibold text-primary underline-offset-4 hover:underline"
+                      >
+                        {destination.name}
+                      </Link>
+                    </li>
+                  ),
+                )}
               </ul>
               <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-                O catálogo está em construção. Estas categorias não representam
-                uma avaliação de elegibilidade.
+                As informações não representam uma avaliação de elegibilidade.
               </p>
             </div>
           </div>

@@ -6,7 +6,7 @@ import {
   validateAnswers,
 } from "./answers";
 import { irelandQuestions } from "./data/ireland-questions";
-import { normalizeProfile } from "./immigration-profile";
+import { emptyProfile, normalizeProfile } from "./immigration-profile";
 
 const workAnswers = {
   objective: "work",
@@ -75,10 +75,17 @@ test("exige obrigatórias visíveis e ignora as ocultas", () => {
     validateAnswers(irelandQuestions, {
       objective: "study",
       region: "other",
+      has_admission: false,
+      has_funds: true,
       has_employment_offer: true,
       offer_duration: "2y_plus",
     }),
-  ).toEqual({ objective: "study", region: "other" });
+  ).toEqual({
+    objective: "study",
+    region: "other",
+    has_admission: false,
+    has_funds: true,
+  });
 });
 
 test("respostas guardadas inválidas ou órfãs são ignoradas na leitura", () => {
@@ -104,13 +111,13 @@ test("normalização produz o perfil de domínio", () => {
   expect(
     normalizeProfile({ ...workAnswers, education_level: "degree" }),
   ).toEqual({
+    ...emptyProfile,
     objective: "work",
     passportRegion: "other",
     hasEmploymentOffer: true,
     offerDuration: "2y_plus",
     occupationArea: "technology",
     educationLevel: "degree",
-    familyInCountry: null,
   });
 });
 

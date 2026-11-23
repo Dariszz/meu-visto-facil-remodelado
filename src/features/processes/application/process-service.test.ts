@@ -101,7 +101,7 @@ test("cria o processo com snapshot, versão das regras e checklist revisado", as
   const input = mocks.createProcessWithChecklist.mock.calls[0][0];
   expect(input.userProfileId).toBe("profile-a");
   expect(input.visaId).toBe("visa-1");
-  expect(input.snapshot.ruleEngineVersion).toBe("ireland-work-v1");
+  expect(input.snapshot.ruleEngineVersion).toBe("ireland-v2");
   expect(input.snapshot.recommendation.compatibility).toBe("HIGH");
   expect(input.snapshot.profile).toMatchObject({ offerDuration: "2y_plus" });
   expect(input.checklist.generatorVersion).toBe("base-checklist-v1");

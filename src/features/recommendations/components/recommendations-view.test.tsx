@@ -19,9 +19,9 @@ test("caminhos aparecem do mais ao menos compatível", () => {
   render(
     <RecommendationsView
       countryName="Irlanda"
+      inName="na Irlanda"
       profileFacts={exampleProfileFacts}
       recommendations={exampleRecommendations}
-      pendingCategories={["Estudo", "Família"]}
       links={links}
     />,
   );
@@ -47,8 +47,11 @@ test("caminhos aparecem do mais ao menos compatível", () => {
     }),
   ).toBeInTheDocument();
   expect(
-    screen.getByText(/Estudo e Família não entram nesta análise/),
+    screen.getByRole("heading", { name: "Caminhos possíveis na Irlanda" }),
   ).toBeInTheDocument();
+  expect(
+    screen.getByRole("link", { name: "Ver vistos de Irlanda" }),
+  ).toHaveAttribute("href", "/ireland");
   const profile = screen.getByRole("complementary", { name: "Seu perfil" });
   expect(within(profile).getByText("Tecnologia")).toBeInTheDocument();
 });
@@ -57,9 +60,9 @@ test("impedimento aparece destacado e sem opção de iniciar processo", () => {
   render(
     <RecommendationsView
       countryName="Irlanda"
+      inName="na Irlanda"
       profileFacts={exampleProfileFactsNoOffer}
       recommendations={exampleRecommendationsNoOffer}
-      pendingCategories={[]}
       links={links}
     />,
   );
@@ -80,6 +83,7 @@ test("caminho pronto oferece criar o processo pelo servidor", () => {
   render(
     <RecommendationsView
       countryName="Irlanda"
+      inName="na Irlanda"
       profileFacts={exampleProfileFacts}
       recommendations={[
         {
@@ -89,7 +93,6 @@ test("caminho pronto oferece criar o processo pelo servidor", () => {
           process: { kind: "START" },
         },
       ]}
-      pendingCategories={[]}
       links={links}
       startAction={start}
     />,
@@ -107,9 +110,9 @@ test("sem resultados mostra estado vazio com saídas", () => {
   render(
     <RecommendationsView
       countryName="Irlanda"
+      inName="na Irlanda"
       profileFacts={[]}
       recommendations={[]}
-      pendingCategories={[]}
       links={links}
     />,
   );

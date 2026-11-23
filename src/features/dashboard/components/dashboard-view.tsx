@@ -138,7 +138,7 @@ export function DashboardView({
                         : "default"
                     }
                   >
-                    <Link href={links.explore}>Explorar Irlanda</Link>
+                    <Link href={links.explore}>Explorar destinos</Link>
                   </Button>
                 </>
               }
@@ -156,26 +156,26 @@ export function DashboardView({
               </h2>
               <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
                 {data.hasCompletedQuestionnaire
-                  ? "Mudou algo nos seus planos? Atualize as respostas para rever os caminhos."
-                  : "Algumas perguntas ajudam a mostrar caminhos que podem servir para você."}
+                  ? "Mudou algo nos seus planos ou quer comparar outro país? Revise ou responda para mais destinos."
+                  : "Escolha um destino e responda algumas perguntas para ver os caminhos que podem servir para você."}
               </p>
               <Link
                 href={links.questionnaire}
                 className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
               >
                 {data.hasCompletedQuestionnaire
-                  ? "Revisar respostas"
+                  ? "Ver destinos e respostas"
                   : "Começar questionário"}
               </Link>
             </section>
           )}
           <section aria-labelledby="explore-title">
             <h2 id="explore-title" className="font-semibold">
-              Explorar a Irlanda
+              Explorar destinos
             </h2>
             <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Caminhos de trabalho, estudo e família, com as fontes oficiais de
-              cada um.
+              Dez países com caminhos de trabalho, estudo e família, cada um com
+              as fontes oficiais.
             </p>
             <Link
               href={links.explore}

@@ -3,60 +3,34 @@ import {
   getVisibleQuestions,
 } from "@/features/questionnaire/flow";
 import type { Answers, QuestionView } from "@/features/questionnaire/types";
+import { visaPageHref } from "@/features/visas/visa-routes";
 import type { ProfileFact, RecommendationView } from "../types";
 import type { RecommendationResult } from "./evaluate";
 
-const dete = {
-  authority: "Department of Enterprise, Tourism and Employment (DETE)",
+export type RecommendationVisaMeta = {
+  slug: string;
+  name: string;
+  categoryName: string;
+  shortDescription: string;
+  sources: { id: string; title: string; authority: string }[];
 };
 
-// Metadados de apresentação por visto; os dois caminhos têm conteúdo revisado.
-const visaMeta: Record<
-  string,
-  Pick<
-    RecommendationView,
-    "visaName" | "categoryName" | "summary" | "sources" | "detailsHref"
-  >
-> = {
-  "critical-skills-employment-permit": {
-    visaName: "Critical Skills Employment Permit",
-    categoryName: "Trabalho",
-    summary:
-      "Permissão de trabalho voltada a profissionais altamente qualificados, vinculada a uma oferta de emprego na Irlanda.",
-    sources: [
-      {
-        id: "dete-critical-skills",
-        title: "Critical Skills Employment Permit",
-        ...dete,
-      },
-    ],
-    detailsHref: "/ireland/visas/critical-skills-employment-permit",
-  },
-  "general-employment-permit": {
-    visaName: "General Employment Permit",
-    categoryName: "Trabalho",
-    summary:
-      "Permissão de trabalho para uma gama mais ampla de ocupações, também vinculada a oferta de emprego e, em geral, a um teste de mercado de trabalho.",
-    sources: [
-      {
-        id: "dete-general-employment",
-        title: "General Employment Permit",
-        ...dete,
-      },
-    ],
-    detailsHref: "/destinos/ireland/general-employment-permit",
-  },
-};
-
+// Junta o resultado das regras com os dados públicos do visto revisado.
+// Visto sem conteúdo publicado não aparece (devolve null).
 export function presentRecommendation(
+  countrySlug: string,
   result: RecommendationResult,
+  meta: RecommendationVisaMeta | undefined,
   process: RecommendationView["process"] = null,
-): RecommendationView {
-  const meta = visaMeta[result.visaSlug];
-  if (!meta) throw new Error("RECOMMENDATION_VISA_UNKNOWN");
+): RecommendationView | null {
+  if (!meta) return null;
   return {
     visaSlug: result.visaSlug,
-    ...meta,
+    visaName: meta.name,
+    categoryName: meta.categoryName,
+    summary: meta.shortDescription,
+    sources: meta.sources,
+    detailsHref: visaPageHref(countrySlug, result.visaSlug),
     compatibility: result.compatibility,
     matchedCriteria: result.matchedCriteria,
     missingCriteria: result.missingCriteria,

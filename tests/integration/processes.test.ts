@@ -26,9 +26,13 @@ import {
 } from "../../src/features/processes/checklist/build-base-checklist";
 import { seedCatalog } from "../../prisma/seed-catalog";
 import { publishDevelopmentCatalog } from "../../prisma/publish-development-catalog";
-import type { ImmigrationProfile } from "../../src/features/questionnaire/immigration-profile";
+import {
+  emptyProfile,
+  type ImmigrationProfile,
+} from "../../src/features/questionnaire/immigration-profile";
 
 const profile: ImmigrationProfile = {
+  ...emptyProfile,
   objective: "work",
   passportRegion: "other",
   hasEmploymentOffer: true,
@@ -104,7 +108,7 @@ test("processes: checklist from reviewed requirements, ownership isolation and c
             visaId: visa.id,
             title: `Minha mudança: ${visa.name}`,
             snapshot: {
-              ruleEngineVersion: "ireland-work-v1",
+              ruleEngineVersion: "ireland-v2",
               profile,
               visa: { id: visa.id, slug: visa.slug },
               requirements: visa.requirements.map((r) => ({ ...r })),
@@ -137,7 +141,7 @@ test("processes: checklist from reviewed requirements, ownership isolation and c
           const snapshot = await tx.processSnapshot.findUniqueOrThrow({
             where: { processId: created.id },
           });
-          assert.equal(snapshot.ruleEngineVersion, "ireland-work-v1");
+          assert.equal(snapshot.ruleEngineVersion, "ireland-v2");
           const cited = own.checklist!.items.flatMap((item) =>
             item.sources.map((link) => link.sourceId),
           );

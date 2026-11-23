@@ -87,6 +87,8 @@ test("salva só respostas válidas e visíveis, com o perfil do servidor", async
     saveQuestionnaire("ireland", {
       objective: "study",
       region: "other",
+      has_admission: true,
+      has_funds: true,
       has_employment_offer: true,
     }),
   ).resolves.toBe("SAVED");
@@ -96,6 +98,8 @@ test("salva só respostas válidas e visíveis, com o perfil do servidor", async
     answers: [
       { questionId: "q-objective", value: "study" },
       { questionId: "q-region", value: "other" },
+      { questionId: "q-has_admission", value: true },
+      { questionId: "q-has_funds", value: true },
     ],
   });
 });

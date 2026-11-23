@@ -24,8 +24,10 @@ const visaSlug = z
 const isAuthError = (error: unknown) =>
   (error as { code?: string } | null)?.code === "AUTH_REQUIRED";
 
-// Fase 19: país fixo no servidor (Irlanda); o navegador envia só o visto.
-export async function startIrelandProcessAction(
+// Fase 19: o país vem da rota (bind no servidor); o navegador envia só o
+// visto, e compatibilidade e requisitos são recalculados no servidor.
+export async function startRecommendedProcessAction(
+  countrySlug: string,
   _state: StartProcessState,
   form: FormData,
 ): Promise<StartProcessState> {
@@ -37,7 +39,7 @@ export async function startIrelandProcessAction(
     };
   let result: Awaited<ReturnType<typeof startProcess>>;
   try {
-    result = await startProcess("ireland", parsed.data);
+    result = await startProcess(countrySlug, parsed.data);
   } catch (error) {
     if (isAuthError(error)) redirect("/login");
     return {
@@ -47,7 +49,8 @@ export async function startIrelandProcessAction(
     };
   }
   if (result.kind === "PROFILE_REQUIRED") redirect("/profile");
-  if (result.kind === "QUESTIONNAIRE_REQUIRED") redirect("/questionnaire");
+  if (result.kind === "QUESTIONNAIRE_REQUIRED")
+    redirect(`/questionnaire/${encodeURIComponent(countrySlug)}`);
   if (result.kind === "NOT_AVAILABLE")
     return {
       status: "error",

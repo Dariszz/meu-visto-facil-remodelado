@@ -21,18 +21,24 @@ type StartAction = (
 
 export function RecommendationsView({
   countryName,
+  inName,
   profileFacts,
   recommendations,
-  pendingCategories,
   links,
   startAction,
 }: {
   countryName: string;
+  // "na Irlanda", "em Portugal"…
+  inName: string;
   profileFacts: readonly ProfileFact[];
   recommendations: readonly RecommendationView[];
-  // Categorias ainda sem regras revisadas, apresentadas como "em preparação".
-  pendingCategories: readonly string[];
-  links: { dashboard: string; questionnaire: string; explore: string };
+  links: {
+    dashboard: string;
+    questionnaire: string;
+    explore: string;
+    // Lista de destinos; sem ela, a trilha vai direto do painel ao país.
+    overview?: string;
+  };
   // Server Action que cria o processo; sem ela, "Iniciar" não aparece.
   startAction?: StartAction;
 }) {
@@ -43,13 +49,18 @@ export function RecommendationsView({
         <Breadcrumbs
           items={[
             { label: "Painel", href: links.dashboard },
-            { label: "Recomendações" },
+            ...(links.overview
+              ? [
+                  { label: "Recomendações", href: links.overview },
+                  { label: countryName },
+                ]
+              : [{ label: "Recomendações" }]),
           ]}
         />
         <div className="grid items-start gap-x-14 gap-y-10 lg:grid-cols-[minmax(0,1fr)_17rem]">
           <div className="min-w-0">
             <h1 className="max-w-2xl pt-2 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-              Caminhos possíveis na {countryName}
+              Caminhos possíveis {inName}
             </h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">
               Com base nas suas respostas, estes caminhos podem ser compatíveis
@@ -87,27 +98,25 @@ export function RecommendationsView({
               />
             )}
 
-            {pendingCategories.length > 0 && (
-              <section
-                aria-labelledby="pending-title"
-                className="mt-12 max-w-2xl border-t pt-6"
+            <section
+              aria-labelledby="explore-title"
+              className="mt-12 max-w-2xl border-t pt-6"
+            >
+              <h2 id="explore-title" className="font-semibold">
+                Todos os caminhos {inName}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                A análise mostra os caminhos ligados ao seu objetivo. Você pode
+                ver os requisitos de qualquer visto revisado e criar um
+                checklist pela página dele.
+              </p>
+              <Link
+                href={links.explore}
+                className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
               >
-                <h2 id="pending-title" className="font-semibold">
-                  Outros caminhos na Irlanda
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {pendingCategories.join(" e ")} não entram nesta análise, que
-                  considera só caminhos de trabalho. Você ainda pode ver os
-                  requisitos e criar um checklist pela página de cada caminho.
-                </p>
-                <Link
-                  href="/destinos/ireland"
-                  className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
-                >
-                  Ver caminhos da Irlanda
-                </Link>
-              </section>
-            )}
+                Ver vistos de {countryName}
+              </Link>
+            </section>
           </div>
 
           <aside

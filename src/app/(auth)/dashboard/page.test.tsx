@@ -45,8 +45,8 @@ test("painel real sem processos orienta ao questionário e à exploração", asy
     screen.getByRole("heading", { name: "Nenhum processo salvo" }),
   ).toBeInTheDocument();
   expect(
-    screen.getByRole("link", { name: "Explorar Irlanda" }),
-  ).toHaveAttribute("href", "/ireland");
+    screen.getByRole("link", { name: "Explorar destinos" }),
+  ).toHaveAttribute("href", "/destinos");
   expect(
     screen.getByRole("link", { name: "Responder questionário" }),
   ).toHaveAttribute("href", "/questionnaire");

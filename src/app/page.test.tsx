@@ -11,16 +11,17 @@ test("comunica a proposta e distingue a prévia das funcionalidades futuras", ()
   expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
     "Seu caminho para imigrar começa com informação clara.",
   );
-  expect(screen.getByText(/Prévia conceitual/)).toBeInTheDocument();
-  const ireland = screen.getByRole("region", {
-    name: "Irlanda, o primeiro destino",
+  expect(screen.getByText(/Exemplo ilustrativo/)).toBeInTheDocument();
+  const destinations = screen.getByRole("region", {
+    name: "Dez destinos, com caminhos revisados",
   });
+  expect(within(destinations).getAllByRole("link")).toHaveLength(10);
   expect(
-    within(ireland).getByText("Apresentações iniciais"),
-  ).toBeInTheDocument();
+    within(destinations).getByRole("link", { name: "Estados Unidos" }),
+  ).toHaveAttribute("href", "/destinos/united-states");
   expect(
     screen.getByRole("region", { name: /Você merece saber/ }),
-  ).toHaveTextContent("catálogo de fontes ainda está em preparação");
+  ).toHaveTextContent("aponta para a página oficial");
   expect(
     screen.getByRole("region", { name: /Personalizado para você/ }),
   ).toHaveTextContent(
@@ -37,7 +38,7 @@ test("oferece navegação e CTAs com destinos existentes, sem rotas futuras queb
     </>,
   );
   expect(
-    screen.getAllByRole("link", { name: "Explorar Irlanda" }),
+    screen.getAllByRole("link", { name: "Explorar destinos" }),
   ).toHaveLength(3);
   for (const link of screen.getAllByRole("link")) {
     const href = link.getAttribute("href")!;
@@ -50,6 +51,18 @@ test("oferece navegação e CTAs com destinos existentes, sem rotas futuras queb
         "/ireland/work",
         "/ireland/study",
         "/ireland/family",
+        ...[
+          "ireland",
+          "portugal",
+          "spain",
+          "italy",
+          "germany",
+          "netherlands",
+          "united-kingdom",
+          "canada",
+          "united-states",
+          "australia",
+        ].map((slug) => `/destinos/${slug}`),
         "/privacidade",
         "/termos",
       ].includes(href) || /^\/?#.+/.test(href),
@@ -59,9 +72,9 @@ test("oferece navegação e CTAs com destinos existentes, sem rotas futuras queb
     expect(link).toHaveAccessibleName();
   }
   for (const link of screen.getAllByRole("link", {
-    name: "Explorar Irlanda",
+    name: "Explorar destinos",
   })) {
-    expect(link).toHaveAttribute("href", "/ireland");
+    expect(link).toHaveAttribute("href", "/destinos");
   }
   expect(screen.getByRole("link", { name: "Privacidade" })).toHaveAttribute(
     "href",

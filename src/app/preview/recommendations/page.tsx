@@ -5,7 +5,6 @@ import {
   exampleProfileFactsNoOffer,
   exampleRecommendations,
   exampleRecommendationsNoOffer,
-  pendingCategories,
   previewLinks,
 } from "@/features/previews/fixtures";
 
@@ -23,11 +22,11 @@ export default async function RecommendationsPreviewPage({
   return (
     <RecommendationsView
       countryName="Irlanda"
+      inName="na Irlanda"
       profileFacts={noOffer ? exampleProfileFactsNoOffer : exampleProfileFacts}
       recommendations={
         noOffer ? exampleRecommendationsNoOffer : exampleRecommendations
       }
-      pendingCategories={pendingCategories}
       links={{
         dashboard: previewLinks.dashboard,
         questionnaire: previewLinks.questionnaire,

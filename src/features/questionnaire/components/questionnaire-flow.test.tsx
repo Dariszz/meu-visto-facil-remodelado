@@ -15,7 +15,7 @@ const continueButton = () => screen.getByRole("button", { name: /Continuar/ });
 
 test("pergunta obrigatória sem resposta mostra erro e não avança", () => {
   const user = setup();
-  expect(screen.getByText("Pergunta 1 de 7")).toBeInTheDocument();
+  expect(screen.getByText("Pergunta 1 de 11")).toBeInTheDocument();
   user.click(continueButton());
   expect(document.getElementById("objective-error")).toHaveTextContent(
     "Escolha uma opção para continuar.",
@@ -72,6 +72,11 @@ test("alterar resposta na revisão volta para a pergunta", () => {
   user.click(screen.getByRole("radio", { name: /Reino Unido/ }));
   user.click(continueButton());
   user.click(screen.getByRole("button", { name: /Pular/ }));
+  // Estudo pergunta pelo aceite da instituição e pelos recursos.
+  for (let i = 0; i < 2; i += 1) {
+    user.click(screen.getByRole("radio", { name: "Sim" }));
+    user.click(continueButton());
+  }
   user.click(
     screen.getByRole("button", {
       name: "Alterar resposta: De onde é o seu passaporte?",
@@ -89,11 +94,13 @@ test("modo de salvar envia só as respostas visíveis", () => {
         objective: "study",
         region: "uk",
         has_employment_offer: true,
+        has_admission: true,
+        has_funds: false,
       }}
       submitAction={action}
     />,
   );
-  for (let i = 0; i < 3; i += 1)
+  for (let i = 0; i < 5; i += 1)
     fireEvent.click(screen.getByRole("button", { name: /Continuar|Pular/ }));
   expect(
     screen.getByRole("button", { name: "Salvar respostas" }),
@@ -104,5 +111,7 @@ test("modo de salvar envia só as respostas visíveis", () => {
   expect(JSON.parse(hidden.value)).toEqual({
     objective: "study",
     region: "uk",
+    has_admission: true,
+    has_funds: false,
   });
 });

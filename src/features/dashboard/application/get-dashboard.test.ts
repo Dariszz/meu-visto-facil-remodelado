@@ -6,17 +6,29 @@ const { getCurrentUserProfile } = vi.hoisted(() => ({
   getCurrentUserProfile: vi.fn(),
 }));
 vi.mock("@/features/profile/service", () => ({ getCurrentUserProfile }));
-const { getQuestionnaire } = vi.hoisted(() => ({ getQuestionnaire: vi.fn() }));
-vi.mock("@/features/questionnaire/application/questionnaire-service", () => ({
-  getQuestionnaire,
+const { getQuestionnaireOverview } = vi.hoisted(() => ({
+  getQuestionnaireOverview: vi.fn(),
 }));
+vi.mock("@/features/questionnaire/application/questionnaire-service", () => ({
+  getQuestionnaireOverview,
+}));
+const overview = (...statuses: string[]) => ({
+  kind: "READY",
+  destinations: statuses.map((status, index) => ({
+    slug: `d${index}`,
+    name: `D${index}`,
+    status,
+  })),
+});
 const { listMyProcesses } = vi.hoisted(() => ({ listMyProcesses: vi.fn() }));
 vi.mock("@/features/processes/application/process-service", () => ({
   listMyProcesses,
 }));
 beforeEach(() => {
   vi.clearAllMocks();
-  getQuestionnaire.mockResolvedValue({ kind: "READY", complete: false });
+  getQuestionnaireOverview.mockResolvedValue(
+    overview("NOT_STARTED", "STARTED"),
+  );
   listMyProcesses.mockResolvedValue([]);
 });
 
@@ -52,7 +64,9 @@ test("questionário completo aparece no painel", async () => {
     displayName: null,
     preferredLocale: "pt-BR",
   });
-  getQuestionnaire.mockResolvedValue({ kind: "READY", complete: true });
+  getQuestionnaireOverview.mockResolvedValue(
+    overview("NOT_STARTED", "COMPLETE"),
+  );
   const result = await getDashboard();
   expect(result.kind === "READY" && result.view.hasCompletedQuestionnaire).toBe(
     true,

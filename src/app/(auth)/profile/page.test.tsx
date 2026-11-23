@@ -63,8 +63,8 @@ test.each(["Pessoa", null])(
     );
     expect(screen.queryByText("private-profile-id")).not.toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Explorar a Irlanda" }),
-    ).toHaveAttribute("href", "/ireland");
+      screen.getByRole("link", { name: "Explorar destinos" }),
+    ).toHaveAttribute("href", "/destinos");
     expect(
       screen.getByRole("link", { name: "Ir para o painel" }),
     ).toHaveAttribute("href", "/dashboard");

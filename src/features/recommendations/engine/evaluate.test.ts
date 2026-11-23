@@ -1,8 +1,16 @@
 import { expect, test } from "vitest";
-import type { ImmigrationProfile } from "@/features/questionnaire/immigration-profile";
-import { evaluateIrelandWorkPaths, RULE_ENGINE_VERSION } from "./evaluate";
+import {
+  emptyProfile,
+  type ImmigrationProfile,
+} from "@/features/questionnaire/immigration-profile";
+import { evaluateDestination, ruleVersionFor } from "./evaluate";
+
+const evaluateIrelandWorkPaths = (profile: ImmigrationProfile) =>
+  evaluateDestination("ireland", profile);
+const RULE_ENGINE_VERSION = ruleVersionFor("ireland");
 
 const base: ImmigrationProfile = {
+  ...emptyProfile,
   objective: "work",
   passportRegion: "other",
   hasEmploymentOffer: true,
@@ -112,12 +120,13 @@ test("Reino Unido fica como ponto a confirmar, sem conclusão", () => {
   expect(cs.missingCriteria[0]).toMatch(/Reino Unido/);
 });
 
-test("estudo e família não recebem caminhos de trabalho", () => {
-  expect(evaluateIrelandWorkPaths({ ...base, objective: "study" })).toEqual([]);
-  expect(evaluateIrelandWorkPaths({ ...base, objective: "family" })).toEqual(
-    [],
-  );
-  expect(evaluateIrelandWorkPaths({ ...base, objective: null })).toEqual([]);
+test("cada objetivo recebe só os caminhos dele", () => {
+  const slugs = (profile: ImmigrationProfile) =>
+    evaluateIrelandWorkPaths(profile).map((result) => result.visaSlug);
+  expect(slugs({ ...base, objective: "study" })).toEqual(["student-stamp-2"]);
+  expect(slugs({ ...base, objective: "family" })).toEqual(["join-family"]);
+  expect(slugs({ ...base, objective: null })).toEqual([]);
+  expect(slugs({ ...base, objective: "exploring" })).toHaveLength(4);
 });
 
 test("nenhum texto promete elegibilidade ou aprovação", () => {

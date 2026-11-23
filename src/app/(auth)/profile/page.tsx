@@ -53,10 +53,10 @@ export default async function ProfilePage() {
           <Link href="/dashboard">Ir para o painel</Link>
         </Button>
         <Link
-          href="/ireland"
+          href="/destinos"
           className="inline-flex min-h-11 items-center justify-center text-sm text-primary underline underline-offset-4"
         >
-          Explorar a Irlanda
+          Explorar destinos
         </Link>
       </div>
       <DeleteAccountForm action={deleteAccountAction} />

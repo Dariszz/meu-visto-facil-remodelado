@@ -49,7 +49,7 @@ export default async function DashboardPage({
     <DashboardView
       data={result.view}
       links={{
-        explore: "/ireland",
+        explore: "/destinos",
         questionnaire: "/questionnaire",
         recommendations: "/recommendations",
       }}

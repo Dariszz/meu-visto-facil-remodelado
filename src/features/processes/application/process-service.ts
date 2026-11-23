@@ -5,13 +5,17 @@ import type { ChecklistItemStatus } from "@/features/checklists/types";
 import type { ProcessDetailView } from "@/features/checklists/types";
 import type { ProcessSummaryView } from "@/features/dashboard/types";
 import { getCurrentUserProfile } from "@/features/profile/service";
-import type { ImmigrationProfile } from "@/features/questionnaire/immigration-profile";
+import {
+  emptyProfile,
+  type ImmigrationProfile,
+} from "@/features/questionnaire/immigration-profile";
 import { Prisma } from "@/lib/db/generated/client";
 import { getQuestionnaire } from "@/features/questionnaire/application/questionnaire-service";
 import {
-  evaluateIrelandWorkPaths,
-  RULE_ENGINE_VERSION,
+  evaluateDestination,
+  ruleVersionFor,
 } from "@/features/recommendations/engine/evaluate";
+import { isRecommendationDestination } from "@/features/destinations/registry";
 import {
   findVisaForChecklist,
   listSourcesByIds,
@@ -30,16 +34,6 @@ import {
   CHECKLIST_GENERATOR_VERSION,
 } from "../checklist/build-base-checklist";
 import { presentProcessDetail, presentProcessSummary } from "../presentation";
-
-const emptyProfile: ImmigrationProfile = {
-  objective: null,
-  passportRegion: null,
-  hasEmploymentOffer: null,
-  offerDuration: null,
-  occupationArea: null,
-  educationLevel: null,
-  familyInCountry: null,
-};
 
 export class ProcessUnavailableError extends Error {
   readonly code = "PROCESS_UNAVAILABLE";
@@ -141,10 +135,14 @@ export async function startProcess(
     return { kind: "QUESTIONNAIRE_REQUIRED" };
   const profile = await getCurrentUserProfile();
   if (!profile) return { kind: "PROFILE_REQUIRED" };
+  if (!isRecommendationDestination(countrySlug))
+    return { kind: "NOT_AVAILABLE" };
+  const destination = countrySlug;
   return guarded(async () => {
-    const recommendation = evaluateIrelandWorkPaths(questionnaire.profile).find(
-      (result) => result.visaSlug === visaSlug,
-    );
+    const recommendation = evaluateDestination(
+      destination,
+      questionnaire.profile,
+    ).find((result) => result.visaSlug === visaSlug);
     if (!recommendation || recommendation.compatibility === "NOT_RECOMMENDED")
       return { kind: "NOT_AVAILABLE" as const };
     const visa = await findVisaForChecklist(countrySlug, visaSlug);
@@ -153,7 +151,7 @@ export async function startProcess(
       userProfileId: profile.id,
       visa,
       profile: questionnaire.profile,
-      ruleEngineVersion: RULE_ENGINE_VERSION,
+      ruleEngineVersion: ruleVersionFor(destination),
       recommendation: {
         compatibility: recommendation.compatibility,
         matchedCriteria: recommendation.matchedCriteria,
@@ -225,13 +223,16 @@ export async function listMyProcesses(): Promise<ProcessSummaryView[] | null> {
   return records ? records.map(presentProcessSummary) : null;
 }
 
-// Visto -> id do processo aberto, para trocar "Iniciar" por "Abrir".
-export async function listMyOpenProcessesByVisa(): Promise<
-  Map<string, string>
-> {
+// Visto do destino -> id do processo aberto, para trocar "Iniciar" por
+// "Abrir". Slugs se repetem entre países ("estudo"), por isso o filtro.
+export async function listMyOpenProcessesByVisa(
+  countrySlug: string,
+): Promise<Map<string, string>> {
   const records = await loadMyProcessRecords();
   return new Map(
-    (records ?? []).map((record) => [record.visa.slug, record.id]),
+    (records ?? [])
+      .filter((record) => record.visa.country.slug === countrySlug)
+      .map((record) => [record.visa.slug, record.id]),
   );
 }
 

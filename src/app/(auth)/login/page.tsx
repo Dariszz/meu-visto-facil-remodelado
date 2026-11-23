@@ -41,10 +41,10 @@ export default async function LoginPage({
         </p>
         <p className="mt-5 text-center text-sm">
           <Link
-            href="/ireland"
+            href="/destinos"
             className="text-primary underline underline-offset-4"
           >
-            Explorar a Irlanda
+            Explorar destinos
           </Link>
         </p>
       </AuthShell>

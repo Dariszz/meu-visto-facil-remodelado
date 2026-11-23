@@ -145,3 +145,52 @@ export async function findPublicVisa(
     return { ...visa, requirements: pick(false), steps: pick(true) };
   });
 }
+
+export type RecommendationVisa = {
+  slug: string;
+  name: string;
+  categoryName: string;
+  shortDescription: string;
+  sources: { id: string; title: string; authority: string }[];
+};
+
+// Dados públicos dos vistos revisados de um destino, para apresentar as
+// recomendações (nome, categoria, resumo e fontes oficiais citadas).
+export async function listRecommendationVisas(
+  countrySlug: string,
+  db?: Prisma.TransactionClient,
+): Promise<RecommendationVisa[]> {
+  if (!catalogSlug.safeParse(countrySlug).success) return [];
+  return publicQuery(async () => {
+    const rows = await (db ?? getDatabaseClient()).visa.findMany({
+      where: {
+        status: "ACTIVE",
+        reviewStatus: "REVIEWED",
+        country: { slug: countrySlug, status: "ACTIVE" },
+      },
+      select: {
+        slug: true,
+        name: true,
+        shortDescription: true,
+        category: { select: { name: true } },
+        sources: {
+          where: { source: { status: { not: "ARCHIVED" } } },
+          select: {
+            source: { select: { id: true, title: true, authority: true } },
+          },
+          orderBy: { sourceId: "asc" },
+          take: 20,
+        },
+      },
+      orderBy: [{ name: "asc" }, { slug: "asc" }],
+      take: 100,
+    });
+    return rows.map((row) => ({
+      slug: row.slug,
+      name: row.name,
+      categoryName: row.category.name,
+      shortDescription: row.shortDescription,
+      sources: row.sources.map((link) => link.source),
+    }));
+  });
+}

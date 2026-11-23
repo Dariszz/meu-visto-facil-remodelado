@@ -3,9 +3,13 @@ import {
   buildBaseChecklist,
   type RequirementForChecklist,
 } from "./build-base-checklist";
-import type { ImmigrationProfile } from "@/features/questionnaire/immigration-profile";
+import {
+  emptyProfile,
+  type ImmigrationProfile,
+} from "@/features/questionnaire/immigration-profile";
 
 const profile: ImmigrationProfile = {
+  ...emptyProfile,
   objective: "work",
   passportRegion: "other",
   hasEmploymentOffer: true,
@@ -80,6 +84,7 @@ test("requisito sem fonte oficial não vira item", () => {
 
 test("respostas desconhecidas não removem itens", () => {
   const unknown: ImmigrationProfile = {
+    ...emptyProfile,
     objective: null,
     passportRegion: null,
     hasEmploymentOffer: null,

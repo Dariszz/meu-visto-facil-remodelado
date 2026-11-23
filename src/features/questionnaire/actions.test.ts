@@ -1,6 +1,11 @@
 import { beforeEach, expect, test, vi } from "vitest";
 import { AnswersInvalidError } from "./answers";
-import { saveIrelandQuestionnaireAction } from "./actions";
+import { saveQuestionnaireAction } from "./actions";
+
+const saveIrelandQuestionnaireAction = saveQuestionnaireAction.bind(
+  null,
+  "ireland",
+);
 
 vi.mock("server-only", () => ({}));
 const { saveQuestionnaire, redirect } = vi.hoisted(() => ({
@@ -25,7 +30,7 @@ test("salva para a Irlanda e leva às recomendações, ignorando campos extras",
   saveQuestionnaire.mockResolvedValue("SAVED");
   await expect(
     saveIrelandQuestionnaireAction(idle, form('{"objective":"work"}')),
-  ).rejects.toThrow("REDIRECT:/recommendations");
+  ).rejects.toThrow("REDIRECT:/recommendations/ireland");
   expect(saveQuestionnaire).toHaveBeenCalledWith("ireland", {
     objective: "work",
   });
@@ -66,4 +71,11 @@ test("sessão ausente volta ao login; sem perfil vai criar o perfil", async () =
   await expect(
     saveIrelandQuestionnaireAction(idle, form("{}")),
   ).rejects.toThrow("REDIRECT:/profile");
+});
+
+test("destino desconhecido não chama o serviço", async () => {
+  expect(
+    await saveQuestionnaireAction("marte", idle, form('{"objective":"work"}')),
+  ).toMatchObject({ status: "error" });
+  expect(saveQuestionnaire).not.toHaveBeenCalled();
 });

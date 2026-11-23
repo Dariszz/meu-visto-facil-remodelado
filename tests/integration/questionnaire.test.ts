@@ -12,6 +12,8 @@ import {
 } from "../../src/lib/db/repositories/answer-repository";
 import { irelandQuestions } from "../../src/features/questionnaire/data/ireland-questions";
 import { seedCatalog } from "../../prisma/seed-catalog";
+import { questionsForDestination } from "../../prisma/seed-questions";
+import { destinationContents } from "../../prisma/seed-data/countries";
 
 test("questionnaire: seeded questions, private answers replaced per country and cascade", async () => {
   const client = createDatabaseClient(readTestDatabaseUrl(process.env));
@@ -28,6 +30,33 @@ test("questionnaire: seeded questions, private answers replaced per country and 
           irelandQuestions.map((question) => ({ ...question })),
         );
         const id = (code: string) => records.find((r) => r.code === code)!.id;
+
+        // Todos os destinos têm questionário igual ao gerado pelos dados.
+        for (const content of destinationContents)
+          assert.deepEqual(
+            (await listActiveQuestions(content.slug, tx)).map(toQuestionView),
+            questionsForDestination(content).map((question) => ({
+              ...question,
+            })),
+            content.slug,
+          );
+        // Rodar o seed de novo não reescreve nada (datas intactas).
+        const stamp = async () =>
+          JSON.stringify(
+            await tx.profileQuestion.findMany({
+              select: { id: true, updatedAt: true, status: true },
+              orderBy: { id: "asc" },
+            }),
+          ) +
+          JSON.stringify(
+            await tx.questionOption.findMany({
+              select: { id: true, updatedAt: true },
+              orderBy: { id: "asc" },
+            }),
+          );
+        const before = await stamp();
+        await seedCatalog(tx);
+        assert.equal(await stamp(), before);
 
         const other = await tx.country.create({
           data: {

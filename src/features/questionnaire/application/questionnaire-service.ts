@@ -1,4 +1,8 @@
 import "server-only";
+import {
+  recommendationDestinations,
+  type RecommendationDestination,
+} from "@/features/destinations/registry";
 import { getCurrentUserProfile } from "@/features/profile/service";
 import {
   findAnswers,
@@ -134,4 +138,41 @@ export async function saveQuestionnaire(
     });
     return "SAVED" as const;
   });
+}
+
+export type DestinationQuestionnaireStatus = {
+  slug: RecommendationDestination;
+  name: string;
+  status: "COMPLETE" | "STARTED" | "NOT_STARTED";
+};
+
+// Situação do questionário em cada destino, para a escolha de país.
+export async function getQuestionnaireOverview(): Promise<
+  | { kind: "PROFILE_REQUIRED" }
+  | { kind: "READY"; destinations: DestinationQuestionnaireStatus[] }
+> {
+  const profile = await getCurrentUserProfile();
+  if (!profile) return { kind: "PROFILE_REQUIRED" };
+  const slugs = Object.keys(
+    recommendationDestinations,
+  ) as RecommendationDestination[];
+  const states = await Promise.all(slugs.map((slug) => getQuestionnaire(slug)));
+  return {
+    kind: "READY",
+    destinations: slugs.flatMap((slug, index) => {
+      const state = states[index];
+      if (state.kind !== "READY") return [];
+      return [
+        {
+          slug,
+          name: recommendationDestinations[slug].name,
+          status: state.complete
+            ? ("COMPLETE" as const)
+            : Object.keys(state.answers).length
+              ? ("STARTED" as const)
+              : ("NOT_STARTED" as const),
+        },
+      ];
+    }),
+  };
 }

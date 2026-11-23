@@ -1,56 +1,56 @@
 // @vitest-environment jsdom
 import { render, screen } from "@testing-library/react";
 import { beforeEach, expect, test, vi } from "vitest";
-import { AuthenticationError } from "@/lib/auth/require-user";
-import { exampleRecommendations } from "@/features/previews/fixtures";
-import RecommendationsPage from "./page";
+import RecommendationsOverviewPage from "./page";
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/auth/get-current-user", () => ({ getCurrentUser: vi.fn() }));
-const { getRecommendations, redirect } = vi.hoisted(() => ({
-  getRecommendations: vi.fn(),
+const { getQuestionnaireOverview, redirect } = vi.hoisted(() => ({
+  getQuestionnaireOverview: vi.fn(),
   redirect: vi.fn((path: string) => {
     throw new Error(`REDIRECT:${path}`);
   }),
 }));
-vi.mock("@/features/recommendations/application/get-recommendations", () => ({
-  getRecommendations,
+vi.mock("@/features/questionnaire/application/questionnaire-service", () => ({
+  getQuestionnaireOverview,
 }));
 vi.mock("next/navigation", () => ({ redirect }));
 beforeEach(() => vi.clearAllMocks());
 
-test("redireciona conforme o que falta", async () => {
-  getRecommendations.mockRejectedValueOnce(new AuthenticationError());
-  await expect(RecommendationsPage()).rejects.toThrow("REDIRECT:/login");
-  getRecommendations.mockResolvedValueOnce({ kind: "PROFILE_REQUIRED" });
-  await expect(RecommendationsPage()).rejects.toThrow("REDIRECT:/profile");
-  getRecommendations.mockResolvedValueOnce({ kind: "QUESTIONNAIRE_REQUIRED" });
-  await expect(RecommendationsPage()).rejects.toThrow(
+const overview = (statuses: Record<string, string>) => ({
+  kind: "READY",
+  destinations: Object.entries(statuses).map(([slug, status]) => ({
+    slug,
+    name: slug.toUpperCase(),
+    status,
+  })),
+});
+
+test("sem destino respondido vai ao questionário; com um, direto a ele", async () => {
+  getQuestionnaireOverview.mockResolvedValueOnce(
+    overview({ ireland: "STARTED" }),
+  );
+  await expect(RecommendationsOverviewPage()).rejects.toThrow(
     "REDIRECT:/questionnaire",
   );
+  getQuestionnaireOverview.mockResolvedValueOnce(
+    overview({ ireland: "COMPLETE", canada: "NOT_STARTED" }),
+  );
+  await expect(RecommendationsOverviewPage()).rejects.toThrow(
+    "REDIRECT:/recommendations/ireland",
+  );
 });
 
-test("mostra os caminhos com links reais do painel e do questionário", async () => {
-  getRecommendations.mockResolvedValue({
-    kind: "READY",
-    recommendations: exampleRecommendations,
-    profileFacts: [{ label: "Objetivo", value: "Trabalhar" }],
-    pendingCategories: ["Estudo", "Família"],
-  });
-  render(await RecommendationsPage());
-  expect(screen.getByRole("link", { name: "Painel" })).toHaveAttribute(
+test("com vários destinos respondidos, lista só esses", async () => {
+  getQuestionnaireOverview.mockResolvedValue(
+    overview({ ireland: "COMPLETE", italy: "COMPLETE", canada: "STARTED" }),
+  );
+  render(await RecommendationsOverviewPage());
+  expect(screen.getByRole("link", { name: "ITALY" })).toHaveAttribute(
     "href",
-    "/dashboard",
+    "/recommendations/italy",
   );
   expect(
-    screen.getByRole("link", { name: "Revisar respostas" }),
-  ).toHaveAttribute("href", "/questionnaire");
-});
-
-test("falha mostra erro sem detalhes", async () => {
-  getRecommendations.mockRejectedValue(new Error("db"));
-  render(await RecommendationsPage());
-  expect(screen.getByRole("alert")).toHaveTextContent(
-    "Não foi possível carregar as recomendações",
-  );
+    screen.queryByRole("link", { name: "CANADA" }),
+  ).not.toBeInTheDocument();
 });

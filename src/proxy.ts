@@ -41,8 +41,8 @@ export const config = {
   matcher: [
     "/login",
     "/dashboard",
-    "/questionnaire",
-    "/recommendations",
+    "/questionnaire/:path*",
+    "/recommendations/:path*",
     "/processes/:path*",
     "/profile",
     "/register",

@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { isRecommendationDestination } from "@/features/destinations/registry";
 import { AnswersInvalidError } from "./answers";
 import { saveQuestionnaire } from "./application/questionnaire-service";
 
@@ -11,12 +12,18 @@ export type QuestionnaireActionState = {
 
 const MAX_PAYLOAD = 10_000;
 
-// Ação da Fase 13: o país é fixo no servidor (Irlanda) até existirem outros
-// questionários; o navegador envia só as respostas.
-export async function saveIrelandQuestionnaireAction(
+// O destino vem da rota, ligado no servidor (bind); o navegador envia só as
+// respostas, e o destino é conferido de novo aqui.
+export async function saveQuestionnaireAction(
+  countrySlug: string,
   _state: QuestionnaireActionState,
   form: FormData,
 ): Promise<QuestionnaireActionState> {
+  if (!isRecommendationDestination(countrySlug))
+    return {
+      status: "error",
+      message: "O questionário deste destino não está disponível no momento.",
+    };
   const raw = form.get("answers");
   if (typeof raw !== "string" || raw.length > MAX_PAYLOAD)
     return {
@@ -34,7 +41,7 @@ export async function saveIrelandQuestionnaireAction(
   }
   let result: Awaited<ReturnType<typeof saveQuestionnaire>>;
   try {
-    result = await saveQuestionnaire("ireland", input);
+    result = await saveQuestionnaire(countrySlug, input);
   } catch (error) {
     if ((error as { code?: string }).code === "AUTH_REQUIRED")
       redirect("/login");
@@ -56,5 +63,5 @@ export async function saveIrelandQuestionnaireAction(
       status: "error",
       message: "O questionário deste destino não está disponível no momento.",
     };
-  redirect("/recommendations");
+  redirect(`/recommendations/${countrySlug}`);
 }

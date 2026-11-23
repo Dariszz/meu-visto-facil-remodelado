@@ -87,10 +87,10 @@ Branch `feature/conteudo-paises`. Conteúdo revisado a partir só de páginas of
 
 ## 4. Revisar a madrugada de 17/11/2026 (branch `feature/madrugada`)
 
-Resumo em [madrugada-2026-11-17.md](exec-plans/madrugada-2026-11-17.md). Nada foi juntado com o `main`.
+Resumo em [madrugada-2026-11-17.md](exec-plans/madrugada-2026-11-17.md). Já está no `main` (conferido em 23/11/2026).
 
-- [ ] Revisar a branch e decidir se junta com o `main`
-- [ ] Portugal e Espanha: abrir as páginas de evidência de [portugal.md](research/portugal.md) e [spain.md](research/spain.md), confirmar os domínios e trocar `PENDING_REVIEW` por `VERIFIED` em `src/features/sources/official-domains.ts`. Só depois mudar os países para `ACTIVE`
+- [x] Revisar a branch e decidir se junta com o `main`
+- [x] Portugal e Espanha: abrir as páginas de evidência de [portugal.md](research/portugal.md) e [spain.md](research/spain.md), confirmar os domínios e trocar `PENDING_REVIEW` por `VERIFIED` em `src/features/sources/official-domains.ts`. Só depois mudar os países para `ACTIVE`
 - [ ] Revisar o conteúdo do General Employment Permit (hoje ele fica limitado a compatibilidade média nas recomendações)
 
 ## 5. Decisões abertas

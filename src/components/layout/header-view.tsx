@@ -4,7 +4,21 @@ import { Container } from "./container";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 
-// Com sessão, o atalho da conta leva ao painel em vez do login.
+// Sem sessão, a navegação apresenta o produto; com sessão, leva às áreas
+// da conta. O atalho da conta leva ao painel em vez do login.
+const publicLinks = [
+  ["/#como-funciona", "Como funciona"],
+  ["/#por-que-usar", "Por que usar"],
+  ["/destinos", "Destinos"],
+  ["/#sobre", "Sobre"],
+] as const;
+
+const privateLinks = [
+  ["/destinos", "Destinos"],
+  ["/questionnaire", "Questionário"],
+  ["/recommendations", "Recomendações"],
+] as const;
+
 export function HeaderView({ signedIn }: { signedIn: boolean }) {
   return (
     <header className="border-b bg-card">
@@ -14,15 +28,10 @@ export function HeaderView({ signedIn }: { signedIn: boolean }) {
           aria-label="Navegação principal"
           className="order-3 flex w-full flex-wrap gap-x-5 gap-y-1 lg:order-none lg:w-auto"
         >
-          {[
-            ["como-funciona", "Como funciona"],
-            ["por-que-usar", "Por que usar"],
-            ["destinos", "Destinos"],
-            ["sobre", "Sobre"],
-          ].map(([id, label]) => (
+          {(signedIn ? privateLinks : publicLinks).map(([href, label]) => (
             <Link
-              key={id}
-              href={id === "destinos" ? "/destinos" : `/#${id}`}
+              key={href}
+              href={href}
               className="inline-flex min-h-11 items-center rounded-md text-sm text-muted-foreground hover:text-primary"
             >
               {label}

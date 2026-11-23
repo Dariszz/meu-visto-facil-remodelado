@@ -107,3 +107,17 @@ test("cabeçalho leva ao painel quando há sessão", () => {
   );
   expect(screen.queryByRole("link", { name: "Entrar" })).toBeNull();
 });
+
+test("com sessão, o cabeçalho leva às áreas da conta", () => {
+  render(<HeaderView signedIn />);
+  const nav = screen.getByRole("navigation", { name: "Navegação principal" });
+  expect(
+    within(nav)
+      .getAllByRole("link")
+      .map((link) => link.getAttribute("href")),
+  ).toEqual(["/destinos", "/questionnaire", "/recommendations"]);
+  expect(screen.getByRole("link", { name: "Meu painel" })).toHaveAttribute(
+    "href",
+    "/dashboard",
+  );
+});

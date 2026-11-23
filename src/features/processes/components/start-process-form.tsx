@@ -10,6 +10,7 @@ export function StartProcessForm({
   visaName,
   countrySlug,
   label = "Iniciar processo",
+  variant = "default",
 }: {
   action: (
     state: StartProcessState,
@@ -19,6 +20,8 @@ export function StartProcessForm({
   visaName: string;
   countrySlug?: string;
   label?: string;
+  // Caminho com pontos que dificultam continua disponível, mas sem destaque.
+  variant?: "default" | "outline";
 }) {
   const [state, formAction, pending] = useActionState(action, {
     status: "idle",
@@ -31,6 +34,7 @@ export function StartProcessForm({
       )}
       <Button
         type="submit"
+        variant={variant}
         disabled={pending}
         aria-label={`${label} de ${visaName}`}
       >

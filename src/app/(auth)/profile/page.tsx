@@ -49,7 +49,7 @@ export default async function ProfilePage() {
     >
       <ProfileForm initialDisplayName={profile.displayName} />
       <div className="mt-6 flex flex-col gap-3">
-        <Button asChild>
+        <Button asChild variant="outline">
           <Link href="/dashboard">Ir para o painel</Link>
         </Button>
         <Link

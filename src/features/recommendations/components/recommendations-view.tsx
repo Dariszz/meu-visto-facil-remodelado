@@ -261,6 +261,9 @@ function RecommendationItem({
             action={startAction}
             visaSlug={recommendation.visaSlug}
             visaName={recommendation.visaName}
+            variant={
+              recommendation.compatibility === "LOW" ? "outline" : "default"
+            }
           />
         )}
         {recommendation.detailsHref ? (

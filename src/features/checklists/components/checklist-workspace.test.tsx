@@ -126,3 +126,74 @@ test("falha ao salvar desfaz a mudança e avisa", async () => {
   expect(checkbox).not.toBeChecked();
   expect(summary()).toHaveTextContent("2 de 8 itens concluídos");
 });
+
+test("item pessoal pode ser removido; oficial não tem botão de remover", async () => {
+  const onDeletePersonal = vi.fn().mockResolvedValue(true);
+  render(
+    <ChecklistWorkspace
+      categories={exampleProcess.categories}
+      sources={exampleProcess.sources}
+      onStatusChange={vi.fn()}
+      onDeletePersonal={onDeletePersonal}
+    />,
+  );
+  const buttons = screen.getAllByRole("button", {
+    name: "Remover item pessoal",
+  });
+  expect(buttons).toHaveLength(1);
+  fireEvent.click(buttons[0]);
+  expect(onDeletePersonal).toHaveBeenCalledWith("folder");
+  await vi.waitFor(() =>
+    expect(
+      screen.queryByText("Separar os documentos em uma pasta"),
+    ).not.toBeInTheDocument(),
+  );
+});
+
+test("falha ao remover item pessoal o devolve à lista", async () => {
+  render(
+    <ChecklistWorkspace
+      categories={exampleProcess.categories}
+      sources={exampleProcess.sources}
+      onStatusChange={vi.fn()}
+      onDeletePersonal={vi.fn().mockResolvedValue(false)}
+    />,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Remover item pessoal" }));
+  expect(await screen.findByRole("alert")).toBeInTheDocument();
+  expect(
+    screen.getByText("Separar os documentos em uma pasta"),
+  ).toBeInTheDocument();
+});
+
+test("processo ativo oferece pausar, concluir e arquivar", () => {
+  const setStatus = vi.fn();
+  render(
+    <ProcessDetail
+      process={exampleProcess}
+      dashboardHref="/painel"
+      setStatus={setStatus}
+      addPersonalItem={vi.fn()}
+    />,
+  );
+  for (const name of ["Pausar", "Marcar como concluído", "Arquivar processo"])
+    expect(screen.getByRole("button", { name })).toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "Retomar" }),
+  ).not.toBeInTheDocument();
+  expect(screen.getByText("Adicionar item pessoal")).toBeInTheDocument();
+});
+
+test("processo pausado oferece retomar", () => {
+  render(
+    <ProcessDetail
+      process={{ ...exampleProcess, status: "PAUSED" }}
+      dashboardHref="/painel"
+      setStatus={vi.fn()}
+    />,
+  );
+  expect(screen.getByRole("button", { name: "Retomar" })).toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: "Pausar" }),
+  ).not.toBeInTheDocument();
+});

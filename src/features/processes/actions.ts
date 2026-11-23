@@ -2,7 +2,11 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 import {
+  addPersonalItem,
+  deletePersonalItem,
+  setProcessStatus,
   startProcess,
   startProcessForVisa,
   updateChecklistItemStatus,
@@ -99,4 +103,77 @@ export async function updateChecklistItemStatusAction(
     if (isAuthError(error)) redirect("/login");
     return false;
   }
+}
+
+export type PersonalItemState = {
+  status: "idle" | "error" | "success";
+  message?: string;
+  fieldErrors?: Partial<Record<"title" | "description" | "stage", string>>;
+};
+
+export async function addPersonalItemAction(
+  processId: string,
+  _state: PersonalItemState,
+  form: FormData,
+): Promise<PersonalItemState> {
+  let result: Awaited<ReturnType<typeof addPersonalItem>>;
+  try {
+    result = await addPersonalItem(processId, {
+      stage: form.get("stage"),
+      title: form.get("title") ?? "",
+      description: form.get("description") ?? "",
+    });
+  } catch (error) {
+    if (isAuthError(error)) redirect("/login");
+    return {
+      status: "error",
+      message: "Não foi possível salvar o item agora. Tente novamente.",
+    };
+  }
+  if (result.kind === "PROFILE_REQUIRED") redirect("/profile");
+  if (result.kind === "INVALID")
+    return {
+      status: "error",
+      message: "Confira o item.",
+      fieldErrors: result.fieldErrors,
+    };
+  if (result.kind !== "ADDED")
+    return {
+      status: "error",
+      message: "Não foi possível adicionar. O limite é de 50 itens pessoais.",
+    };
+  revalidatePath(processHref(processId));
+  return { status: "success", message: "Item adicionado ao checklist." };
+}
+
+export async function deletePersonalItemAction(
+  processId: string,
+  itemId: string,
+): Promise<boolean> {
+  try {
+    const deleted = await deletePersonalItem(processId, itemId);
+    if (deleted) revalidatePath(processHref(processId));
+    return deleted;
+  } catch (error) {
+    if (isAuthError(error)) redirect("/login");
+    return false;
+  }
+}
+
+export async function setProcessStatusAction(
+  processId: string,
+  form: FormData,
+): Promise<void> {
+  const status = form.get("status");
+  let ok = false;
+  try {
+    ok = await setProcessStatus(processId, status);
+  } catch (error) {
+    if (isAuthError(error)) redirect("/login");
+  }
+  if (ok && status === "ARCHIVED") {
+    revalidatePath("/dashboard");
+    redirect("/dashboard");
+  }
+  revalidatePath(processHref(processId));
 }

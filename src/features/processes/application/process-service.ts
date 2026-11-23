@@ -20,6 +20,9 @@ import {
   createProcessWithChecklist,
   findProcessForProfile,
   listProcessesForProfile,
+  addPersonalItemForProfile,
+  deletePersonalItemForProfile,
+  setProcessStatusForProfile,
   updateItemStatusForProfile,
 } from "@/lib/db/repositories/process-repository";
 import {
@@ -255,5 +258,102 @@ export async function updateChecklistItemStatus(
     }))
       ? "UPDATED"
       : "NOT_FOUND",
+  );
+}
+
+// Itens pessoais: texto livre da pessoa, sem fonte oficial.
+const noControlChars = (value: string) =>
+  !/[\u0000-\u0008\u000b-\u001f\u007f]/.test(value);
+export const personalItemSchema = z.strictObject({
+  stage: z.enum(["REQUIREMENTS", "APPLICATION", "ENTRY", "AFTER_ARRIVAL"]),
+  title: z
+    .string()
+    .trim()
+    .min(1, "Escreva o item.")
+    .max(120, "Use até 120 caracteres.")
+    .refine(noControlChars, "Remova caracteres especiais."),
+  description: z
+    .string()
+    .trim()
+    .max(500, "Use até 500 caracteres.")
+    .refine(noControlChars, "Remova caracteres especiais."),
+});
+
+export type PersonalItemResult =
+  | { kind: "ADDED" }
+  | {
+      kind: "INVALID";
+      fieldErrors: Partial<Record<"title" | "description" | "stage", string>>;
+    }
+  | { kind: "NOT_FOUND" | "PROFILE_REQUIRED" | "LIMIT_OR_NOT_FOUND" };
+
+export async function addPersonalItem(
+  id: string,
+  input: unknown,
+): Promise<PersonalItemResult> {
+  const profile = await getCurrentUserProfile();
+  if (!profile) return { kind: "PROFILE_REQUIRED" };
+  if (!processId.safeParse(id).success) return { kind: "NOT_FOUND" };
+  const parsed = personalItemSchema.safeParse(input);
+  if (!parsed.success) {
+    const fieldErrors: Partial<
+      Record<"title" | "description" | "stage", string>
+    > = {};
+    for (const issue of parsed.error.issues) {
+      const field = issue.path[0];
+      if (field === "title" || field === "description" || field === "stage")
+        fieldErrors[field] ??= issue.message;
+    }
+    return { kind: "INVALID", fieldErrors };
+  }
+  return guarded(async () =>
+    (await addPersonalItemForProfile({
+      userProfileId: profile.id,
+      processId: id,
+      ...parsed.data,
+    }))
+      ? { kind: "ADDED" as const }
+      : { kind: "LIMIT_OR_NOT_FOUND" as const },
+  );
+}
+
+export async function deletePersonalItem(
+  id: string,
+  itemId: string,
+): Promise<boolean> {
+  const profile = await getCurrentUserProfile();
+  if (!profile) return false;
+  if (!processId.safeParse(id).success || !processId.safeParse(itemId).success)
+    return false;
+  return guarded(() =>
+    deletePersonalItemForProfile({
+      userProfileId: profile.id,
+      processId: id,
+      itemId,
+    }),
+  );
+}
+
+const processStatusInput = z.enum([
+  "ACTIVE",
+  "PAUSED",
+  "COMPLETED",
+  "ARCHIVED",
+]);
+
+export async function setProcessStatus(
+  id: string,
+  status: unknown,
+): Promise<boolean> {
+  const profile = await getCurrentUserProfile();
+  if (!profile) return false;
+  const parsed = processStatusInput.safeParse(status);
+  if (!parsed.success || !processId.safeParse(id).success) return false;
+  return guarded(() =>
+    setProcessStatusForProfile({
+      userProfileId: profile.id,
+      processId: id,
+      status: parsed.data,
+    }),
   );
 }

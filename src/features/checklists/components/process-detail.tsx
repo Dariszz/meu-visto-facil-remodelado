@@ -6,6 +6,10 @@ import type { ChecklistItemStatus, ProcessDetailView } from "../types";
 import type { ChecklistFilter } from "../filters";
 import { ChecklistWorkspace } from "./checklist-workspace";
 import {
+  PersonalItemForm,
+  type PersonalItemFormState,
+} from "./personal-item-form";
+import {
   formatLongDate,
   processStatusPresentation,
 } from "./status-presentation";
@@ -15,6 +19,9 @@ export function ProcessDetail({
   dashboardHref,
   initialFilter,
   onStatusChange,
+  onDeletePersonal,
+  addPersonalItem,
+  setStatus,
 }: {
   process: ProcessDetailView;
   dashboardHref: string;
@@ -24,6 +31,13 @@ export function ProcessDetail({
     itemId: string,
     status: ChecklistItemStatus,
   ) => Promise<boolean | void>;
+  onDeletePersonal?: (itemId: string) => Promise<boolean>;
+  addPersonalItem?: (
+    state: PersonalItemFormState,
+    form: FormData,
+  ) => Promise<PersonalItemFormState>;
+  // Server Action que recebe o campo "status" do formulário.
+  setStatus?: (form: FormData) => Promise<void>;
 }) {
   const status = processStatusPresentation[process.status];
   return (
@@ -82,12 +96,23 @@ export function ProcessDetail({
           </dl>
         </header>
 
+        {setStatus && (
+          <ProcessStatusControls status={process.status} action={setStatus} />
+        )}
+
         <ChecklistWorkspace
+          // Remonta quando itens entram ou saem (ex.: item pessoal novo).
+          key={process.categories
+            .flatMap((category) => category.items.map((item) => item.id))
+            .join(",")}
           categories={process.categories}
           sources={process.sources}
           initialFilter={initialFilter}
           onStatusChange={onStatusChange}
+          onDeletePersonal={onDeletePersonal}
         />
+
+        {addPersonalItem && <PersonalItemForm action={addPersonalItem} />}
 
         <p className="mt-14 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           Checklist organizado a partir de fontes oficiais consultadas em{" "}
@@ -97,5 +122,51 @@ export function ProcessDetail({
         </p>
       </Container>
     </main>
+  );
+}
+
+const statusActions: Record<
+  ProcessDetailView["status"],
+  readonly { status: ProcessDetailView["status"]; label: string }[]
+> = {
+  ACTIVE: [
+    { status: "PAUSED", label: "Pausar" },
+    { status: "COMPLETED", label: "Marcar como concluído" },
+  ],
+  PAUSED: [{ status: "ACTIVE", label: "Retomar" }],
+  COMPLETED: [{ status: "ACTIVE", label: "Reabrir" }],
+  ARCHIVED: [],
+};
+
+function ProcessStatusControls({
+  status,
+  action,
+}: {
+  status: ProcessDetailView["status"];
+  action: (form: FormData) => Promise<void>;
+}) {
+  return (
+    <div className="-mt-4 mb-8 flex flex-wrap items-center gap-2">
+      {statusActions[status].map((option) => (
+        <form key={option.status} action={action}>
+          <input type="hidden" name="status" value={option.status} />
+          <button
+            type="submit"
+            className="inline-flex min-h-11 items-center rounded-md border px-4 text-sm font-medium hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          >
+            {option.label}
+          </button>
+        </form>
+      ))}
+      <form action={action}>
+        <input type="hidden" name="status" value="ARCHIVED" />
+        <button
+          type="submit"
+          className="inline-flex min-h-11 items-center rounded-md px-4 text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        >
+          Arquivar processo
+        </button>
+      </form>
+    </div>
   );
 }

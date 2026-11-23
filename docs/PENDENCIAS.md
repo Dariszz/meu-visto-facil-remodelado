@@ -76,6 +76,15 @@ Branch `feature/conteudo-paises`. Conteúdo revisado a partir só de páginas of
 - [x] Controlador identificado (Pedro Paulo Daris), app de teste nascido do TCC, sem fins financeiros, e aviso de que não substitui assessoria oficial
 - [ ] Revisão do texto por alguém da área jurídica antes de abrir para o público geral
 
+## 3e. Itens pessoais, situação do processo e edição de perfil (23/11/2026)
+
+- [x] Voltar à página do visto depois do login (`/login?next=…`, só caminhos internos)
+- [x] Adicionar e remover itens pessoais no checklist (até 50 por processo; itens oficiais não podem ser removidos)
+- [x] Pausar, retomar, concluir e arquivar processo (arquivado some do painel)
+- [x] Editar nome de exibição em `/profile`
+- [x] Supabase dev: `GRANT UPDATE ON TABLE "catalog"."UserProfile" TO mvf_profile_writer;` e `GRANT DELETE ON TABLE "catalog"."ChecklistItem" TO mvf_profile_writer;`. Repetir em produção
+- [ ] Testar no navegador com a conta de teste
+
 ## 4. Revisar a madrugada de 17/11/2026 (branch `feature/madrugada`)
 
 Resumo em [madrugada-2026-11-17.md](exec-plans/madrugada-2026-11-17.md). Nada foi juntado com o `main`.

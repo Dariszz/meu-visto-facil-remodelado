@@ -4,8 +4,51 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import { AuthenticationError } from "@/lib/auth/require-user";
-import { createCurrentUserProfile } from "./service";
+import { createCurrentUserProfile, updateCurrentUserProfile } from "./service";
 import type { ProfileActionState } from "./types";
+
+function profileFieldErrors(error: ZodError) {
+  const fieldErrors: NonNullable<ProfileActionState["fieldErrors"]> = {};
+  for (const issue of error.issues) {
+    const field = issue.path[0];
+    if (field === "displayName" || field === "preferredLocale")
+      fieldErrors[field] ??= issue.message;
+  }
+  return fieldErrors;
+}
+
+export async function updateProfileAction(
+  _state: ProfileActionState,
+  form: FormData,
+): Promise<ProfileActionState> {
+  try {
+    const updated = await updateCurrentUserProfile({
+      displayName: form.get("displayName") ?? "",
+      preferredLocale: form.get("preferredLocale"),
+    });
+    if (!updated)
+      return { status: "error", message: "Crie seu perfil antes de editar." };
+  } catch (error) {
+    if (error instanceof AuthenticationError)
+      return {
+        status: "error",
+        message: "Sua sessão expirou. Entre novamente para editar seu perfil.",
+      };
+    if (error instanceof ZodError)
+      return {
+        status: "error",
+        message: "Confira os dados do perfil.",
+        fieldErrors: profileFieldErrors(error),
+      };
+    return {
+      status: "error",
+      message:
+        "Não foi possível salvar seu perfil agora. Tente novamente em instantes.",
+    };
+  }
+  revalidatePath("/profile");
+  return { status: "success", message: "Perfil atualizado." };
+}
 
 export async function createProfileAction(
   _state: ProfileActionState,

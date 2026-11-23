@@ -13,7 +13,11 @@ import {
   findProcessForProfile,
   listProcessesForProfile,
   updateItemStatusForProfile,
+  addPersonalItemForProfile,
+  deletePersonalItemForProfile,
+  setProcessStatusForProfile,
 } from "../../src/lib/db/repositories/process-repository";
+import { updateUserProfileByAuthUserId } from "../../src/lib/db/repositories/user-profile-repository";
 import { deleteUserProfileByAuthUserId } from "../../src/lib/db/repositories/user-profile-repository";
 import { findPublicVisa } from "../../src/lib/db/repositories/visa-repository";
 import {
@@ -230,6 +234,119 @@ test("processes: checklist from reviewed requirements, ownership isolation and c
           });
           assert.equal(
             await findProcessForProfile(bob.id, bobProcess.id, tx),
+            null,
+          );
+
+          // Itens pessoais: só o dono adiciona e remove; oficiais ficam.
+          const personal = {
+            processId: created.id,
+            stage: "REQUIREMENTS" as const,
+            title: "Traduzir diploma",
+            description: "",
+          };
+          assert.equal(
+            await addPersonalItemForProfile(
+              { userProfileId: bob.id, ...personal },
+              tx,
+            ),
+            false,
+          );
+          assert.equal(
+            await addPersonalItemForProfile(
+              { userProfileId: alice.id, ...personal },
+              tx,
+            ),
+            true,
+          );
+          const withPersonal = (await findProcessForProfile(
+            alice.id,
+            created.id,
+            tx,
+          ))!.checklist!.items;
+          const personalItem = withPersonal.find((item) => !item.isOfficial)!;
+          const officialItem = withPersonal.find((item) => item.isOfficial)!;
+          assert.equal(personalItem.isMandatory, false);
+          assert.equal(
+            await deletePersonalItemForProfile(
+              {
+                userProfileId: bob.id,
+                processId: created.id,
+                itemId: personalItem.id,
+              },
+              tx,
+            ),
+            false,
+          );
+          assert.equal(
+            await deletePersonalItemForProfile(
+              {
+                userProfileId: alice.id,
+                processId: created.id,
+                itemId: officialItem.id,
+              },
+              tx,
+            ),
+            false,
+          );
+          assert.equal(
+            await deletePersonalItemForProfile(
+              {
+                userProfileId: alice.id,
+                processId: created.id,
+                itemId: personalItem.id,
+              },
+              tx,
+            ),
+            true,
+          );
+
+          // Pausar e arquivar: só o dono; arquivado some das listas.
+          const status = (
+            userProfileId: string,
+            value: "PAUSED" | "ARCHIVED",
+          ) =>
+            setProcessStatusForProfile(
+              { userProfileId, processId: created.id, status: value },
+              tx,
+            );
+          assert.equal(await status(bob.id, "PAUSED"), false);
+          assert.equal(await status(alice.id, "PAUSED"), true);
+          assert.equal(
+            (await findProcessForProfile(alice.id, created.id, tx))?.status,
+            "PAUSED",
+          );
+          assert.equal(await status(alice.id, "ARCHIVED"), true);
+          assert.equal(
+            await findProcessForProfile(alice.id, created.id, tx),
+            null,
+          );
+          assert.equal(
+            (await listProcessesForProfile(alice.id, tx)).some(
+              (item) => item.id === created.id,
+            ),
+            false,
+          );
+          assert.equal(await status(alice.id, "PAUSED"), false);
+
+          // Edição de perfil: só pelo próprio authUserId.
+          const renamed = await updateUserProfileByAuthUserId(
+            {
+              authUserId: "00000000-0000-4000-8000-00000000a001",
+              displayName: "Alice",
+              preferredLocale: "pt-BR",
+            },
+            tx,
+          );
+          assert.equal(renamed?.displayName, "Alice");
+          assert.equal(
+            await updateUserProfileByAuthUserId(
+              {
+                authUserId: "00000000-0000-4000-8000-0000000000ff",
+                displayName: "X",
+                preferredLocale: "pt-BR",
+              },
+              tx,
+            ),
             null,
           );
 

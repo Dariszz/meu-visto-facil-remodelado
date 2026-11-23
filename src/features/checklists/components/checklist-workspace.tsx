@@ -25,6 +25,7 @@ export function ChecklistWorkspace({
   sources,
   initialFilter = "todos",
   onStatusChange,
+  onDeletePersonal,
 }: {
   categories: readonly ChecklistCategoryView[];
   sources: readonly ChecklistSourceRef[];
@@ -35,6 +36,8 @@ export function ChecklistWorkspace({
     itemId: string,
     status: ChecklistItemStatus,
   ) => void | boolean | Promise<void | boolean>;
+  // Remove um item pessoal; se devolver false, o item volta.
+  onDeletePersonal?: (itemId: string) => Promise<boolean>;
 }) {
   const [categories, setCategories] = useState(initialCategories);
   const [saveError, setSaveError] = useState(false);
@@ -72,6 +75,27 @@ export function ChecklistWorkspace({
     }
     if (saved === false && previous) {
       applyStatus(itemId, previous);
+      setSaveError(true);
+    }
+  }
+
+  async function removePersonal(itemId: string) {
+    const snapshot = categories;
+    setSaveError(false);
+    setCategories((current) =>
+      current.map((category) => ({
+        ...category,
+        items: category.items.filter((item) => item.id !== itemId),
+      })),
+    );
+    let removed = false;
+    try {
+      removed = (await onDeletePersonal?.(itemId)) ?? false;
+    } catch {
+      removed = false;
+    }
+    if (!removed) {
+      setCategories(snapshot);
       setSaveError(true);
     }
   }
@@ -205,6 +229,9 @@ export function ChecklistWorkspace({
                             return source ? [source] : [];
                           })}
                           onStatusChange={setStatus}
+                          onDelete={
+                            onDeletePersonal ? removePersonal : undefined
+                          }
                         />
                       ))}
                     </ul>
@@ -245,10 +272,12 @@ function ChecklistItemRow({
   item,
   sources,
   onStatusChange,
+  onDelete,
 }: {
   item: ChecklistItemView;
   sources: readonly ChecklistSourceRef[];
   onStatusChange: (itemId: string, status: ChecklistItemStatus) => void;
+  onDelete?: (itemId: string) => void;
 }) {
   const checkboxId = `check-${item.id}`;
   const done = item.status === "COMPLETED";
@@ -333,6 +362,16 @@ function ChecklistItemRow({
                     onClick={() => onStatusChange(item.id, "NOT_APPLICABLE")}
                   >
                     Não se aplica
+                  </Button>
+                )}
+                {!item.isOfficial && onDelete && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-destructive"
+                    onClick={() => onDelete(item.id)}
+                  >
+                    Remover item pessoal
                   </Button>
                 )}
               </div>

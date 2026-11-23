@@ -11,13 +11,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createProfileAction } from "./actions";
+import { createProfileAction, updateProfileAction } from "./actions";
 import type { ProfileActionState } from "./types";
 
-export function ProfileForm() {
-  const [displayName, setDisplayName] = useState("");
+export function ProfileForm({
+  initialDisplayName,
+}: {
+  // Presente quando o perfil já existe: o formulário passa a editar.
+  initialDisplayName?: string | null;
+} = {}) {
+  const editing = initialDisplayName !== undefined;
+  const [displayName, setDisplayName] = useState(initialDisplayName ?? "");
   const [state, action, pending] = useActionState<ProfileActionState, FormData>(
-    createProfileAction,
+    editing ? updateProfileAction : createProfileAction,
     { status: "idle" },
   );
   return (
@@ -85,7 +91,13 @@ export function ProfileForm() {
         </Alert>
       )}
       <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "Criando perfil…" : "Criar meu perfil"}
+        {editing
+          ? pending
+            ? "Salvando…"
+            : "Salvar alterações"
+          : pending
+            ? "Criando perfil…"
+            : "Criar meu perfil"}
       </Button>
     </form>
   );

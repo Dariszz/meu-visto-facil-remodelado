@@ -15,7 +15,16 @@ const { getCurrentUserProfile, redirect } = vi.hoisted(() => ({
 vi.mock("@/features/profile/service", () => ({ getCurrentUserProfile }));
 vi.mock("next/navigation", () => ({ redirect }));
 vi.mock("@/features/profile/profile-form", () => ({
-  ProfileForm: () => <form aria-label="Criar perfil" />,
+  ProfileForm: ({
+    initialDisplayName,
+  }: {
+    initialDisplayName?: string | null;
+  }) =>
+    initialDisplayName === undefined ? (
+      <form aria-label="Criar perfil" />
+    ) : (
+      <form aria-label="Editar perfil" data-name={initialDisplayName ?? ""} />
+    ),
 }));
 vi.mock("@/features/account/actions", () => ({ deleteAccountAction: vi.fn() }));
 vi.mock("@/features/account/delete-account-form", () => ({
@@ -40,7 +49,7 @@ test("oferece criação quando o usuário ainda não possui perfil", async () =>
 });
 
 test.each(["Pessoa", null])(
-  "mostra perfil existente somente para leitura com nome %s",
+  "mostra perfil existente em modo de edição com nome %s",
   async (displayName) => {
     getCurrentUserProfile.mockResolvedValue({
       id: "private-profile-id",
@@ -48,12 +57,10 @@ test.each(["Pessoa", null])(
       preferredLocale: "pt-BR",
     });
     render(await ProfilePage());
-    expect(
-      screen.getByText(displayName ?? "Não informado"),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Português (Brasil)")).toBeInTheDocument();
-    expect(screen.queryByRole("form")).not.toBeInTheDocument();
-    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+    expect(screen.getByRole("form", { name: "Editar perfil" })).toHaveAttribute(
+      "data-name",
+      displayName ?? "",
+    );
     expect(screen.queryByText("private-profile-id")).not.toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Explorar a Irlanda" }),

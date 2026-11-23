@@ -56,3 +56,27 @@ export async function deleteUserProfileByAuthUserId(
   ).userProfile.deleteMany({ where: { authUserId } });
   return count;
 }
+
+// Só os campos editáveis pela pessoa; dono identificado pela sessão.
+export async function updateUserProfileByAuthUserId(
+  input: {
+    authUserId: string;
+    displayName: string | null;
+    preferredLocale: string;
+  },
+  db?: Prisma.TransactionClient,
+): Promise<UserProfile | null> {
+  const client = db ?? getProfileDatabaseClient();
+  const { count } = await client.userProfile.updateMany({
+    where: { authUserId: input.authUserId },
+    data: {
+      displayName: input.displayName,
+      preferredLocale: input.preferredLocale,
+    },
+  });
+  if (count !== 1) return null;
+  return client.userProfile.findUnique({
+    where: { authUserId: input.authUserId },
+    select: profileSelect,
+  });
+}

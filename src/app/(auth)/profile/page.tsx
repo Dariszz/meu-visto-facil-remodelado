@@ -45,24 +45,9 @@ export default async function ProfilePage() {
   return (
     <AuthShell
       title="Meu perfil"
-      description="Seu perfil está criado. Confira os dados da sua conta."
+      description="Edite como quer ser chamado e confira o idioma da sua conta."
     >
-      <dl className="space-y-5 text-sm">
-        <div>
-          <dt className="font-medium">Nome de exibição</dt>
-          <dd className="mt-1 break-words text-muted-foreground">
-            {profile.displayName ?? "Não informado"}
-          </dd>
-        </div>
-        <div>
-          <dt className="font-medium">Idioma</dt>
-          <dd className="mt-1 text-muted-foreground">
-            {profile.preferredLocale === "pt-BR"
-              ? "Português (Brasil)"
-              : "Idioma não disponível"}
-          </dd>
-        </div>
-      </dl>
+      <ProfileForm initialDisplayName={profile.displayName} />
       <div className="mt-6 flex flex-col gap-3">
         <Button asChild>
           <Link href="/dashboard">Ir para o painel</Link>

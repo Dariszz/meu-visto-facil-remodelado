@@ -12,6 +12,9 @@ const mocks = vi.hoisted(() => ({
   findProcessForProfile: vi.fn(),
   listProcessesForProfile: vi.fn(),
   updateItemStatusForProfile: vi.fn(),
+  addPersonalItemForProfile: vi.fn(),
+  deletePersonalItemForProfile: vi.fn(),
+  setProcessStatusForProfile: vi.fn(),
 }));
 vi.mock("@/features/profile/service", () => ({
   getCurrentUserProfile: mocks.getCurrentUserProfile,
@@ -28,12 +31,18 @@ vi.mock("@/lib/db/repositories/process-repository", () => ({
   findProcessForProfile: mocks.findProcessForProfile,
   listProcessesForProfile: mocks.listProcessesForProfile,
   updateItemStatusForProfile: mocks.updateItemStatusForProfile,
+  addPersonalItemForProfile: mocks.addPersonalItemForProfile,
+  deletePersonalItemForProfile: mocks.deletePersonalItemForProfile,
+  setProcessStatusForProfile: mocks.setProcessStatusForProfile,
 }));
 
 const {
   getProcessDetail,
   startProcess,
   updateChecklistItemStatus,
+  addPersonalItem,
+  deletePersonalItem,
+  setProcessStatus,
   ProcessUnavailableError,
 } = await import("./process-service");
 
@@ -176,4 +185,57 @@ test("atualizar item valida status e ids e usa sempre o perfil da sessão", asyn
   await expect(
     updateChecklistItemStatus(PROCESS, ITEM, "PENDING"),
   ).resolves.toBe("NOT_FOUND");
+});
+
+test("item pessoal valida campos e usa o perfil da sessão", async () => {
+  await expect(
+    addPersonalItem(PROCESS, { stage: "REQUIREMENTS", title: "" }),
+  ).resolves.toMatchObject({ kind: "INVALID" });
+  await expect(
+    addPersonalItem(PROCESS, {
+      stage: "OUTRA",
+      title: "Ok",
+      description: "",
+      isOfficial: true,
+    }),
+  ).resolves.toMatchObject({ kind: "INVALID" });
+  await expect(
+    addPersonalItem("x", { stage: "REQUIREMENTS", title: "Ok" }),
+  ).resolves.toEqual({ kind: "NOT_FOUND" });
+  expect(mocks.addPersonalItemForProfile).not.toHaveBeenCalled();
+  mocks.addPersonalItemForProfile.mockResolvedValue(true);
+  await expect(
+    addPersonalItem(PROCESS, {
+      stage: "REQUIREMENTS",
+      title: " Traduzir diploma ",
+      description: "",
+    }),
+  ).resolves.toEqual({ kind: "ADDED" });
+  expect(mocks.addPersonalItemForProfile).toHaveBeenCalledWith(
+    expect.objectContaining({
+      userProfileId: "profile-a",
+      processId: PROCESS,
+      stage: "REQUIREMENTS",
+    }),
+  );
+  mocks.getCurrentUserProfile.mockResolvedValue(null);
+  await expect(
+    addPersonalItem(PROCESS, { stage: "REQUIREMENTS", title: "Ok" }),
+  ).resolves.toEqual({ kind: "PROFILE_REQUIRED" });
+});
+
+test("remover item e mudar situação rejeitam entradas inválidas", async () => {
+  await expect(deletePersonalItem(PROCESS, "x")).resolves.toBe(false);
+  await expect(setProcessStatus(PROCESS, "DELETED")).resolves.toBe(false);
+  expect(mocks.deletePersonalItemForProfile).not.toHaveBeenCalled();
+  expect(mocks.setProcessStatusForProfile).not.toHaveBeenCalled();
+  mocks.deletePersonalItemForProfile.mockResolvedValue(true);
+  mocks.setProcessStatusForProfile.mockResolvedValue(true);
+  await expect(deletePersonalItem(PROCESS, ITEM)).resolves.toBe(true);
+  await expect(setProcessStatus(PROCESS, "PAUSED")).resolves.toBe(true);
+  expect(mocks.setProcessStatusForProfile).toHaveBeenCalledWith({
+    userProfileId: "profile-a",
+    processId: PROCESS,
+    status: "PAUSED",
+  });
 });

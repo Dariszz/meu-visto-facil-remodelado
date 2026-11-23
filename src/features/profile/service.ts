@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/auth/require-user";
 import {
   createUserProfileIfAbsent,
   findUserProfileByAuthUserId,
+  updateUserProfileByAuthUserId,
 } from "@/lib/db/repositories/user-profile-repository";
 import { profileSchema } from "./validation";
 import type { UserProfile } from "./types";
@@ -45,5 +46,15 @@ export async function createCurrentUserProfile(
   const values = profileSchema.parse(input);
   return profileOperation(() =>
     createUserProfileIfAbsent({ ...values, authUserId: user.id }),
+  );
+}
+
+export async function updateCurrentUserProfile(
+  input: unknown,
+): Promise<UserProfile | null> {
+  const user = await requireUser();
+  const values = profileSchema.parse(input);
+  return profileOperation(() =>
+    updateUserProfileByAuthUserId({ ...values, authUserId: user.id }),
   );
 }

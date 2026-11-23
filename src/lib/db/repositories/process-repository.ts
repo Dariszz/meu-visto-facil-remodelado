@@ -199,3 +199,94 @@ export async function updateItemStatusForProfile(
   if (db) return run(db);
   return getProfileDatabaseClient().$transaction(run);
 }
+
+const ownedChecklist = (userProfileId: string, processId: string) =>
+  ({
+    process: { id: processId, userProfileId, status: { not: "ARCHIVED" } },
+  }) satisfies Prisma.ChecklistWhereInput;
+
+// Item pessoal: criado pela própria pessoa, nunca oficial nem obrigatório.
+export async function addPersonalItemForProfile(
+  input: {
+    userProfileId: string;
+    processId: string;
+    stage: "REQUIREMENTS" | "APPLICATION" | "ENTRY" | "AFTER_ARRIVAL";
+    title: string;
+    description: string;
+  },
+  db?: Prisma.TransactionClient,
+): Promise<boolean> {
+  const run = async (tx: Prisma.TransactionClient) => {
+    const checklist = await tx.checklist.findFirst({
+      where: ownedChecklist(input.userProfileId, input.processId),
+      select: {
+        id: true,
+        _count: { select: { items: { where: { isOfficial: false } } } },
+      },
+    });
+    // Limite simples para evitar abuso de armazenamento.
+    if (!checklist || checklist._count.items >= 50) return false;
+    const last = await tx.checklistItem.aggregate({
+      where: { checklistId: checklist.id },
+      _max: { sortOrder: true },
+    });
+    await tx.checklistItem.create({
+      data: {
+        checklistId: checklist.id,
+        code: `personal-${crypto.randomUUID()}`,
+        stage: input.stage,
+        title: input.title,
+        description: input.description,
+        isOfficial: false,
+        isMandatory: false,
+        priority: "NORMAL",
+        sortOrder: (last._max.sortOrder ?? 0) + 1,
+      },
+    });
+    await tx.immigrationProcess.updateMany({
+      where: { id: input.processId, userProfileId: input.userProfileId },
+      data: { updatedAt: new Date() },
+    });
+    return true;
+  };
+  if (db) return run(db);
+  return getProfileDatabaseClient().$transaction(run);
+}
+
+// Só apaga itens pessoais; itens oficiais nunca são removidos.
+export async function deletePersonalItemForProfile(
+  input: { userProfileId: string; processId: string; itemId: string },
+  db?: Prisma.TransactionClient,
+): Promise<boolean> {
+  const { count } = await (
+    db ?? getProfileDatabaseClient()
+  ).checklistItem.deleteMany({
+    where: {
+      id: input.itemId,
+      isOfficial: false,
+      checklist: ownedChecklist(input.userProfileId, input.processId),
+    },
+  });
+  return count === 1;
+}
+
+export async function setProcessStatusForProfile(
+  input: {
+    userProfileId: string;
+    processId: string;
+    status: "ACTIVE" | "PAUSED" | "COMPLETED" | "ARCHIVED";
+  },
+  db?: Prisma.TransactionClient,
+): Promise<boolean> {
+  const { count } = await (
+    db ?? getProfileDatabaseClient()
+  ).immigrationProcess.updateMany({
+    where: {
+      id: input.processId,
+      userProfileId: input.userProfileId,
+      status: { not: "ARCHIVED" },
+    },
+    data: { status: input.status },
+  });
+  return count === 1;
+}

@@ -7,7 +7,12 @@ import { StatePanel } from "@/components/feedback/state-panel";
 import { Button } from "@/components/ui/button";
 import { ProcessDetail } from "@/features/checklists/components/process-detail";
 import { parseChecklistFilter } from "@/features/checklists/filters";
-import { updateChecklistItemStatusAction } from "@/features/processes/actions";
+import {
+  addPersonalItemAction,
+  deletePersonalItemAction,
+  setProcessStatusAction,
+  updateChecklistItemStatusAction,
+} from "@/features/processes/actions";
 import {
   getProcessDetail,
   type ProcessDetailResult,
@@ -61,6 +66,9 @@ export default async function ProcessPage({
         null,
         result.process.id,
       )}
+      onDeletePersonal={deletePersonalItemAction.bind(null, result.process.id)}
+      addPersonalItem={addPersonalItemAction.bind(null, result.process.id)}
+      setStatus={setProcessStatusAction.bind(null, result.process.id)}
     />
   );
 }

@@ -230,6 +230,22 @@ export const officialDomains: readonly OfficialDomain[] = [
     reviewedAt: "2026-11-18",
     reuseNote: "Conteúdo do governo australiano; resumir e citar com link.",
   },
+  // Itália: revisado em 23/11/2026.
+  {
+    hostname: "ambbrasilia.esteri.it",
+    status: "VERIFIED",
+    countryCode: "IT",
+    authority: "Embaixada da Itália em Brasília (MAECI)",
+    purpose:
+      "Listas de requisitos de vistos nacionais (tipo D) para residentes no Brasil",
+    evidence: {
+      type: "PARENT_PORTAL",
+      url: "https://vistoperitalia.esteri.it/",
+      note: "O portal de vistos do Ministério das Relações Exteriores italiano usa subdomínios de esteri.it para as representações; a Embaixada em Brasília aponta para ele.",
+    },
+    reviewedAt: "2026-11-23",
+    reuseNote: "Conteúdo do governo italiano; resumir e citar com link.",
+  },
 ];
 
 const byHostname = new Map(

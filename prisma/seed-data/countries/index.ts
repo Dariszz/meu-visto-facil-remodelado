@@ -1,6 +1,7 @@
 import { australiaContent } from "./australia";
 import { canadaContent } from "./canada";
 import { germanyContent } from "./germany";
+import { italyContent } from "./italy";
 import { netherlandsContent } from "./netherlands";
 import { portugalContent } from "./portugal";
 import { spainContent } from "./spain";
@@ -12,6 +13,7 @@ import { unitedStatesContent } from "./united-states";
 export const destinationContents: readonly CountryContent[] = [
   portugalContent,
   spainContent,
+  italyContent,
   germanyContent,
   netherlandsContent,
   unitedKingdomContent,

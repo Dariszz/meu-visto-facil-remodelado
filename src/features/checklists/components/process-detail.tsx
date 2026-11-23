@@ -73,7 +73,7 @@ export function ProcessDetail({
               </dd>
             </div>
             <div>
-              <dt className="sr-only">Permissão</dt>
+              <dt className="sr-only">Visto</dt>
               <dd>
                 {process.visaHref ? (
                   <Link

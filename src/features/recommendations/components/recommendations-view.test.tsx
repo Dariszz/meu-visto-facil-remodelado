@@ -50,7 +50,7 @@ test("caminhos aparecem do mais ao menos compatível", () => {
     screen.getByRole("heading", { name: "Caminhos possíveis na Irlanda" }),
   ).toBeInTheDocument();
   expect(
-    screen.getByRole("link", { name: "Ver vistos de Irlanda" }),
+    screen.getByRole("link", { name: "Ver todos os vistos" }),
   ).toHaveAttribute("href", "/ireland");
   const profile = screen.getByRole("complementary", { name: "Seu perfil" });
   expect(within(profile).getByText("Tecnologia")).toBeInTheDocument();

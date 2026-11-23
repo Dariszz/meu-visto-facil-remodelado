@@ -114,7 +114,7 @@ export function RecommendationsView({
                 href={links.explore}
                 className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
               >
-                Ver vistos de {countryName}
+                Ver todos os vistos
               </Link>
             </section>
           </div>
@@ -269,7 +269,7 @@ function RecommendationItem({
             aria-label={`Ver detalhes de ${recommendation.visaName}`}
             className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4"
           >
-            Ver detalhes da permissão
+            Ver detalhes do visto
           </Link>
         ) : (
           <p className="text-sm text-muted-foreground">

@@ -83,7 +83,7 @@ Branch `feature/conteudo-paises`. Conteúdo revisado a partir só de páginas of
 - [x] Pausar, retomar, concluir e arquivar processo (arquivado some do painel)
 - [x] Editar nome de exibição em `/profile`
 - [x] Supabase dev: `GRANT UPDATE ON TABLE "catalog"."UserProfile" TO mvf_profile_writer;` e `GRANT DELETE ON TABLE "catalog"."ChecklistItem" TO mvf_profile_writer;`. Repetir em produção
-- [ ] Testar no navegador com a conta de teste
+- [x] Testado no navegador (23/11/2026): Itália, volta do login (e recusa de destino externo), item pessoal adicionado e removido, pausar/retomar, arquivar e edição do nome
 
 ## 4. Revisar a madrugada de 17/11/2026 (branch `feature/madrugada`)
 
